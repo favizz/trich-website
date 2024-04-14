@@ -8,8 +8,9 @@ import { useAuth } from "@/authContext/AuthProvider";
 import { signOut } from "firebase/auth";
 
 import NavbarLogoWhite from "@/public/components/navbar_components/NavbarLogoWhite.svg";
+import NavbarLogoBlack from "@/public/components/navbar_components/NavbarLogoBlack.svg";
 import UserIcon from "@/public/components/navbar_components/UserIcon.png";
-import UserIMG from "@/public/components/navbar_components/UserImg.png"
+import UserIMG from "@/public/components/navbar_components/UserImg.png";
 
 const paths = [
   {
@@ -54,15 +55,31 @@ const Navbar = () => {
     setUserOpen(!isUserOpen);
   };
 
+  const navColor = () => {
+    return (
+      pathname?.split("/")[1] === "sign-in" ||
+      pathname?.split("/")[1] === "sign-up" ||
+      pathname?.split("/")[1] === "dashboard"
+    );
+  };
+
   return (
-    <nav className="bg-green1 text-white py-4 lg:pl-16 lg:pr-24 xl:pl-24 xl:pr-36">
+    <nav className="bg-transparent text-white py-9 lg:pl-16 lg:pr-24 xl:pl-24 xl:pr-36 fixed w-full z-50">
       <div className="flex justify-between items-center">
         {/* Logo on the left */}
-        <div className="flex items-center">
-          <Link href="/">
-            <Image src={NavbarLogoWhite} alt="Logo-White" />
-          </Link>
-        </div>
+        {navColor() ? (
+          <div className="flex items-center">
+            <Link href="/">
+              <Image src={NavbarLogoBlack} alt="Logo-Black" />
+            </Link>
+          </div>
+        ) : (
+          <div className="flex items-center">
+            <Link href="/">
+              <Image src={NavbarLogoWhite} alt="Logo-White" />
+            </Link>
+          </div>
+        )}
 
         {/* Navigation links in the center */}
         <ul className="hidden md:flex space-x-4">
@@ -78,7 +95,7 @@ const Navbar = () => {
                       : ""
                   }
                 >
-                  <p className="hover:text-orange1 hover:underline lg:text-lg xl:text-xl lg:tracking-wider font-semibold">
+                  <p className={`hover:text-orange1 hover:underline lg:text-lg xl:text-xl lg:tracking-wider font-semibold ${navColor() ? "text-black" : ""}`}>
                     {path.name}
                   </p>
                 </Link>

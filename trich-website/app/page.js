@@ -1,13 +1,21 @@
-import Image from "next/image";
-import { Auth } from "./components/auth";
-import MovieData from "./components/MovieData";
-import AddMovies from "./components/AddMovies";
+import Banner from "./components/homeComponents/Banner";
+import Desc from "./components/homeComponents/Desc";
+import Info from "./components/homeComponents/Info";
+import ViewProduct from "./components/homeComponents/ViewProduct";
+import ViewServices from "./components/homeComponents/ViewServices";
+import ViewAppointment from "./components/homeComponents/ViewAppointment";
+import ViewContact from "./components/homeComponents/ViewContact";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center p-24 space-y-16">
-      <AddMovies/>
-      <MovieData/>
+    <main className="">
+      <Banner/>
+      <Desc/>
+      <Info/>
+      <ViewProduct/>
+      <ViewServices/>
+      <ViewAppointment/>
+      <ViewContact/>
     </main>
   );
 }
