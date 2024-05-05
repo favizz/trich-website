@@ -30,8 +30,8 @@ const paths = [
     url: "/products",
   },
   {
-    name: "Barber",
-    url: "/barber",
+    name: "Barbers",
+    url: "/barbers",
   },
 ];
 
@@ -95,7 +95,7 @@ const Navbar = () => {
                       : ""
                   }
                 >
-                  <p className={`hover:text-orange1 hover:underline lg:text-lg xl:text-xl lg:tracking-wider font-semibold ${navColor() ? "text-black" : ""}`}>
+                  <p className={`hover:text-orange1 hover:underline lg:text-lg xl:text-xl lg:tracking-wider font-extrabold ${navColor() ? "text-black" : ""}`}>
                     {path.name}
                   </p>
                 </Link>

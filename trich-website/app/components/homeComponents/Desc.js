@@ -6,7 +6,7 @@ const Desc = () => {
       style={{ backgroundImage: `url(${DescBg.src})` }}
       className="h-[40vh] bg-cover bg-center flex flex-col lg:space-y-4 xl:space-y-8 items-center justify-center tracking-wider px-24"
     >
-      <h2 className="lg:font-semibold lg:text-3xl xl:font-bold xl:text-[40px] ">
+      <h2 className="lg:font-bold lg:text-3xl xl:font-bold xl:text-[40px] ">
         Welcome to Trich Barberspace
       </h2>
       <p className="text-[#545454] lg:text-sm lg:font-light xl:text-base">

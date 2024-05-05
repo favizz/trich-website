@@ -3,8 +3,14 @@ import React, { useEffect, useState } from "react";
 import { auth, db } from "@/config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
+import ClientCard from "./ClientCard";
+import ClientStats from "./ClientStats";
+import ClientBookings from "./ClientBookings";
+import ClientInfo from "./ClientInfo";
+
 const ClientPage = () => {
   const [userData, setUserData] = useState(null);
+  const [currPage, setPage] = useState(1);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -38,13 +44,35 @@ const ClientPage = () => {
   }, [userData]); // This effect runs whenever userData changes
 
   return (
-    <div>
-      <p>Nama: {userData?.first_name + " " + userData?.last_name}</p>
-      <p>email: {userData?.email}</p>
-      <p>Phone Number: {userData?.phone_number}</p>
-      <p>Address: {userData?.address}</p>
-    </div>
+    <section className="max-w-screen-2xl lg:px-16 lg:py-36">
+      <section className="flex flex-row items-start justify-center space-x-8">
+        <ClientCard
+          name={userData?.first_name + " " + userData?.last_name}
+          email={userData?.email}
+          handlePaging={setPage}
+          currPage={currPage}
+        />
+        {currPage == 1 && <ClientStats />}
+        {currPage == 2 && <ClientBookings/>}
+        {currPage == 3 && (
+          <ClientInfo
+            first_name={userData?.first_name}
+            last_name={userData?.last_name}
+            email={userData?.email}
+            address={userData?.address}
+            phone_number={userData?.phone_number}
+          />
+        )}
+      </section>
+    </section>
   );
 };
 
 export default ClientPage;
+
+{
+  /* <p>Nama: {userData?.first_name + " " + userData?.last_name}</p>
+<p>email: {userData?.email}</p>
+<p>Phone Number: {userData?.phone_number}</p>
+<p>Address: {userData?.address}</p> */
+}
