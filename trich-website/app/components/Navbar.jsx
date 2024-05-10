@@ -9,9 +9,7 @@ import { signOut } from "firebase/auth";
 
 import NavbarLogoWhite from "@/public/components/navbar_components/NavbarLogoWhite.svg";
 import NavbarLogoBlack from "@/public/components/navbar_components/NavbarLogoBlack.svg";
-import UserIcon from "@/public/components/navbar_components/UserIcon.png";
-import UserIMG from "@/public/components/navbar_components/UserImg.png";
-
+import UserIcon from "@/public/components/navbar_components/userimage.png";
 const paths = [
   {
     name: "Home",
@@ -118,7 +116,7 @@ const Navbar = () => {
             </Link>
             <div className="relative">
               <div className="cursor-pointer" onClick={toggleDropdown}>
-                <Image src={UserIMG} width={40} alt="user-Image" />
+                <Image src={UserIcon} width={40} alt="user-Image" />
               </div>
 
               {isUserOpen && (
@@ -166,35 +164,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-{
-  /* <header className="h-20 bg-gradient-to-br from-yellow-400/20 via-blue-300 to-purple-60/60 flex px-10 drop-shadow-[0px_2px_10px_rgba(2,0,0)] text-black">
-      <nav className="w-full mx-auto flex justify-between items-center px-2 text-black font-serif text-xl">
-        <Link href={HOME_ROUTE}>
-          <p className="text-black">Logo</p>
-        </Link>
-        <ul className="flex gap-4">
-          {!userLoggedIn && (
-            <>
-              <Link href={LOGIN_ROUTE}>
-                <p className="text-black">Login</p>
-              </Link>
-              <Link href={REGISTER_ROUTE}>
-                <p className="text-black">Register</p>
-              </Link>
-            </>
-          )}
-          {userLoggedIn && (
-            <>
-              <Link href={PROFILE_ROUTE}>
-                <p className="text-black">Profile</p>
-              </Link>
-              <li className="cursor-pointer" onClick={SignOut}>
-                Logout
-              </li>
-            </>
-          )}
-        </ul>
-      </nav>
-    </header> */
-}

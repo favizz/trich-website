@@ -5,7 +5,7 @@ const ConfirmService = ({myService, toggleConfirm, handlePage, handleNotes}) => 
     <div className="w-full">
         <div className="px-8 py-4 space-y-1 lg:text-sm xl:text-base 2xl:text-lg">
             <p className="font-bold">Your Services</p>
-            <p className="font-extrabold">{myService}</p>
+            <p className="font-extrabold">{myService.name}</p>
             <input onChange={(e) => handleNotes(e.target.value)} type="text" placeholder="insert notes" className="pl-2 border border-1 border-gray-500 rounded"/>
         </div>
         <div className="w-full h-[0.5px] mb-2 bg-gray-600"></div>

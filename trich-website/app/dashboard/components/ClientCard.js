@@ -8,6 +8,7 @@ import StatsIcon from "@/public/dashboardAssets/statsicon.svg";
 import CalendarIcon from "@/public/dashboardAssets/calendaricon.svg";
 import ProfileIcon from "@/public/dashboardAssets/profileicon.svg";
 import LogOutIcon from "@/public/dashboardAssets/logouticon.svg";
+import UserIcon from "@/public/components/navbar_components/userimage.png";
 
 const ClientCard = ({ name, email, handlePaging, currPage }) => {
   const router = useRouter();
@@ -27,7 +28,9 @@ const ClientCard = ({ name, email, handlePaging, currPage }) => {
       <div className="lg:h-36 rounded-tl-[10px] rounded-tr-[10px] bg-[#F26524] absolute top-0 w-full z-10"></div>
       {/* Client Profile */}
       <div className="flex flex-col items-center justify-center lg:space-y-1 z-20">
-        <div className="bg-red-500 w-24 h-24 rounded-full border-[3px] border-white "></div>
+        <div className="bg-gray-300 w-24 h-24 rounded-full border-[3px] border-white ">
+          <Image src={UserIcon} alt="user-icon"/>
+        </div>
         <p className="font-extrabold lg:text-base">{name}</p>
         <p className="font-bold text-gray-600 lg:text-xs">{email}</p>
       </div>

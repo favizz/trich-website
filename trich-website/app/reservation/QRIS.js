@@ -2,12 +2,12 @@ import Image from "next/image";
 
 import Qris from "@/public/reservationAssets/qris.png";
 
-const QRIS = ({ handlePay, handleBooking }) => {
+const QRIS = ({ handlePay, price }) => {
   return (
     <div className="flex flex-col items-center justify-center pt-4 space-y-2">
       <p className="font-extrabold lg:text-xl">Scan To Complete Your Payment</p>
       <p className="font-semibold lg:text-sm">TRICH BARBERSPACE</p>
-      <p className="font-extrabold text-orange1 lg:text-base">50.000</p>
+      <p className="font-extrabold text-orange1 lg:text-base">{price}</p>
       <Image src={Qris} alt="Trich-QRIS" width={250} />
       <div className="flex flex-row space-x-4 py-4 lg:text-sm">
           <div 

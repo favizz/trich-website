@@ -1,5 +1,6 @@
 import ServicesBg from "@/public/homeAssets/servicesBg.png";
 import ServiceCard from "./ServiceCard";
+import RevealTitle from "../animation/Reveal";
 
 const services = [
   {
@@ -11,14 +12,14 @@ const services = [
   {
     name: "THE CUTTING EDGE",
     desc: "Achieve a Haircut as sharp as your style with our signature service. Our comprehensive service features a cleansing wash, a relaxing warm towel treatment, a stimulating scalp massage, and your very own choice of premium styling product, for elevated grooming experience.",
-    price: "135.000",
-    duration: "2 Hours",
+    price: "85.000",
+    duration: "1 Hour",
   },
   {
     name: "PERMIFICATION",
     desc: "Our pro-grade Perm Service unlocks effortless texture and lasting volume. Our expert barbermen craft customized perms for natural waves or defined curls, using top-of-the-line solutions and premium products. Experience lasting volume and textures to invest in your confidence!",
-    price: "-",
-    duration: "-",
+    price: "150.000-500.000*",
+    duration: "30 Minutes-3 Hours",
   },
   {
     name: "SMOOTH OPERATOR",
@@ -29,8 +30,8 @@ const services = [
   {
     name: "TRUE COLORS",
     desc: "Forge a fresh look with our Sharp-Edge Hair Coloring service. Our barbermen are certified colorists who use premium, scalp-friendly dyes to create your perfect shades, all while keeping your hair healthy and vibrant!",
-    price: "-",
-    duration: "-",
+    price: "250.000-750.000",
+    duration: "3-4 Hours",
   },
   {
     name: "TAT TOO",
@@ -64,18 +65,27 @@ const ViewServices = () => {
       style={{ backgroundImage: `url(${ServicesBg.src})` }}
       className="bg-cover bg-center bg-no-repeat flex flex-col items-center justify-center tracking-wider text-white lg:py-8 lg:px-12"
     >
-      <h2 className="font-extrabold text-[50px]">OUR SERVICES</h2>
+      <RevealTitle>
+        <h2 className="font-extrabold text-[50px]">OUR SERVICES</h2>
+      </RevealTitle>
       <div className="text-center lg:text-lg">
         <p>Unleash your inner radiance and unlock a look</p>
         <p>you'll love with our extensive range of hair and </p>
         <p>beauty services!</p>
       </div>
       {/* <Carousel/> */}
-      <div className="grid grid-cols-4 gap-6 py-8">
+      <div className="grid lg:grid-cols-3 2xl:grid-cols-4 gap-6 py-8">
         {services.map((c, idx) => {
           return (
-            <ServiceCard name={c.name} desc={c.desc} price={c.price} duration={c.duration}/>
-          )
+            <RevealTitle>
+              <ServiceCard
+                name={c.name}
+                desc={c.desc}
+                price={c.price}
+                duration={c.duration}
+              />
+            </RevealTitle>
+          );
         })}
       </div>
     </section>

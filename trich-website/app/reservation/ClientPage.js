@@ -22,10 +22,10 @@ const ClientPage = () => {
       await addDoc(userBookingRef, {
         create_booking_date: new Date(),
         user_id: auth?.currentUser?.uid,
-        service: pickedService,
+        service: pickedService.name,
         date: pickedDate,
         time: pickedTime,
-        amount: 50000,
+        amount: pickedService.price,
         notes: notes,
         status: 1,
       })
@@ -117,7 +117,7 @@ const ClientPage = () => {
             Scan To Complete Your Payment
           </p>
           <p className="font-semibold lg:text-sm">TRICH BARBERSPACE</p>
-          <p className="font-extrabold text-orange1 lg:text-base">50.000</p>
+          <p className="font-extrabold text-orange1 lg:text-base">{pickedService.price}</p>
           <Image src={Qris} alt="Trich-QRIS" width={250} />
           <div className="flex flex-row space-x-4 py-4 lg:text-sm">
             <div

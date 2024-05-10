@@ -1,4 +1,4 @@
-const BookingCard = ({ date, isPaid, time, price, status, notes }) => {
+const BookingCard = ({ date, time, price, status, notes }) => {
   const handleStatus = (s) => {
     switch (s) {
       case 1:
@@ -25,7 +25,7 @@ const BookingCard = ({ date, isPaid, time, price, status, notes }) => {
       </div>
       <div className="pt-2 space-y-1">
         <p className="lg:text-sm">{time}</p>
-        <p className="font-extrabold">Rp 50.000</p>
+        <p className="font-extrabold">Rp {price}</p>
         <div className="pt-1">
           <p className="text-gray-600 lg:text-sm">Notes</p>
           <p className="lg:text-xs ">{notes}</p>

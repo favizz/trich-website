@@ -1,7 +1,10 @@
 "use client"
+import Image from "next/image";
 import React, { useContext, useState, useEffect } from "react";
 import { auth } from "@/config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+
+import LoadingLogo from "@/public/homeAssets/gifLogo.gif";
 
 const AuthContext = React.createContext();
 
@@ -25,18 +28,10 @@ export const AuthProvider = ({ children }) => {
     if (user) {
       setCurrentUser({ ...user });
 
-      // check if provider is email and password login
       const isEmail = user.providerData.some(
         (provider) => provider.providerId === "password"
       );
       setIsEmailUser(isEmail);
-
-      // check if the auth provider is google or not
-      //   const isGoogle = user.providerData.some(
-      //     (provider) => provider.providerId === GoogleAuthProvider.PROVIDER_ID
-      //   );
-      //   setIsGoogleUser(isGoogle);
-
       setUserLoggedIn(true);
     } else {
       setCurrentUser(null);
@@ -56,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {loading && (<div className="h-screen flex w-full justify-center items-center">Loading...</div>)}
+      {loading && (<div className="min-h-screen bg-green2 flex w-full justify-center items-center"><Image src={LoadingLogo} alt="logo"/></div>)}
       {!loading && children}
     </AuthContext.Provider>
   );

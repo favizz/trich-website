@@ -16,11 +16,11 @@ const ConfirmPay = ({ date, time, service, notes, handlePage }) => {
         </div>
         <div className="flex flex-row items-center justify-between">
           <p className="text-[#545454] font-semibold">Services</p>
-          <p className="font-bold">{service}</p>
+          <p className="font-bold">{service.name}</p>
         </div>
         <div className="flex flex-row items-center justify-between">
           <p className="text-[#545454] font-semibold">Down Payment</p>
-          <p className="font-extrabold text-orange1 lg:text-base">IDR 50.000</p>
+          <p className="font-extrabold text-orange1 lg:text-base">IDR {service.price}</p>
         </div>
         <div className="flex flex-row items-center justify-between">
           <p className="text-[#545454] font-semibold">Notes</p>
