@@ -15,7 +15,7 @@ const ViewAppointment = () => {
         happen.Unleash your inner radiance and unlock a look you'll love with
         our extensive range of hair and beauty services!
       </p>
-      <Link href="/">
+      <Link href="/reservation">
         <div className="bg-orange1 hover:bg-orange-300 flex items-center justify-center text-white font-normal lg:text-[12px] xl:text-base py-3 px-6 lg:w-[120px] xl:w-[160px] rounded">
           Book now
         </div>

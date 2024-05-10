@@ -1,11 +1,55 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { auth, db } from "@/config/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
+import BookingCard from "./BookingCard";
 
-const ClientBookings = () => {
+const ClientBookings = ({ handleBookingData }) => {
+  const [bookingData, setBookingData] = useState([]);
+
+  useEffect(() => {
+    const getBookingData = async () => {
+      const currentUserID = auth?.currentUser?.uid;
+      if (!currentUserID) {
+        console.error("Current user ID is undefined.");
+        return;
+      }
+      const q = query(
+        collection(db, "booking"),
+        where("user_id", "==", currentUserID)
+      );
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const bookings = querySnapshot.docs.map((doc) => doc.data());
+        setBookingData(bookings);
+      } else {
+        console.log("No bookings found for the user.");
+      }
+    };
+
+    getBookingData();
+    handleBookingData(bookingData);
+  }, []);
+
   return (
-    <section className="lg:w-[579px] xl:w-[759px] rounded-[10px] bg-white tracking-wider">
-
+    <section className="lg:w-[579px] xl:w-[759px] rounded-[10px] bg-[#FAFAFA] tracking-wider lg:p-6 xl:p-10">
+      <h2 className="text-3xl font-extrabold">My Bookings</h2>
+      <div className="pt-4 space-y-3">
+        {bookingData.map((booking, index) => (
+          <BookingCard
+            key={index}
+            date={booking.date}
+            time={booking.time}
+            status={booking.status}
+            isPaid={booking.is_paid}
+            price={booking.amount}
+            notes={booking.notes}
+          />
+        ))}
+      </div>
     </section>
-  )
-}
+  );
+};
 
 export default ClientBookings;

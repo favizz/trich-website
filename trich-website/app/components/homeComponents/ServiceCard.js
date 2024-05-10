@@ -1,19 +1,17 @@
 import Link from "next/link";
 
-const ServiceCard = () => {
+const ServiceCard = ({name, desc, price, duration}) => {
   return (
-    <div className="flex flex-col items-center justify-center bg-white tracking-widest space-y-4 pt-10 pb-6 px-6">
+    <div className="max-w-[400px] rounded-[10px] flex flex-col items-center justify-center bg-white tracking-widest space-y-4 pt-10 pb-6 px-6">
       <div className="font-extrabold lg:text-lg flex flex-col space-y-2 items-center justify-center"> 
-        <p className="text-black">HAIRCUT</p>
-        <p className="text-orange1">Rp 50.000</p>
+        <p className="text-black">{name}</p>
+        <p className="text-orange1">IDR {price}</p>
+        <p className="font-semibold text-orange1 lg:text-base">Duration: {duration}</p>
       </div>
       <p className="text-[#545454] lg:text-xs text-center tracking-wider">
-        Let our experienced stylists craft the perfect haircut to flatter your
-        face shape and personal style. Whether you're looking for a trendy new
-        look or a classic style with a modern twist, we'll work with you to
-        achieve your desired look.
+        {desc}
       </p>
-      <Link href="/services">
+      <Link href="/reservation">
         <div className="bg-orange1 mt-4 text-white rounded font-bold px-8 py-3 lg:text-xs">Book now</div>
       </Link>
     </div>

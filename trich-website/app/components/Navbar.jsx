@@ -95,7 +95,11 @@ const Navbar = () => {
                       : ""
                   }
                 >
-                  <p className={`hover:text-orange1 hover:underline lg:text-lg xl:text-xl lg:tracking-wider font-extrabold ${navColor() ? "text-black" : ""}`}>
+                  <p
+                    className={`hover:text-orange1 hover:underline lg:text-lg xl:text-xl lg:tracking-wider font-extrabold ${
+                      navColor() ? "text-black" : ""
+                    }`}
+                  >
                     {path.name}
                   </p>
                 </Link>
@@ -107,9 +111,11 @@ const Navbar = () => {
         {/* "Book Now" button and user icon on the right */}
         {userLoggedIn ? (
           <div className="flex items-center space-x-4">
-            <button className="bg-orange1 hover:bg-orange-300 text-white font-normal lg:text-[12px] xl:text-base py-2 px-6 rounded">
-              Book Now
-            </button>
+            <Link href="/reservation">
+              <button className="bg-orange1 hover:bg-orange-300 text-white font-normal lg:text-[12px] xl:text-base py-2 px-6 rounded">
+                Book Now
+              </button>
+            </Link>
             <div className="relative">
               <div className="cursor-pointer" onClick={toggleDropdown}>
                 <Image src={UserIMG} width={40} alt="user-Image" />
@@ -149,7 +155,7 @@ const Navbar = () => {
           </div>
         ) : (
           <Link href="/sign-in">
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <button className="bg-orange1 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded">
               Sign In
             </button>
           </Link>

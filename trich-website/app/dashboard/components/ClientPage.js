@@ -11,13 +11,14 @@ import ClientInfo from "./ClientInfo";
 const ClientPage = () => {
   const [userData, setUserData] = useState(null);
   const [currPage, setPage] = useState(1);
+  const [bookingData, setBookingData] = useState([]);
 
   useEffect(() => {
     const getUserData = async () => {
       const currentUserID = auth?.currentUser?.uid;
       if (!currentUserID) {
         console.error("Current user ID is undefined.");
-        return; // Exit the function if currentUserID is undefined
+        return;
       }
       const q = query(
         collection(db, "user"),
@@ -34,14 +35,7 @@ const ClientPage = () => {
     };
 
     getUserData();
-  }, []); // Empty dependency array means this effect runs once on component mount
-
-  useEffect(() => {
-    if (userData) {
-      console.log("Data:");
-      console.log(userData);
-    }
-  }, [userData]); // This effect runs whenever userData changes
+  }, []);
 
   return (
     <section className="max-w-screen-2xl lg:px-16 lg:py-36">
@@ -52,8 +46,8 @@ const ClientPage = () => {
           handlePaging={setPage}
           currPage={currPage}
         />
-        {currPage == 1 && <ClientStats />}
-        {currPage == 2 && <ClientBookings/>}
+        {currPage == 1 && <ClientStats bookingData={bookingData} handlePage={setPage}/>}
+        {currPage == 2 && <ClientBookings handleBookingData={setBookingData}/>}
         {currPage == 3 && (
           <ClientInfo
             first_name={userData?.first_name}
@@ -69,10 +63,3 @@ const ClientPage = () => {
 };
 
 export default ClientPage;
-
-{
-  /* <p>Nama: {userData?.first_name + " " + userData?.last_name}</p>
-<p>email: {userData?.email}</p>
-<p>Phone Number: {userData?.phone_number}</p>
-<p>Address: {userData?.address}</p> */
-}
