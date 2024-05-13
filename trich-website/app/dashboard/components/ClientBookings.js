@@ -21,7 +21,8 @@ const ClientBookings = ({ handleBookingData }) => {
       );
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
-        const bookings = querySnapshot.docs.map((doc) => doc.data());
+        let bookings = querySnapshot.docs.map((doc) => doc.data());
+        bookings = bookings.sort((a,b) => a.status - b.status);
         setBookingData(bookings);
       } else {
         console.log("No bookings found for the user.");
