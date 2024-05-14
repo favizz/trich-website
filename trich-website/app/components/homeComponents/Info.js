@@ -82,7 +82,9 @@ const Info = () => {
       </div>
 
       {/* Map */}
-      <Image src={Map} width={500} alt="Map-Img"/>
+      <div>
+        <Image src={Map} width={500} alt="Map-Img" object-fit="contain"/>
+      </div>
     </section>
   );
 };
