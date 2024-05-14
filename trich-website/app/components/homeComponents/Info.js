@@ -55,13 +55,11 @@ const Info = () => {
       }
     };
 
-    // Initial check
+
     updateImageWidth();
 
-    // Add event listener
     window.addEventListener("resize", updateImageWidth);
 
-    // Clean up event listener on unmount
     return () => {
       window.removeEventListener("resize", updateImageWidth);
     };

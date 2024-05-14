@@ -15,7 +15,7 @@ import withAuth from "./withAuth";
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [bookings, setBookings] = useState([]);
-  const [newStatus, setStatus] = useState();
+  const [status, setStatus] = useState();
 
   useEffect(() => {
     fetchUsers();
@@ -49,11 +49,26 @@ const AdminDashboard = () => {
     }
   };
 
-  const updateBookingStatus = async (bookingId, newStatus) => {
+  const updateBookingStatusByBookingId = async (bookingId, newStatus) => {
     try {
-      const bookingRef = doc(db, "booking", bookingId);
+      // Step 1: Query the booking collection to find the document with the matching booking_id
+      const bookingCollectionRef = collection(db, "booking");
+      const q = query(bookingCollectionRef, where("booking_id", "==", bookingId));
+      const querySnapshot = await getDocs(q);
+  
+      // Check if any documents were found
+      if (querySnapshot.empty) {
+        throw new Error(`No booking found with booking_id: ${bookingId}`);
+      }
+  
+      // Assuming booking_id is unique, get the first matching document
+      const bookingDoc = querySnapshot.docs[0];
+      const bookingRef = doc(db, "booking", bookingDoc.id);
+  
+      // Step 2: Update the status of the found document
       await updateDoc(bookingRef, { status: newStatus });
-      fetchBookings(); // Refresh bookings data
+  
+      console.log("Booking status updated successfully");
     } catch (error) {
       console.error("Failed to update booking:", error);
     }
@@ -126,7 +141,7 @@ const AdminDashboard = () => {
                   <button
                   className="bg-orange1"
                     onClick={() =>
-                      updateBookingStatus(booking.booking_id, newStatus)
+                      updateBookingStatusByBookingId(booking.booking_id, status)
                     }
                   >
                     edit
