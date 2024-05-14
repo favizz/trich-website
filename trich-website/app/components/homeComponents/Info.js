@@ -1,3 +1,6 @@
+"use client";
+import { useState, useEffect } from "react";
+
 import Image from "next/image";
 import PinIcon from "@/public/homeAssets/pinIcon.svg";
 import HomeIcon from "@/public/homeAssets/homeIcon.svg";
@@ -38,6 +41,31 @@ const Schedule = [
 ];
 
 const Info = () => {
+  const [imageWidth, setImageWidth] = useState(500); // Default width
+
+  useEffect(() => {
+    const updateImageWidth = () => {
+      const windowWidth = window.innerWidth;
+      if (windowWidth <= 1024) {
+        setImageWidth(550);
+      } else if (windowWidth <= 1280) {
+        setImageWidth(600);
+      } else {
+        setImageWidth(750);
+      }
+    };
+
+    // Initial check
+    updateImageWidth();
+
+    // Add event listener
+    window.addEventListener("resize", updateImageWidth);
+
+    // Clean up event listener on unmount
+    return () => {
+      window.removeEventListener("resize", updateImageWidth);
+    };
+  }, []);
   return (
     <section className="lg:px-16 lg:py-12 xl:px-24 xl:py-16 bg-green1 flex flex-row justify-between text-white tracking-widest">
       {/* Location and Opening Hours */}
@@ -68,7 +96,9 @@ const Info = () => {
         <div className="flex flex-row space-x-4 items-start">
           <Image src={ClockIcon} alt="Clock-Icon" />
           <div className="flex flex-col space-y-1 items-start text-sm">
-            <h2 className="font-bold lg:text-3xl xl:text-4xl lg:pb-4 xl:pb-6">Opening Hours</h2>
+            <h2 className="font-bold lg:text-3xl xl:text-4xl lg:pb-4 xl:pb-6">
+              Opening Hours
+            </h2>
             {Schedule.map((s, idx) => {
               return (
                 <div className="flex flex-row items-center w-full justify-between xl:text-lg">
@@ -83,7 +113,12 @@ const Info = () => {
 
       {/* Map */}
       <div>
-        <Image src={Map} width={500} alt="Map-Img" object-fit="contain"/>
+        <Image
+          src={Map}
+          width={imageWidth}
+          alt="Map-Img"
+          object-fit="contain"
+        />
       </div>
     </section>
   );
