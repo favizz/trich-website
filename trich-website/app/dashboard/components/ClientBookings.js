@@ -34,7 +34,7 @@ const ClientBookings = ({ handleBookingData }) => {
   }, []);
 
   return (
-    <section className="lg:w-[579px] xl:w-[759px] rounded-[10px] bg-[#FAFAFA] tracking-wider lg:p-6 xl:p-10">
+    <section className="lg:w-[579px] xl:w-[759px] rounded-[10px] bg-[#FAFAFA] tracking-wider p-4 mb-10 lg:mb-0 lg:p-6 xl:p-10">
       <h2 className="text-3xl font-extrabold">My Bookings</h2>
       <div className="pt-4 space-y-3">
         {bookingData.map((booking, index) => (

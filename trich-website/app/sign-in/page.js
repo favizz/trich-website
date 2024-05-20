@@ -7,7 +7,7 @@ const SignIn = () => {
   return (
     <main 
     style={{ backgroundImage: `url(${DescBg.src})` }}
-    className="min-h-screen bg-cover bg-center flex items-center justify-center">
+    className="w-full min-h-screen bg-cover bg-center flex items-center justify-center">
       <SignInForm/>
     </main>
   );

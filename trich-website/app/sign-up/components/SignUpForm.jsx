@@ -47,9 +47,9 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-lg px-6 py-8 shadow-xl tracking-wider">
+    <div className="flex flex-col bg-white rounded-lg mx-6 px-4 py-8 mt-16 mb-16 md:mb-0 shadow-xl tracking-wider ">
       <h2 className="font-bold lg:text-3xl">WELCOME TO TRICH BARBERSPACE</h2>
-      <p className="text-[#545454] lg:pt-2 lg:pb-6">
+      <p className="text-[#545454] text-sm md:text-base lg:pt-2 lg:pb-6">
         Create an account below or{" "}
         <Link href="/sign-in">
           <span className="text-orange1">Sign in.</span>
@@ -57,8 +57,8 @@ const SignUpForm = () => {
       </p>
 
       {/* Name */}
-      <div className="flex flex-row space-x-2">
-        <label htmlFor="firstname" className="w-1/2">
+      <div className="flex flex-col md:flex-row md:space-x-2 pt-4 md:pt-0">
+        <label htmlFor="firstname" className=" md:w-1/2">
           <p className="font-medium text-slate-700">First name</p>
           <input
             id="firstname"
@@ -70,7 +70,7 @@ const SignUpForm = () => {
             onChange={handleChange}
           />
         </label>
-        <label htmlFor="lastname" className="w-1/2">
+        <label htmlFor="lastname" className="md:w-1/2 mt-6 md:mt-0">
           <p className="font-medium text-slate-700">Last name</p>
           <input
             id="lastname"
@@ -143,7 +143,7 @@ const SignUpForm = () => {
           onChange={(e) => setTerm(e.target.checked)}
           className="mt-1"
         />
-        <p className="w-[500px] text-justify text-xs text-gray-400">
+        <p className="md:w-[500px] text-justify text-xs text-gray-400">
           By signing up, you agree and consent to our Terms and Conditions and
           to receive automated promotional text messages at the phone number you
           provided and acknowledge that your consent here represents your
@@ -155,8 +155,8 @@ const SignUpForm = () => {
       </div>
 
       <div className="h-6"></div>
-      <div className="flex justify-between">
-        <p>
+      <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 justify-between">
+        <p className="text-sm md:text-base">
           Already have an account?{" "}
           <Link href="/sign-up">
             <span className="text-orange1">Log in.</span>

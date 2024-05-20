@@ -8,7 +8,7 @@ import ViewContact from "./components/homeComponents/ViewContact";
 
 export default function Home() {
   return (
-    <main className="">
+    <main className="relative">
       <Banner/>
       <Desc/>
       <Info/>

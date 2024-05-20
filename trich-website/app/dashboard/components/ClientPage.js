@@ -38,8 +38,8 @@ const ClientPage = () => {
   }, []);
 
   return (
-    <section className="max-w-screen-2xl lg:px-16 lg:py-36">
-      <section className="flex flex-row items-start justify-center space-x-8">
+    <section className="max-w-screen-2xl pt-16 lg:pt-0 lg:px-16 lg:py-36">
+      <section className="flex flex-col lg:flex-row items-center lg:items-start justify-center space-y-8 lg:space-y-0 lg:space-x-8">
         <ClientCard
           name={userData?.first_name + " " + userData?.last_name}
           email={userData?.email}

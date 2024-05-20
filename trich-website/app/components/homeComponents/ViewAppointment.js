@@ -5,10 +5,10 @@ const ViewAppointment = () => {
   return (
     <section
       style={{ backgroundImage: `url(${ViewAppointmentBg.src})` }}
-      className="bg-cover bg-center bg-no-repeat flex flex-col text-white tracking-widest lg:px-16 lg:py-20 xl:px-24 lg:space-y-4 xl:space-y-6"
+      className="bg-cover bg-center bg-no-repeat flex flex-col text-white tracking-widest px-6 py-8 lg:px-16 lg:py-20 xl:px-24 space-y-4 xl:space-y-6"
     >
-      <h2 className="font-bold lg:text-[50px] xl:text-6xl">BOOK AN APPOINTMENT</h2>
-      <p className="w-2/3 font-thin xl:text-lg leading-tight">
+      <h2 className="font-bold text-xl lg:text-[50px] xl:text-6xl">BOOK AN APPOINTMENT</h2>
+      <p className="w-2/3 font-thin text-sm xl:text-lg leading-tight">
         At Trich Barberspace we utilize a simple online booking platform to
         streamline the booking process. Appointments are always preferred but if
         you stop by, and we can make it fly, we will be happy to make some magic

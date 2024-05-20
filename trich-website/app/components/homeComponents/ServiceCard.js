@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const ServiceCard = ({name, desc, price, duration}) => {
   return (
-    <div className="max-w-[400px] h-[360px] rounded-[10px] flex flex-col items-center justify-center bg-white tracking-widest space-y-4 pt-10 pb-6 px-6">
+    <div className="max-w-[400px] h-[440px] lg:h-[360px] rounded-[10px] flex flex-col items-center justify-center bg-white tracking-widest space-y-4 pt-10 pb-6 px-6">
       <div className="font-extrabold lg:text-lg flex flex-col space-y-2 items-center justify-center"> 
         <p className="text-black text-center">{name}</p>
         <p className="text-orange1">IDR {price}</p>

@@ -8,7 +8,7 @@ const ClientInfo = (
     phone_number,}
 ) => {
   return (
-    <section className="lg:w-[579px] xl:w-[759px] rounded-[10px] bg-white tracking-wider p-10">
+    <section className="w-full lg:w-[579px] xl:w-[759px] rounded-[10px] bg-white tracking-wider mb-10 lg:mb-0 p-10">
         <h2 className="text-3xl font-extrabold">Personal Info</h2>
         <div className="flex flex-col pt-4 space-y-4">
             <div>

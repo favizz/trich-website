@@ -5,10 +5,10 @@ const Desc = () => {
   return (
     <section
       style={{ backgroundImage: `url(${DescBg.src})` }}
-      className="h-[40vh] bg-cover bg-center flex flex-col lg:space-y-4 xl:space-y-8 items-center justify-center tracking-wider px-24"
+      className="lg:h-[40vh] bg-cover bg-center flex flex-col py-16 lg:py-0 space-y-4 xl:space-y-8 items-center justify-center tracking-wider px-8 lg:px-24"
     >
       <RevealTitle>
-        <h2 className="lg:font-bold lg:text-3xl xl:font-bold xl:text-[40px] ">
+        <h2 className="font-extrabold text-2xl lg:text-3xl xl:font-bold xl:text-[40px] ">
           Welcome to Trich Barberspace
         </h2>
       </RevealTitle>

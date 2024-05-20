@@ -6,10 +6,13 @@ import { useRouter, usePathname } from "next/navigation";
 import { auth } from "@/config/firebase";
 import { useAuth } from "@/authContext/AuthProvider";
 import { signOut } from "firebase/auth";
+import Sidebar from "./Sidebar";
 
 import NavbarLogoWhite from "@/public/components/navbar_components/NavbarLogoWhite.svg";
 import NavbarLogoBlack from "@/public/components/navbar_components/NavbarLogoBlack.svg";
 import UserIcon from "@/public/components/navbar_components/userimage.png";
+import SideBarIcon from "@/public/components/navbar_components/sidebaricon.svg";
+
 const paths = [
   {
     name: "Home",
@@ -34,6 +37,7 @@ const paths = [
 ];
 
 const Navbar = () => {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isUserOpen, setUserOpen] = useState(false);
   const { userLoggedIn, currentUser, setCurrentUser } = useAuth();
   const router = useRouter();
@@ -62,8 +66,17 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-transparent text-white py-9 lg:pl-16 lg:pr-24 xl:pl-24 xl:pr-36 fixed w-full z-50">
+    <nav className="bg-transparent text-white px-8 py-9 lg:pl-16 pr-6 lg:pr-24 xl:pl-24 xl:pr-36 w-full absolute top-0 z-50">
       <div className="flex justify-between items-center">
+        {/* Sidebar Icon */}
+        <Image
+          onClick={() => setSidebarOpen(!isSidebarOpen)}
+          src={SideBarIcon}
+          width={25}
+          alt="sidebar-icon"
+          className="lg:hidden"
+        />
+
         {/* Logo on the left */}
         {navColor() ? (
           <div className="flex items-center">
@@ -109,8 +122,8 @@ const Navbar = () => {
         {/* "Book Now" button and user icon on the right */}
         {userLoggedIn ? (
           <div className="flex items-center space-x-4">
-            <Link href="/reservation">
-              <button className="bg-orange1 hover:bg-orange-300 text-white font-normal lg:text-[12px] xl:text-base py-2 px-6 rounded">
+            <Link href="/reservation" className="hidden md:flex">
+              <button className="bg-orange1 hover:bg-orange-300 text-white font-normal text-[10px] lg:text-[12px] xl:text-base py-2 px-6 rounded">
                 Book Now
               </button>
             </Link>
@@ -159,6 +172,14 @@ const Navbar = () => {
           </Link>
         )}
       </div>
+
+      {/* Sidebar Component */}
+      <Sidebar
+        paths={paths}
+        isOpen={isSidebarOpen}
+        toggleSidebar={setSidebarOpen}
+        pathname={pathname}
+      />
     </nav>
   );
 };

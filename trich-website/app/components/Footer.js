@@ -34,11 +34,11 @@ const paths = [
 
 const Footer = () => {
   return (
-    <footer className="w-full flex flex-row items-start justify-between bg-black lg:px-16 lg:py-10 text-white">
+    <footer className="w-full flex flex-row items-start justify-center md:justify-between bg-black px-8 py-8 lg:px-16 lg:py-10 text-white">
       <Socials />
 
       {/* ROutes */}
-      <div className="flex flex-col space-y-1">
+      <div className="hidden md:flex flex-col space-y-1">
         <p className="font-semibold">Navigation</p>
         {paths.map((p, idx) => {
           return (
@@ -50,7 +50,7 @@ const Footer = () => {
       </div>
 
       {/* Legal */}
-      <div className="flex flex-col space-y-1">
+      <div className="hidden md:flex flex-col space-y-1">
         <p className="font-semibold">Legal</p>
         <div className="opacity-50 text-xs flex flex-col space-y-1">
           <p>Privacies</p>
@@ -60,11 +60,11 @@ const Footer = () => {
       </div>
 
       {/* Context */}
-      <div className="flex flex-col items-start space-y-2   ">
+      <div className="hidden md:flex flex-col items-start space-y-2   ">
         <p className="font-semibold">Contact us</p>
         <div className="flex flex-row items-center justify-center space-x-3">
           <Image src={PhoneIcon} width={15} alt="Phone-Icon" />
-          <p className="opacity-50 lg:text-xs">+62 821-xxx-xxx</p>
+          <p className="opacity-50 lg:text-xs">+62 821-2878-5274</p>
         </div>
         <div className="flex flex-row items-center justify-center space-x-3">
           <Image src={MailIcon} width={15} alt="Mail-Icon" />

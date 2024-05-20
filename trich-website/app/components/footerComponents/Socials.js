@@ -7,7 +7,7 @@ import Blog from "@/public/components/footer_assets/blogLogo.svg";
 
 const Socials = () => {
   return (
-    <div className="flex flex-col items-center justify-center lg:space-y-3">
+    <div className="flex flex-col items-center justify-center space-y-1 lg:space-y-3">
         <Image src={Logo} width={180} alt="Trich-Logo"/>
         <p className="text-white opacity-50 lg:text-sm">&copy; 2024 Trich Barberspace</p>
         <div className="flex flex-row space-x-3">

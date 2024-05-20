@@ -65,7 +65,7 @@ const Info = () => {
     };
   }, []);
   return (
-    <section className="lg:px-16 lg:py-12 xl:px-24 xl:py-16 bg-green1 flex flex-row justify-between text-white tracking-widest">
+    <section className="px-6 py-8  lg:px-16 lg:py-12 xl:px-24 xl:py-16 bg-green1 flex flex-col lg:flex-row justify-between space-y-8 lg:space-y-0 text-white tracking-widest">
       {/* Location and Opening Hours */}
       <div className="flex flex-col space-y-8 xl:space-y-12">
         {/* Location */}
@@ -74,14 +74,14 @@ const Info = () => {
           <Image src={PinIcon} alt="Pin-Icon" />
           {/* Location Info flex-col */}
           <div className="flex flex-col space-y-4 items-start text-sm">
-            <h2 className="font-bold lg:text-3xl xl:text-4xl">Location</h2>
+            <h2 className="font-bold text-2xl lg:text-3xl xl:text-4xl">Location</h2>
             <div className="flex flex-row items-center justify-center space-x-3">
               <Image src={HomeIcon} alt="Home-Icon" />
-              <p className="xl:text-lg">Jl. Sumbawa no. 24</p>
+              <p className="xl:text-lg">Jl. Sumbawa no. 24, Merdeka, Sumur Bandung, Kota Bandung</p>
             </div>
             <div className="flex flex-row items-center justify-center space-x-3">
               <Image src={PhoneIcon} alt="Phone-Icon" />
-              <p className="xl:text-lg">+62 821-xxx-xxx</p>
+              <p className="xl:text-lg">+62 821-2878-5274</p>
             </div>
             <div className="flex flex-row items-center justify-center space-x-3">
               <Image src={MailIcon} alt="Mail-Icon" />
@@ -94,7 +94,7 @@ const Info = () => {
         <div className="flex flex-row space-x-4 items-start">
           <Image src={ClockIcon} alt="Clock-Icon" />
           <div className="flex flex-col space-y-1 items-start text-sm">
-            <h2 className="font-bold lg:text-3xl xl:text-4xl lg:pb-4 xl:pb-6">
+            <h2 className="font-bold text-2xl lg:text-3xl xl:text-4xl lg:pb-4 xl:pb-6">
               Opening Hours
             </h2>
             {Schedule.map((s, idx) => {

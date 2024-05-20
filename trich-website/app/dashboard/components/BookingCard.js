@@ -13,12 +13,12 @@ const BookingCard = ({ date, time, price, status, notes }) => {
   };
   return (
     <div className="w-full bg-white shadow-md rounded-[10px] px-6 py-4">
-      <div className="flex flex-row items-center justify-between">
-        <p className="font-bold">{date}</p>
+      <div className="flex flex-row items-center justify-between space-x-4 lg:space-x-0">
+        <p className="font-bold text-sm lg:text-base">{date}</p>
         <div
           className={`${
             status > 1 ? "bg-green-600" : "bg-yellow-400"
-          } text-white px-6 py-2 rounded-full`}
+          } text-white text-xs lg:text-base px-4 py-2 lg:px-6 lg:py-2 rounded-full`}
         >
           {handleStatus(status)}
         </div>

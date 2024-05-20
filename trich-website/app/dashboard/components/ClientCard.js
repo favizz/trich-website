@@ -24,8 +24,8 @@ const ClientCard = ({ name, email, handlePaging, currPage }) => {
   };
 
   return (
-    <div className="relative rounded-[10px] bg-[#FAFAFA] w-[300px] max-w-[365px] pt-16 pb-12 flex flex-col items-center justify-center lg:space-y-6 lg:px-6 tracking-wider">
-      <div className="lg:h-36 rounded-tl-[10px] rounded-tr-[10px] bg-[#F26524] absolute top-0 w-full z-10"></div>
+    <div className="relative rounded-[10px] bg-[#FAFAFA] w-full lg:w-[300px] max-w-[365px] pt-16 pb-12 flex flex-col items-center justify-center lg:space-y-6 mx-2 lg:mx-0 px-4 lg:px-6 tracking-wider">
+      <div className="h-28 lg:h-36 rounded-tl-[10px] rounded-tr-[10px] bg-[#F26524] absolute top-0 w-full z-10"></div>
       {/* Client Profile */}
       <div className="flex flex-col items-center justify-center lg:space-y-1 z-20">
         <div className="bg-gray-300 w-24 h-24 rounded-full border-[3px] border-white ">
@@ -35,7 +35,7 @@ const ClientCard = ({ name, email, handlePaging, currPage }) => {
         <p className="font-bold text-gray-600 lg:text-xs">{email}</p>
       </div>
       {/* SERVICES */}
-      <div className="w-full items-start">
+      <div className="w-full items-start pt-4 lg:pt-0">
         <p className="font-extrabold pb-2 lg:text-base">SERVICES</p>
         <div
           onClick={() => handlePaging(1)}
