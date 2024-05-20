@@ -29,7 +29,7 @@ const SignInForm = () => {
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-lg mx-4 md:mx-0 px-4 py-8 shadow-xl tracking-wider mb-64">
+    <div className="flex flex-col bg-white rounded-lg mx-4 md:mx-0 px-4 py-8 shadow-xl mt-32 tracking-wider mb-64">
       <h2 className="font-bold text-sm lg:text-3xl">WELCOME TO TRICH BARBERSPACE</h2>
       <p className="text-[#545454] text-xs lg:pt-2 pb-3 lg:pb-6">
         Sign in below or{" "}
