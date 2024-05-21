@@ -8,12 +8,14 @@ const services = [
     desc: "The Cutting Edge + 2 additional services (Trim & Treat/Wax Mining/Mask Off)",
     price: "135.000",
     duration: "2 Hours",
+    is_coming_soon: true,
   },
   {
     name: "THE CUTTING EDGE",
     desc: "Achieve a Haircut as sharp as your style with our signature service. Our comprehensive service features a cleansing wash, a relaxing warm towel treatment, a stimulating scalp massage, and your very own choice of premium styling product, for elevated grooming experience.",
-    price: "85.000",
+    price: "40.000",
     duration: "1 Hour",
+    is_coming_soon: false,
   },
   // {
   //   name: "PERMIFICATION",
@@ -83,6 +85,7 @@ const ViewServices = () => {
                 desc={c.desc}
                 price={c.price}
                 duration={c.duration}
+                isComingSoon={c.is_coming_soon}
               />
             </RevealTitle>
           );
