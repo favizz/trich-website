@@ -1,11 +1,11 @@
 export const Services = [
     {
         name:"The TRICH Experience",
-        price:"135.000",
+        price:"67.500",
     },
     {
         name:"The Cutting Edge",
-        price:"85.000",
+        price:"42.500",
     },
     // {
     //     name:"Permification - Classic",

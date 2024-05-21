@@ -20,6 +20,7 @@ const ClientPage = () => {
   const handleBooking = async (e) => {
     try {
       e.preventDefault();
+      console.log(auth?.currentUser?.uid);
       await addDoc(userBookingRef, {
         create_booking_date: new Date(),
         user_id: auth?.currentUser?.uid,
@@ -51,7 +52,9 @@ const ClientPage = () => {
 
   return (
     <section className="flex flex-col items-center bg-white rounded-lg py-8 my-28 shadow-xl tracking-wider">
-      <h2 className="font-extrabold mb-6 lg:text-xl xl:text-2xl">RESERVATION</h2>
+      <h2 className="font-extrabold mb-6 lg:text-xl xl:text-2xl">
+        RESERVATION
+      </h2>
       <div className="w-full h-[1px] bg-gray-600"></div>
       <div className="flex flex-row items-center justify-center space-x-3 md:space-x-8 px-3 lg:px-6 py-4">
         <div
@@ -104,7 +107,7 @@ const ClientPage = () => {
           handlePage={setPage}
         />
       )}
-      {currPage == 3  && (
+      {currPage == 3 && (
         <ConfirmPay
           date={pickedDate}
           time={pickedTime}
@@ -119,7 +122,9 @@ const ClientPage = () => {
             Scan To Complete Your Payment
           </p>
           <p className="font-semibold lg:text-sm">TRICH BARBERSPACE</p>
-          <p className="font-extrabold text-orange1 lg:text-base">{pickedService.price}</p>
+          <p className="font-extrabold text-orange1 lg:text-base">
+            {pickedService.price}
+          </p>
           <Image src={Qris} alt="Trich-QRIS" width={250} />
           <div className="flex flex-row space-x-4 py-4 lg:text-sm">
             <div
