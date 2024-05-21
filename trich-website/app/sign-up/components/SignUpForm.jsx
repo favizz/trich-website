@@ -5,12 +5,15 @@ import { auth, db } from "@/config/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { checkIfEmailExists } from "@/hooks/CheckEmailExist";
+import { useRouter } from "next/navigation";
 
 const SignUpForm = () => {
   const userCollectionRef = collection(db, "user");
 
   const [password, setPassword] = useState("");
   const [acceptTerm, setTerm] = useState(false);
+
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     first_name: "",
@@ -40,6 +43,12 @@ const SignUpForm = () => {
         email: formData.email,
         phone_number: formData.phone_number,
         address: formData.address,
+      })
+      .then((response) => {
+        router.push("/");
+      })
+      .catch((e) => {
+        console.error(e);
       });
     } catch (error) {
       console.error(error);
@@ -164,7 +173,7 @@ const SignUpForm = () => {
         </p>
         <button
           className="flex items-center justify-center bg-orange1 text-white py-2 px-8 rounded-[4px]"
-          onClick={(e) => (acceptTerm ? handleSignUp(e) : null)}
+          onClick={(e) => handleSignUp(e)}
         >
           Sign Up
         </button>
