@@ -4,8 +4,8 @@ const ConfirmPay = ({ date, time, service, notes, handlePage }) => {
   const [agreePolicy, setAgreePolicy] = useState(false);
 
   return (
-    <div className="w-full lg:text-sm xl:text-base 2xl:text-lg">
-      <div className="lg:px-6 space-y-2 py-4">
+    <div className="w-full text-sm xl:text-base 2xl:text-lg">
+      <div className="px-4 lg:px-6 space-y-2 py-4">
         <div className="flex flex-row items-center justify-between">
           <p className="text-[#545454] font-semibold">Reserved Date</p>
           <p className="font-bold">{date}</p>
@@ -28,9 +28,9 @@ const ConfirmPay = ({ date, time, service, notes, handlePage }) => {
         </div>
       </div>
       <div className="w-full h-[0.5px] bg-gray-600"></div>
-      <div className="lg:px-6 space-y-2 mt-4">
+      <div className="px-4 lg:px-6 space-y-2 mt-4">
         <p className="font-bold">Cancellation Policy:</p>
-        <p className="lg:max-w-[50vw] xl:max-w-[40vw]  2xl:max-w-[30vw] lg:text-xs ">
+        <p className="max-w-[80vw] lg:max-w-[50vw] xl:max-w-[40vw]  2xl:max-w-[30vw] lg:text-xs ">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Nunc
           lobortis mattis aliquam faucibus purus in massa tempor.

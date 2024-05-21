@@ -50,15 +50,15 @@ const ClientPage = () => {
   const [notes, setNotes] = useState(null);
 
   return (
-    <section className="flex flex-col items-center bg-white rounded-lg py-8 my-24 shadow-xl tracking-wider">
+    <section className="flex flex-col items-center bg-white rounded-lg py-8 my-28 shadow-xl tracking-wider">
       <h2 className="font-extrabold mb-6 lg:text-xl xl:text-2xl">RESERVATION</h2>
       <div className="w-full h-[1px] bg-gray-600"></div>
-      <div className="flex flex-row items-center justify-center space-x-8 lg:px-6 py-4">
+      <div className="flex flex-row items-center justify-center space-x-3 md:space-x-8 px-3 lg:px-6 py-4">
         <div
           onClick={() => setPage(1)}
           className={`${
             currPage == 1 ? "bg-green1 text-white" : "text-black"
-          } rounded-[30px] font-extrabold lg:text-xs xl:text-sm 2xl:text-base px-4 py-2`}
+          } rounded-[30px] font-extrabold text-[8px] lg:text-xs xl:text-sm 2xl:text-base px-2 py-2 md:px-4`}
         >
           Choose Service
         </div>
@@ -67,7 +67,7 @@ const ClientPage = () => {
           onClick={() => setPage(2)}
           className={`${
             currPage == 2 ? "bg-green1 text-white" : "text-black"
-          } rounded-[30px] font-extrabold lg:text-xs xl:text-sm 2xl:text-base px-6 py-2`}
+          } rounded-[30px] font-extrabold text-[8px] lg:text-xs xl:text-sm 2xl:text-base px-4 md:px-6 py-2`}
         >
           Day & Time
         </div>
@@ -75,7 +75,7 @@ const ClientPage = () => {
         <div
           className={`${
             currPage == 3 ? "bg-green1 text-white" : "text-black"
-          } rounded-[30px] font-extrabold lg:text-xs xl:text-sm 2xl:text-base px-8 py-2`}
+          } rounded-[30px] font-extrabold text-[8px] lg:text-xs xl:text-sm 2xl:text-base px-8 py-2`}
         >
           Confirm
         </div>

@@ -6,8 +6,8 @@ const ChooseService = ({handleService, toggleConfirm}) => {
         {Services.map((s, idx) => {
           return (
             <div onClick={() => {handleService(s); toggleConfirm(true)}}>
-              <div className="flex flex-row items-center justify-between font-bold lg:px-6 xl:px-10">
-                <p className="lg:text-sm xl:text-base 2xl:text-lg">{s.name}</p>
+              <div className="flex flex-row items-center justify-between font-bold px-4 lg:px-6 xl:px-10">
+                <p className="text-sm lg:text-sm xl:text-base 2xl:text-lg">{s.name}</p>
                 <p>&gt;</p>
               </div>
               <div className="w-full h-[0.5px] mt-1 bg-gray-600"></div>

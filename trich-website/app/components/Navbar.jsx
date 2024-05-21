@@ -93,7 +93,7 @@ const Navbar = () => {
         )}
 
         {/* Navigation links in the center */}
-        <ul className="hidden md:flex space-x-4">
+        <ul className="hidden lg:flex space-x-4">
           {paths.map((path, idx) => {
             return (
               <li key={idx}>
