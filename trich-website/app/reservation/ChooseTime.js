@@ -59,7 +59,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
 
   return (
     <div className="w-full flex flex-col items-center justify-center lg:text-sm xl:text-base 2xl:text-lg">
-      <p className="text-orange1 font-semibold">Booking hanya bisa diatas tanggal 24/05/24</p>
+      <p className="text-orange1 font-semibold">Booking dimulai diatas tanggal 24/05/24</p>
       <input type="date" onChange={handleDateChange} className="my-4"/>
       <div className="w-full h-[0.5px] bg-gray-600 mb-8"></div>
       <div className="space-y-4 flex flex-col items-center">

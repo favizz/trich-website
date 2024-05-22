@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 const SignUpForm = () => {
   const userCollectionRef = collection(db, "user");
 
+  const [emailUsed, toggleEmailUsed] = useState(false);
+
   const [password, setPassword] = useState("");
   const [acceptTerm, setTerm] = useState(false);
 
@@ -30,6 +32,7 @@ const SignUpForm = () => {
   const handleSignUp = async (e) => {
     if (await checkIfEmailExists(formData.email)) {
       console.log("Email sudah terdaftar");
+      toggleEmailUsed(!emailUsed);
       return;
     }
     try {
@@ -94,7 +97,7 @@ const SignUpForm = () => {
       </div>
       <div className="h-6"></div>
       <label htmlFor="email">
-        <p className="font-medium text-slate-700">Email address</p>
+        <p className="font-medium text-slate-700">{emailUsed ? <span className="text-red-600">Email sudah terdaftar !</span> : "Email address"}</p>
         <input
           id="email"
           name="email"

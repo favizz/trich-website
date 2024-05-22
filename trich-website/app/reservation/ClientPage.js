@@ -5,6 +5,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
+import withAuth from "@/authContext/withAuth";
 
 import ChooseService from "./ChooseService";
 import ConfirmService from "./ConfirmService";
@@ -146,4 +147,4 @@ const ClientPage = () => {
   );
 };
 
-export default ClientPage;
+export default withAuth(ClientPage);

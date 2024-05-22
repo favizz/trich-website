@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-const withAuth = (WrappedComponent, requiredUserId) => {
+const withAuthAdmin = (WrappedComponent, requiredUserId) => {
     return (props) => {
         const Router = useRouter();
         const [authorized, setAuthorized] = useState(false);
@@ -16,11 +16,11 @@ const withAuth = (WrappedComponent, requiredUserId) => {
                         setAuthorized(true);
                     } else {
                         // Redirect them to home page or login
-                        Router.push('/login');
+                        Router.push('/');
                     }
                 } else {
                     // Not signed in, redirect to login
-                    Router.push('/login');
+                    Router.push('/sign-in');
                 }
             });
 
@@ -36,4 +36,4 @@ const withAuth = (WrappedComponent, requiredUserId) => {
     };
 };
 
-export default withAuth;
+export default withAuthAdmin;

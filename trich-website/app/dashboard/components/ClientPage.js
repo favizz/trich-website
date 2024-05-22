@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "@/config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import withAuth from "@/authContext/withAuth";
 
 import ClientCard from "./ClientCard";
 import ClientStats from "./ClientStats";
@@ -62,4 +63,4 @@ const ClientPage = () => {
   );
 };
 
-export default ClientPage;
+export default withAuth(ClientPage);

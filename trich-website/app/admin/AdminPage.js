@@ -10,7 +10,7 @@ import {
   doc,
 } from "firebase/firestore";
 
-import withAuth from "./withAuth";
+import withAuthAdmin from "./withAuthAdmin";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -192,4 +192,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default withAuth(AdminDashboard, "igbQMReYImfAwDqwuqVWnylY0Kr1");
+export default withAuthAdmin(AdminDashboard, "igbQMReYImfAwDqwuqVWnylY0Kr1");
