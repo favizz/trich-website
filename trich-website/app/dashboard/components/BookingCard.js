@@ -13,7 +13,7 @@ const BookingCard = ({ date, time, price, status, notes }) => {
             status > 1 ? "bg-green-600" : "bg-yellow-400"
           } text-white text-xs lg:text-base px-4 py-2 lg:px-6 lg:py-2 rounded-full`}
         >
-          {(status == 1) ? "VERIFIED" : ""}
+          {(status == 1) ? "UNPAID" : ""}
           {(status == 2) ? "PAID" : ""}
           {(status == 3) ? "FINISHED" : ""}
         </div>
