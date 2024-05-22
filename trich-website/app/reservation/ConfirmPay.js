@@ -20,7 +20,9 @@ const ConfirmPay = ({ date, time, service, notes, handlePage }) => {
         </div>
         <div className="flex flex-row items-center justify-between">
           <p className="text-[#545454] font-semibold">Down Payment</p>
-          <p className="font-extrabold text-orange1 lg:text-base">IDR {service.price}</p>
+          <p className="font-extrabold text-orange1 lg:text-base">
+            IDR {service.price}
+          </p>
         </div>
         <div className="flex flex-row items-center justify-between">
           <p className="text-[#545454] font-semibold">Notes</p>
@@ -31,9 +33,8 @@ const ConfirmPay = ({ date, time, service, notes, handlePage }) => {
       <div className="px-4 lg:px-6 space-y-2 mt-4">
         <p className="font-bold">Cancellation Policy:</p>
         <p className="max-w-[80vw] lg:max-w-[50vw] xl:max-w-[40vw]  2xl:max-w-[30vw] lg:text-xs ">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Nunc
-          lobortis mattis aliquam faucibus purus in massa tempor.
+          Cancellations are accepted; however, the down payment is
+          non-refundable. We appreciate your understanding and cooperation.
         </p>
         <div className="flex flex-row items-center space-x-2">
           <input
