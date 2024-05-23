@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { db } from "@/config/firebase";
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 import LeftArrow from "@/public/reservationAssets/leftarrow.svg";
 import RightArrow from "@/public/reservationAssets/rightarrow.svg";
@@ -39,7 +41,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
     handleTime(operationalTimes[pickedTime]);
   }, [pickedTime, operationalTimes]);
 
-  const handleDateChange = (event) => {
+  const handleDateChange = async (event) => {
     const inputDate = new Date(event.target.value);
     inputDate.setMinutes(
       inputDate.getMinutes() + inputDate.getTimezoneOffset()
@@ -57,16 +59,60 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
 
     handleDate(formattedDate);
 
-    // Check if the day is Friday (5th day of the week in JavaScript Date object)
+    let availableTimes = allOperationalTimes;
+
     if (inputDate.getDay() === 5) {
-      setOperationalTimes(
-        allOperationalTimes.filter((time) => time !== "12:00")
-      );
-    } else {
-      setOperationalTimes(allOperationalTimes);
+      availableTimes = availableTimes.filter(time => time !== "12:00");
     }
-    pickTime(0); // Reset picked time to the first available time
+    
+    const q = query(
+      collection(db, 'booking'),
+      where('date', '==', formattedDate)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const bookings = querySnapshot.docs.map(doc => doc.data());
+
+    const fullyBookedTimes = bookings.reduce((acc, booking) => {
+      acc[booking.time] = (acc[booking.time] || 0) + 1;
+      return acc;
+    }, {});
+
+    availableTimes = availableTimes.filter(
+      time => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2
+    );
+
+    setOperationalTimes(availableTimes);
+    pickTime(0);
   };
+
+  // const handleDateChange = (event) => {
+  //   const inputDate = new Date(event.target.value);
+  //   inputDate.setMinutes(
+  //     inputDate.getMinutes() + inputDate.getTimezoneOffset()
+  //   );
+
+  //   const options = {
+  //     weekday: "long",
+  //     year: "numeric",
+  //     month: "long",
+  //     day: "numeric",
+  //   };
+  //   const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
+  //     inputDate
+  //   );
+
+  //   handleDate(formattedDate);
+
+  //   if (inputDate.getDay() === 5) {
+  //     setOperationalTimes(
+  //       allOperationalTimes.filter((time) => time !== "12:00")
+  //     );
+  //   } else {
+  //     setOperationalTimes(allOperationalTimes);
+  //   }
+  //   pickTime(0);
+  // };
 
   return (
     <div className="w-full flex flex-col items-center justify-center lg:text-sm xl:text-base 2xl:text-lg">
