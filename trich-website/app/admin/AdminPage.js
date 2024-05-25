@@ -42,25 +42,35 @@ const AdminDashboard = () => {
         id: doc.id,
         ...doc.data(),
       }));
-  
-      // Function to parse date strings into Date objects
+
       const parseDateString = (dateString) => {
         const [dayOfWeek, monthDay, year] = dateString.split(", ");
         return new Date(`${monthDay}, ${year}`);
       };
-  
-      // Sort booking data by date and status
+
+      const parseTimeString = (timeString) => {
+        const [hours, minutes] = timeString.split(":").map(Number);
+        const date = new Date();
+        date.setHours(hours, minutes, 0, 0);
+        return date;
+      };
+
       bookingData = bookingData.sort((a, b) => {
         const dateA = parseDateString(a.date);
         const dateB = parseDateString(b.date);
-  
+
         if (dateA > dateB) return -1;
         if (dateA < dateB) return 1;
-  
-        // If dates are equal, sort by status
+
+        const timeA = parseTimeString(a.time);
+        const timeB = parseTimeString(b.time);
+
+        if (timeA > timeB) return -1;
+        if (timeA < timeB) return 1;
+
         return a.status - b.status;
       });
-  
+
       setBookings(bookingData);
     } catch (error) {
       console.error("Failed to fetch bookings:", error);
@@ -71,21 +81,24 @@ const AdminDashboard = () => {
     try {
       // Step 1: Query the booking collection to find the document with the matching booking_id
       const bookingCollectionRef = collection(db, "booking");
-      const q = query(bookingCollectionRef, where("booking_id", "==", bookingId));
+      const q = query(
+        bookingCollectionRef,
+        where("booking_id", "==", bookingId)
+      );
       const querySnapshot = await getDocs(q);
-  
+
       // Check if any documents were found
       if (querySnapshot.empty) {
         throw new Error(`No booking found with booking_id: ${bookingId}`);
       }
-  
+
       // Assuming booking_id is unique, get the first matching document
       const bookingDoc = querySnapshot.docs[0];
       const bookingRef = doc(db, "booking", bookingDoc.id);
-  
+
       // Step 2: Update the status of the found document
       await updateDoc(bookingRef, { status: newStatus });
-  
+
       console.log("Booking status updated successfully");
     } catch (error) {
       console.error("Failed to update booking:", error);
@@ -157,7 +170,7 @@ const AdminDashboard = () => {
                     onChange={(e) => setStatus(e.target.value)}
                   />
                   <button
-                  className="bg-orange1"
+                    className="bg-orange1"
                     onClick={() =>
                       updateBookingStatusByBookingId(booking.booking_id, status)
                     }
