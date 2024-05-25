@@ -42,7 +42,25 @@ const AdminDashboard = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      bookingData = bookingData.sort((a, b) => a.status - b.status);
+  
+      // Function to parse date strings into Date objects
+      const parseDateString = (dateString) => {
+        const [dayOfWeek, monthDay, year] = dateString.split(", ");
+        return new Date(`${monthDay}, ${year}`);
+      };
+  
+      // Sort booking data by date and status
+      bookingData = bookingData.sort((a, b) => {
+        const dateA = parseDateString(a.date);
+        const dateB = parseDateString(b.date);
+  
+        if (dateA > dateB) return -1;
+        if (dateA < dateB) return 1;
+  
+        // If dates are equal, sort by status
+        return a.status - b.status;
+      });
+  
       setBookings(bookingData);
     } catch (error) {
       console.error("Failed to fetch bookings:", error);
