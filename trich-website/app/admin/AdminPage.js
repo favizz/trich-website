@@ -8,6 +8,7 @@ import {
   where,
   updateDoc,
   doc,
+  deleteDoc,
 } from "firebase/firestore";
 
 import withAuthAdmin from "./withAuthAdmin";
@@ -79,7 +80,6 @@ const AdminDashboard = () => {
 
   const updateBookingStatusByBookingId = async (bookingId, newStatus) => {
     try {
-      // Step 1: Query the booking collection to find the document with the matching booking_id
       const bookingCollectionRef = collection(db, "booking");
       const q = query(
         bookingCollectionRef,
@@ -87,21 +87,41 @@ const AdminDashboard = () => {
       );
       const querySnapshot = await getDocs(q);
 
-      // Check if any documents were found
       if (querySnapshot.empty) {
         throw new Error(`No booking found with booking_id: ${bookingId}`);
       }
 
-      // Assuming booking_id is unique, get the first matching document
       const bookingDoc = querySnapshot.docs[0];
       const bookingRef = doc(db, "booking", bookingDoc.id);
 
-      // Step 2: Update the status of the found document
       await updateDoc(bookingRef, { status: newStatus });
 
       console.log("Booking status updated successfully");
     } catch (error) {
       console.error("Failed to update booking:", error);
+    }
+  };
+
+  const deleteBooking = async (booking_id) => {
+    try {
+      const bookingCollectionRef = collection(db, "booking");
+      const q = query(
+        bookingCollectionRef,
+        where("booking_id", "==", booking_id)
+      );
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        throw new Error(`No booking found with booking_id: ${booking_id}`);
+      }
+
+      const bookingDoc = querySnapshot.docs[0];
+      const bookingRef = doc(db, "booking", bookingDoc.id);
+
+      await deleteDoc(bookingRef);
+      console.log(`Booking with ID ${booking_id} has been deleted.`);
+    } catch (error) {
+      console.error("Error deleting booking:", error);
     }
   };
 
@@ -148,8 +168,14 @@ const AdminDashboard = () => {
           <tbody>
             {bookings.map((booking, index) => (
               <tr key={index}>
-                <td className="border border-1 border-solid border-black">
-                  {booking.date}
+                <td className="flex flex-row justify-between border border-1 border-solid border-black">
+                  <p>{booking.date}</p>
+                  <button
+                    onClick={() => deleteBooking(booking.booking_id)}
+                    className="text-white bg-orange1"
+                  >
+                    Delete
+                  </button>
                 </td>
                 <td className="border border-1 border-solid border-black">
                   {getNameFromBooking(booking.user_id)}
