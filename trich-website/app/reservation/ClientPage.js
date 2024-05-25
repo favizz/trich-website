@@ -68,7 +68,7 @@ const ClientPage = () => {
         </div>
         <p>&gt;</p>
         <div
-          onClick={() => setPage(2)}
+          onClick={() => setPage(pickedService ? 2 : null)}
           className={`${
             currPage == 2 ? "bg-green1 text-white" : "text-black"
           } rounded-[30px] font-extrabold text-[8px] lg:text-xs xl:text-sm 2xl:text-base px-4 md:px-6 py-2`}
