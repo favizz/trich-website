@@ -1,7 +1,7 @@
 export const Services = [
     {
         name:"The Cutting Edge",
-        price:"20.000",
+        price:"42.500",
     },
     // {
     //     name:"Permification - Classic",

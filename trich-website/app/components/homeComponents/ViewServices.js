@@ -13,7 +13,7 @@ const services = [
   {
     name: "THE CUTTING EDGE",
     desc: "Achieve a Haircut as sharp as your style with our signature service. Our comprehensive service features a cleansing wash, a relaxing warm towel treatment, a stimulating scalp massage, and your very own choice of premium styling product, for elevated grooming experience.",
-    price: "40.000",
+    price: "85.000",
     duration: "1 Hour",
     is_coming_soon: false,
   },
