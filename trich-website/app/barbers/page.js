@@ -2,7 +2,21 @@ import BarberCard from "./components/BarberCard";
 import { BarberInfo } from "./components/BarberInfo";
 const Barbers = () => {
   return (
-    <main className="flex items-center justify-center bg-[#D5C7A9]">
+    <main className="min-h-screen flex flex-col items-center justify-center bg-green2 space-y-8">
+      <Image src={HomeLogo} alt="logo" width={500} />
+      <RevealTitle>
+        <h2 className="text-3xl font-extrabold text-white tracking-widest">
+          COMING SOON
+        </h2>
+      </RevealTitle>
+    </main>
+  );
+};
+
+export default Barbers;
+
+{
+  /* <main className="flex items-center justify-center bg-[#D5C7A9]">
       <div className="w-full h-36 bg-green1 fixed top-0"></div>
       <section className="min-h-screen max-w-screen-2xl w-full py-36">
         <div className="bg-white flex flex-col lg:max-w-[70vw]  lg:py-8 lg:px-12 xl">
@@ -41,8 +55,5 @@ const Barbers = () => {
             })}
         </div>
       </section>
-    </main>
-  );
-};
-
-export default Barbers;
+    </main> */
+}

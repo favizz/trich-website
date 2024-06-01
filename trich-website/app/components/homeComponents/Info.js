@@ -12,31 +12,31 @@ import Map from "@/public/homeAssets/Map.png";
 const Schedule = [
   {
     date: "Monday",
-    hour: "10:00 - 22:00",
+    hour: "10:00 - 21:00",
   },
   {
     date: "Tuesday",
-    hour: "10:00 - 22:00",
+    hour: "10:00 - 21:00",
   },
   {
     date: "Wednesday",
-    hour: "10:00 - 22:00",
+    hour: "10:00 - 21:00",
   },
   {
     date: "Thursday",
-    hour: "10:00 - 22:00",
+    hour: "10:00 - 21:00",
   },
   {
     date: "Friday",
-    hour: "10:00 - 22:00",
+    hour: "10:00 - 21:00",
   },
   {
     date: "Saturday",
-    hour: "10:00 - 22:00",
+    hour: "10:00 - 21:00",
   },
   {
     date: "Sunday",
-    hour: "10:00 - 22:00",
+    hour: "10:00 - 21:00",
   },
 ];
 
@@ -85,7 +85,7 @@ const Info = () => {
             </div>
             <div className="flex flex-row items-center justify-center space-x-3">
               <Image src={MailIcon} alt="Mail-Icon" />
-              <p className="xl:text-lg">trich_barberspace@gmail.com</p>
+              <p className="xl:text-lg">trichbarberspace@gmail.com</p>
             </div>
           </div>
         </div>

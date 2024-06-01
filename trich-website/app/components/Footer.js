@@ -68,7 +68,7 @@ const Footer = () => {
         </div>
         <div className="flex flex-row items-center justify-center space-x-3">
           <Image src={MailIcon} width={15} alt="Mail-Icon" />
-          <p className="opacity-50 lg:text-xs">trich_barberspace@gmail.com</p>
+          <p className="opacity-50 lg:text-xs">trichbarberspace@gmail.com</p>
         </div>
         <p className="font-semibold">Visit us</p>
         <div className="flex flex-row items-center justify-center space-x-3">
