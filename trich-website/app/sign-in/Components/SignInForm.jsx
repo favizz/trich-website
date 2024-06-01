@@ -44,7 +44,7 @@ const SignInForm = () => {
       return;
     }
 
-    sendPasswordResetEmail(forgotEmail)
+    sendPasswordResetEmail(auth, forgotEmail)
       .then(() => {
         toggleForgotPassword(false);
         toggleResetDone(true);
