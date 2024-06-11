@@ -8,6 +8,7 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from "firebase/auth";
+import ToastManager from "@/app/components/toaster";
 
 import SuccessIcon from "@/public/signInAssets/success.svg";
 
