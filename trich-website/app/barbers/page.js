@@ -1,5 +1,7 @@
 import BarberCard from "./components/BarberCard";
 import { BarberInfo } from "./components/BarberInfo";
+
+import Image from "next/image";
 const Barbers = () => {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-green2 space-y-8">
