@@ -15,22 +15,32 @@ import withAuthAdmin from "./withAuthAdmin";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
+  const [searchEmail, setEmail] = useState("");
   const [bookings, setBookings] = useState([]);
   const [status, setStatus] = useState();
 
   useEffect(() => {
-    fetchUsers();
+    fetchUserByEmail();
     fetchBookings();
-  }, []);
+  }, [users, bookings]);
 
-  const fetchUsers = async () => {
+  const fetchUserByEmail = async (email) => {
     try {
-      const querySnapshot = await getDocs(collection(db, "user"));
-      const userData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setUsers(userData);
+      const usersRef = collection(db, "user"); // Replace 'users' with your collection name
+      const q = query(usersRef, where("email", "==", email)); // Case-sensitive equality check
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        throw new Error("User not found");
+      } else {
+        setUsers(querySnapshot.docs[0].data());
+      }
+      // const querySnapshot = await getDocs(collection(db, "user"));
+      // const userData = querySnapshot.docs.map((doc) => ({
+      //   id: doc.id,
+      //   ...doc.data(),
+      // }));
+      // setUsers(userData);
     } catch (error) {
       console.error("Failed to fetch users:", error);
     }
@@ -39,10 +49,12 @@ const AdminDashboard = () => {
   const fetchBookings = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "booking"));
-      let bookingData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      let bookingData = querySnapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .filter((doc) => doc.status == 1 || doc.status == 2);
 
       const parseDateString = (dateString) => {
         const [dayOfWeek, monthDay, year] = dateString.split(", ");
@@ -212,8 +224,26 @@ const AdminDashboard = () => {
           </tbody>
         </table>
       </div>
+
       <div className="pt-12">
         <h2 className="text-lg font-semibold">Users</h2>
+        <div className="flex flex-row space-x-2 pb-12">
+          <input
+            type="text"
+            placeholder="search customer"
+            className="border border-1 border-orange1"
+            onChange={(e) => {
+              setEmail(e.target.value);
+              console.log(searchEmail);
+            }}
+          />
+          <button
+            onClick={() => fetchUserByEmail(searchEmail)}
+            className="px-4 bg-orange1 text-white"
+          >
+            Search
+          </button>
+        </div>
         <table className="w-full">
           <thead>
             <tr className="bg-orange1 font-bold text-white">
