@@ -15,13 +15,12 @@ import ConfirmPay from "./ConfirmPay";
 import Qris from "@/public/reservationAssets/qris.png";
 
 const ClientPage = () => {
-  const userBookingRef = collection(db, "booking");
+  const userBookingRef = collection(db, "active_booking");
   const router = useRouter();
 
   const handleBooking = async (e) => {
     try {
       e.preventDefault();
-      console.log(auth?.currentUser?.uid);
       await addDoc(userBookingRef, {
         create_booking_date: new Date(),
         user_id: auth?.currentUser?.uid,

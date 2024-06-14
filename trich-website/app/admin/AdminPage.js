@@ -5,6 +5,7 @@ import {
   collection,
   query,
   getDocs,
+  addDoc,
   where,
   updateDoc,
   doc,
@@ -48,13 +49,12 @@ const AdminDashboard = () => {
 
   const fetchBookings = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "booking"));
+      const querySnapshot = await getDocs(collection(db, "active_booking"));
       let bookingData = querySnapshot.docs
         .map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }))
-        .filter((doc) => doc.status == 1 || doc.status == 2);
 
       const parseDateString = (dateString) => {
         const [dayOfWeek, monthDay, year] = dateString.split(", ");
@@ -92,7 +92,23 @@ const AdminDashboard = () => {
 
   const updateBookingStatusByBookingId = async (bookingId, newStatus) => {
     try {
-      const bookingCollectionRef = collection(db, "booking");
+      if (newStatus == 3) {
+        const bookingCollectionRef = collection(db, "past_booking");
+        await addDoc(bookingCollectionRef, {
+          create_booking_date: new Date(),
+          user_id: auth?.currentUser?.uid,
+          service: pickedService.name,
+          date: pickedDate,
+          time: pickedTime,
+          amount: pickedService.price,
+          notes: notes,
+          status: 1,
+          booking_id: uuidv4(),
+        });
+
+        await deleteBooking(bookingId);
+      }
+      const bookingCollectionRef = collection(db, "active_booking");
       const q = query(
         bookingCollectionRef,
         where("booking_id", "==", bookingId)
@@ -116,7 +132,7 @@ const AdminDashboard = () => {
 
   const deleteBooking = async (booking_id) => {
     try {
-      const bookingCollectionRef = collection(db, "booking");
+      const bookingCollectionRef = collection(db, "active_booking");
       const q = query(
         bookingCollectionRef,
         where("booking_id", "==", booking_id)
@@ -203,6 +219,7 @@ const AdminDashboard = () => {
                 </td>
                 <td className="flex flex-row border border-1 border-solid border-black">
                   <input
+                  type="number"
                     className="text-center w-full"
                     placeholder={"current status:  " + booking.status}
                     onChange={(e) => setStatus(e.target.value)}

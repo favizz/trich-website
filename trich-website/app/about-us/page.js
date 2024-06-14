@@ -94,7 +94,7 @@ const AboutUs = () => {
               </div>
             </div>
           </div>
-          <div className="lg:w-[40vw] lg:pt-10 xl:pt-12">
+          <div className="lg:w-[40vw] lg:pt-10 xl:pt-6">
             <Image
               src={ValuesImage}
               alt="values-image"
