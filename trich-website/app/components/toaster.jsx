@@ -2,7 +2,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ToastManager = {
-    notify: (message, type = 'info') => {
+    notify: (message, type) => {
         toast[type](message, {
         toastId: "single-toast",
         position: "bottom-right",

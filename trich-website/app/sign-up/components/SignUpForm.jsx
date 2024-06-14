@@ -6,6 +6,8 @@ import { collection, addDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { checkIfEmailExists } from "@/hooks/CheckEmailExist";
 import { useRouter } from "next/navigation";
+import ToastManager from "@/app/components/toaster";
+import { ToastContainer } from "react-toastify";
 
 const SignUpForm = () => {
   const userCollectionRef = collection(db, "user");
@@ -25,11 +27,26 @@ const SignUpForm = () => {
     address: "",
   });
 
+  const signUpCheck = () => {
+    if (first_name == "") {
+      ToastManager.notify("Please");
+    }
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSignUp = async (e) => {
+    if (
+      formData.first_name == "" ||
+      formData.last_name == "" ||
+      formData.email == "" ||
+      formData.phone_number == "" ||
+      formData.address == ""
+    ) {
+      ToastManager.notify("Please fill all the fields!", "error");
+    }
     if (await checkIfEmailExists(formData.email)) {
       console.log("Email sudah terdaftar");
       toggleEmailUsed(!emailUsed);
@@ -47,12 +64,12 @@ const SignUpForm = () => {
         phone_number: formData.phone_number,
         address: formData.address,
       })
-      .then((response) => {
-        router.push("/");
-      })
-      .catch((e) => {
-        console.error(e);
-      });
+        .then((response) => {
+          router.push("/");
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     } catch (error) {
       console.error(error);
     }
@@ -97,7 +114,13 @@ const SignUpForm = () => {
       </div>
       <div className="h-6"></div>
       <label htmlFor="email">
-        <p className="font-medium text-slate-700">{emailUsed ? <span className="text-red-600">Email sudah terdaftar !</span> : "Email address"}</p>
+        <p className="font-medium text-slate-700">
+          {emailUsed ? (
+            <span className="text-red-600">Email sudah terdaftar !</span>
+          ) : (
+            "Email address"
+          )}
+        </p>
         <input
           id="email"
           name="email"
@@ -180,6 +203,9 @@ const SignUpForm = () => {
         >
           Sign Up
         </button>
+      </div>
+      <div className="w-0 h-0">
+          <ToastContainer/>
       </div>
     </div>
   );

@@ -8,6 +8,8 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from "firebase/auth";
+
+import { ToastContainer } from "react-toastify";
 import ToastManager from "@/app/components/toaster";
 
 import SuccessIcon from "@/public/signInAssets/success.svg";
@@ -25,6 +27,10 @@ const SignInForm = () => {
   const router = useRouter();
 
   const handleSignIn = async () => {
+    if (email.length == "" || password.length == "") {
+      ToastManager.notify('Please fill in all the fields', 'error');
+      return;
+    }
     try {
       await signInWithEmailAndPassword(auth, email, password)
         .then((response) => {
@@ -32,6 +38,7 @@ const SignInForm = () => {
         })
         .catch((e) => {
           console.error(e.message);
+          ToastManager.notify('Email or Password is Invalid!', 'error');
         });
     } catch (err) {
       console.log(err);
@@ -109,7 +116,7 @@ const SignInForm = () => {
         </label>
         <div className="h-6"></div>
         <button
-          className="flex items-center justify-center bg-orange1 text-white py-2 rounded-[4px] mb-2 lg:mb-4"
+          className="flex items-center justify-center bg-orange1 text-white hover:bg-white hover:text-orange1 hover:border hover:border-1 hover:border-orange1 py-2 rounded-[4px] mb-2 lg:mb-4"
           onClick={() => handleSignIn()}
         >
           Sign In
@@ -129,7 +136,9 @@ const SignInForm = () => {
           isForgotPassword ? "" : "hidden"
         } flex flex-col bg-white rounded-lg mx-4 md:mx-0 px-4 py-8 shadow-xl mt-32 tracking-wider mb-64 w-[300px] md:w-[500px]`}
       >
-        <h2 className="font-bold text-sm md:text-lg lg:text-3xl">RESET PASSWORD</h2>
+        <h2 className="font-bold text-sm md:text-lg lg:text-3xl">
+          RESET PASSWORD
+        </h2>
         <p className="text-[#545454] text-xs lg:pt-2 pb-3 lg:pb-6">
           Please input your email address
         </p>
@@ -162,10 +171,21 @@ const SignInForm = () => {
       </div>
 
       {/* Email Reset Done */}
-      <div className={`${isResetDone ? "" : "hidden"} flex flex-col items-center justify-center bg-white rounded-lg mx-4 md:mx-0 px-4 py-8 shadow-xl mt-32 tracking-wider mb-64 space-y-3 w-[300px] md:w-[500px]`}>
-          <Image src={SuccessIcon} alt="success" width={180}/>
-          <p className="font-extrabold text-xl md:text-2xl lg:text-3xl">Email Sent!</p>
-          <p className="text-center text-sm md:text-base lg:text-lg">Please refresh the page and continue sign in after password reset</p>
+      <div
+        className={`${
+          isResetDone ? "" : "hidden"
+        } flex flex-col items-center justify-center bg-white rounded-lg mx-4 md:mx-0 px-4 py-8 shadow-xl mt-32 tracking-wider mb-64 space-y-3 w-[300px] md:w-[500px]`}
+      >
+        <Image src={SuccessIcon} alt="success" width={180} />
+        <p className="font-extrabold text-xl md:text-2xl lg:text-3xl">
+          Email Sent!
+        </p>
+        <p className="text-center text-sm md:text-base lg:text-lg">
+          Please refresh the page and continue sign in after password reset
+        </p>
+      </div>
+      <div className="w-0 h-0">
+          <ToastContainer/>
       </div>
     </>
   );
