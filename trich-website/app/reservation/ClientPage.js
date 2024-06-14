@@ -12,6 +12,9 @@ import ConfirmService from "./ConfirmService";
 import ChooseTime from "./ChooseTime";
 import ConfirmPay from "./ConfirmPay";
 
+import { ToastContainer } from "react-toastify";
+import ToastManager from "../components/toaster";
+
 import Qris from "@/public/reservationAssets/qris.png";
 
 const ClientPage = () => {
@@ -33,9 +36,11 @@ const ClientPage = () => {
         booking_id: uuidv4(),
       })
         .then((response) => {
+          ToastManager.notify("Booking Created!", "success");
           router.push("/dashboard");
         })
         .catch((e) => {
+          ToastManager.notify("Booking Failed!", "error");
           console.error(e);
         });
     } catch (error) {
@@ -142,6 +147,9 @@ const ClientPage = () => {
           </div>
         </div>
       )}
+      <div className="w-0 h-0">
+        <ToastContainer/>
+      </div>
     </section>
   );
 };
