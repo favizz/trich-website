@@ -173,7 +173,7 @@ const AdminDashboard = () => {
           ...doc.data(),
         }))
     for (docs in bookingData) {
-      
+
     }
   };
 
@@ -311,4 +311,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default withAuthAdmin(AdminDashboard, "igbQMReYImfAwDqwuqVWnylY0Kr1");
+export default withAuthAdmin(AdminDashboard, "cQjKKaD3iBcW4y0dyO8eIRhUHsQ2");
