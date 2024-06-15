@@ -27,6 +27,7 @@ const AdminDashboard = () => {
     if (!bookings.length || (Date.now() - lastFetched) > refreshSpan) {
       fetchUser();
       fetchBookings();
+      setLastFetched(Date.now()); 
     }
   }, []);
 
