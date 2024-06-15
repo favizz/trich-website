@@ -162,6 +162,21 @@ const AdminDashboard = () => {
     }
   };
 
+  const migrateBooking = async () => {
+    const bookingCollectionRef = collection(db, "booking");
+    const activeBookingCollectionRef = collection(db, "active_booking");
+    const pastBookingCollectionRef = collection(db, "past_booking");
+
+    const bookingData = bookingCollectionRef.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+    for (docs in bookingData) {
+      
+    }
+  };
+
   return (
     <div className="pt-32 p-4 min-h-screen">
       <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
