@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth"
-import { getFirestore, settings } from "firebase/firestore"
+import { getFirestore, initializeFirestore, persistentLocalCache } from "firebase/firestore"
 
 // const firebaseConfig = {
 //   apiKey: "REDACTED_FIREBASE_API_KEY",
@@ -28,16 +28,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-export const db = getFirestore(app);
-
-try {
-  settings(db, { persistence: true });
-} catch (error) {
-  if (error.code === 'failed-persistence') {
-    console.error('Failed to enable persistence');
-  } else if (error.code === 'unimplemented-feature') {
-    console.error('Persistence is not supported in this environment');
-  } else {
-    console.error('Error enabling persistence:', error);
-  }
-}
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ synchronizeTabs: true })
+});

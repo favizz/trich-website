@@ -25,10 +25,10 @@ const AdminDashboard = () => {
   const refreshSpan = 30 * 60 * 1000;
 
   useEffect(() => {
-    if (!bookings.length || (Date.now() - lastFetched) > refreshSpan) {
+    if (!bookings.length || Date.now() - lastFetched > refreshSpan) {
       fetchUser();
       fetchBookings();
-      setLastFetched(Date.now()); 
+      setLastFetched(Date.now());
     }
   }, []);
 
@@ -160,7 +160,9 @@ const AdminDashboard = () => {
       const bookingRef = doc(db, "booking", bookingDoc.id);
 
       await deleteDoc(bookingRef);
-      setBookings(bookings.filter((booking) => booking.booking_id !== bookingId))
+      setBookings(
+        bookings.filter((booking) => booking.booking_id !== bookingId)
+      );
       console.log(`Booking  has been deleted.`);
     } catch (error) {
       console.error("Error deleting booking:", error);
@@ -322,20 +324,19 @@ const AdminDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {searchedUser.map((user, idx) => (
-              <tr key={idx}>
-                <td className="border border-1 border-solid border-black">
-                  {user ? user.phone_number : "No user found"}
-                </td>
-                <td className="border border-1 border-solid border-black">
-                {user ? (user.first_name + user.last_name +  "-" + user.email) : "-"}
-                  
-                </td>
-                <td className="border border-1 border-solid border-black">
-                  {user ? user.email : "-"}
-                </td>
-              </tr>
-            ))}
+            <tr>
+              <td className="border border-1 border-solid border-black">
+                {searchedUser ? searchedUser.phone_number : "No user found"}
+              </td>
+              <td className="border border-1 border-solid border-black">
+                {searchedUser
+                  ? searchedUser.first_name + " " + searchedUser.last_name + "-" + searchedUser.email
+                  : "-"}
+              </td>
+              <td className="border border-1 border-solid border-black">
+                {searchedUser ? searchedUser.email : "-"}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
