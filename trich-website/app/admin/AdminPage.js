@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 
 import withAuthAdmin from "./withAuthAdmin";
+import ToastManager from "../components/toaster";
 
 const AdminDashboard = () => {
   const [searchedUser, setSearchedUser] = useState(null);
@@ -106,20 +107,24 @@ const AdminDashboard = () => {
   const updateBookingStatusByBookingId = async (bookingId, newStatus) => {
     try {
       if (newStatus == 3) {
-        const bookingCollectionRef = collection(db, "past_booking");
-        await addDoc(bookingCollectionRef, {
-          create_booking_date: new Date(),
-          user_id: auth?.currentUser?.uid,
-          service: pickedService.name,
-          date: pickedDate,
-          time: pickedTime,
-          amount: pickedService.price,
-          notes: notes,
-          status: 1,
-          booking_id: uuidv4(),
-        });
-
-        await deleteBooking(bookingId);
+        try {
+          const bookingCollectionRef = collection(db, "past_booking");
+          await addDoc(bookingCollectionRef, {
+            create_booking_date: new Date(),
+            user_id: auth?.currentUser?.uid,
+            service: pickedService.name,
+            date: pickedDate,
+            time: pickedTime,
+            amount: pickedService.price,
+            notes: notes,
+            status: 1,
+            booking_id: uuidv4(),
+          });
+  
+          await deleteBooking(bookingId);
+        } catch (error) {
+          ToastManager.notify('Status gagal diupdate', 'error');
+        }
       }
       const bookingCollectionRef = collection(db, "active_booking");
       const q = query(
@@ -136,9 +141,10 @@ const AdminDashboard = () => {
       const bookingRef = doc(db, "booking", bookingDoc.id);
 
       await updateDoc(bookingRef, { status: newStatus });
-
+      ToastManager.notify('Booking ID: ' + bookingId + ' diupdate menjadi ' + newStatus + '!', 'success' );
       console.log("Booking status updated successfully");
     } catch (error) {
+      ToastManager.notify('Status gagal diubah!', 'error');
       console.error("Failed to update booking:", error);
     }
   };
@@ -163,8 +169,10 @@ const AdminDashboard = () => {
       setBookings(
         bookings.filter((booking) => booking.booking_id !== bookingId)
       );
+      ToastManager.notify('Booking ID: ' + bookingId + ' berhasil dihapus!', 'success');
       console.log(`Booking  has been deleted.`);
     } catch (error) {
+      ToastManager.notify('Booking gagal dihapus!', 'error');
       console.error("Error deleting booking:", error);
     }
   };
@@ -177,38 +185,6 @@ const AdminDashboard = () => {
       return "User not found";
     }
   };
-
-  // const migrateBooking = async () => {
-  //   const bookingCollectionRef = collection(db, "booking");
-  //   const activeBookingCollectionRef = collection(db, "active_booking");
-  //   const pastBookingCollectionRef = collection(db, "past_booking");
-
-  //   // Fetch all documents from the booking collection
-  //   const querySnapshot = await getDocs(bookingCollectionRef);
-
-  //   // Map through the documents and get their data
-  //   const bookingData = querySnapshot.docs.map((doc) => ({
-  //     id: doc.id,
-  //     ...doc.data(),
-  //   }));
-
-  //   // Loop through the booking data and process each document based on its status
-  //   for (const booking of bookingData) {
-  //     const bookingDocRef = doc(bookingCollectionRef, booking.id);
-
-  //     if (booking.status === 1 || booking.status === 2) {
-  //       // Add to active_booking collection
-  //       await addDoc(activeBookingCollectionRef, booking);
-  //       // Delete from booking collection
-  //       await deleteDoc(bookingDocRef);
-  //     } else if (booking.status === 3) {
-  //       // Add to past_booking collection
-  //       await addDoc(pastBookingCollectionRef, booking);
-  //       // Delete from booking collection
-  //       await deleteDoc(bookingDocRef);
-  //     }
-  //   }
-  // };
 
   return (
     <div className="pt-32 p-4 min-h-screen">
