@@ -15,6 +15,7 @@ import {
 import withAuthAdmin from "./withAuthAdmin";
 
 const AdminDashboard = () => {
+  const [searchedUser, setSearchedUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [searchEmail, setEmail] = useState("");
   const [bookings, setBookings] = useState([]);
@@ -40,7 +41,7 @@ const AdminDashboard = () => {
       if (querySnapshot.empty) {
         throw new Error("User not found");
       } else {
-        setUsers(querySnapshot.docs[0].data());
+        setSearchedUser(querySnapshot.docs[0].data());
       }
     } catch (error) {
       console.error("Failed to fetch users:", error);
@@ -159,7 +160,7 @@ const AdminDashboard = () => {
       const bookingRef = doc(db, "booking", bookingDoc.id);
 
       await deleteDoc(bookingRef);
-      console.log(`Booking with ID ${booking_id} has been deleted.`);
+      console.log(`Booking  has been deleted.`);
     } catch (error) {
       console.error("Error deleting booking:", error);
     }
@@ -320,16 +321,17 @@ const AdminDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, idx) => (
+            {searchedUser.map((user, idx) => (
               <tr key={idx}>
                 <td className="border border-1 border-solid border-black">
-                  {user.phone_number}
+                  {user ? user.phone_number : "No user found"}
                 </td>
                 <td className="border border-1 border-solid border-black">
-                  {user.first_name} {user.last_name} - {user.email}
+                {user ? (user.first_name + user.last_name +  "-" + user.email) : "-"}
+                  
                 </td>
                 <td className="border border-1 border-solid border-black">
-                  {user.email}
+                  {user ? user.email : "-"}
                 </td>
               </tr>
             ))}
