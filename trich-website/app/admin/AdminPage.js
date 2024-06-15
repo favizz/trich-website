@@ -21,7 +21,7 @@ const AdminDashboard = () => {
   const [status, setStatus] = useState();
 
   useEffect(() => {
-    fetchUserByEmail();
+    fetchUser();
     fetchBookings();
   }, [users, bookings]);
 
@@ -36,12 +36,19 @@ const AdminDashboard = () => {
       } else {
         setUsers(querySnapshot.docs[0].data());
       }
-      // const querySnapshot = await getDocs(collection(db, "user"));
-      // const userData = querySnapshot.docs.map((doc) => ({
-      //   id: doc.id,
-      //   ...doc.data(),
-      // }));
-      // setUsers(userData);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
+  };
+
+  const fetchUser = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "user"));
+      const userData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setUsers(userData);
     } catch (error) {
       console.error("Failed to fetch users:", error);
     }
@@ -50,11 +57,10 @@ const AdminDashboard = () => {
   const fetchBookings = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "active_booking"));
-      let bookingData = querySnapshot.docs
-        .map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
+      let bookingData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
       const parseDateString = (dateString) => {
         const [dayOfWeek, monthDay, year] = dateString.split(", ");
@@ -167,13 +173,11 @@ const AdminDashboard = () => {
     const activeBookingCollectionRef = collection(db, "active_booking");
     const pastBookingCollectionRef = collection(db, "past_booking");
 
-    const bookingData = bookingCollectionRef.docs
-        .map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
+    const bookingData = bookingCollectionRef.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     for (docs in bookingData) {
-
     }
   };
 
@@ -234,7 +238,7 @@ const AdminDashboard = () => {
                 </td>
                 <td className="flex flex-row border border-1 border-solid border-black">
                   <input
-                  type="number"
+                    type="number"
                     className="text-center w-full"
                     placeholder={"current status:  " + booking.status}
                     onChange={(e) => setStatus(e.target.value)}
