@@ -160,6 +160,7 @@ const AdminDashboard = () => {
       const bookingRef = doc(db, "booking", bookingDoc.id);
 
       await deleteDoc(bookingRef);
+      setBookings(bookings.filter((booking) => booking.booking_id !== bookingId))
       console.log(`Booking  has been deleted.`);
     } catch (error) {
       console.error("Error deleting booking:", error);
