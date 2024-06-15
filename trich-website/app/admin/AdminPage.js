@@ -20,10 +20,15 @@ const AdminDashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [status, setStatus] = useState();
 
+  const [lastFetched, setLastFetched] = useState(null);
+  const refreshSpan = 30 * 60 * 1000;
+
   useEffect(() => {
-    fetchUser();
-    fetchBookings();
-  }, [users, bookings]);
+    if (!bookings.length || (Date.now() - lastFetched) > refreshSpan) {
+      fetchUser();
+      fetchBookings();
+    }
+  }, []);
 
   const fetchUserByEmail = async (email) => {
     try {
@@ -168,18 +173,37 @@ const AdminDashboard = () => {
     }
   };
 
-  const migrateBooking = async () => {
-    const bookingCollectionRef = collection(db, "booking");
-    const activeBookingCollectionRef = collection(db, "active_booking");
-    const pastBookingCollectionRef = collection(db, "past_booking");
+  // const migrateBooking = async () => {
+  //   const bookingCollectionRef = collection(db, "booking");
+  //   const activeBookingCollectionRef = collection(db, "active_booking");
+  //   const pastBookingCollectionRef = collection(db, "past_booking");
 
-    const bookingData = bookingCollectionRef.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    for (docs in bookingData) {
-    }
-  };
+  //   // Fetch all documents from the booking collection
+  //   const querySnapshot = await getDocs(bookingCollectionRef);
+
+  //   // Map through the documents and get their data
+  //   const bookingData = querySnapshot.docs.map((doc) => ({
+  //     id: doc.id,
+  //     ...doc.data(),
+  //   }));
+
+  //   // Loop through the booking data and process each document based on its status
+  //   for (const booking of bookingData) {
+  //     const bookingDocRef = doc(bookingCollectionRef, booking.id);
+
+  //     if (booking.status === 1 || booking.status === 2) {
+  //       // Add to active_booking collection
+  //       await addDoc(activeBookingCollectionRef, booking);
+  //       // Delete from booking collection
+  //       await deleteDoc(bookingDocRef);
+  //     } else if (booking.status === 3) {
+  //       // Add to past_booking collection
+  //       await addDoc(pastBookingCollectionRef, booking);
+  //       // Delete from booking collection
+  //       await deleteDoc(bookingDocRef);
+  //     }
+  //   }
+  // };
 
   return (
     <div className="pt-32 p-4 min-h-screen">
@@ -315,4 +339,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default withAuthAdmin(AdminDashboard, "cQjKKaD3iBcW4y0dyO8eIRhUHsQ2");
+export default withAuthAdmin(AdminDashboard, "igbQMReYImfAwDqwuqVWnylY0Kr1");
