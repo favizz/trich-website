@@ -34,10 +34,10 @@ const AdminDashboard = () => {
     }
   }, [bookings]);
 
-  const fetchUserByEmail = async (email) => {
+  const fetchUserByName = async (firstName) => {
     try {
       const usersRef = collection(db, "user");
-      const q = query(usersRef, where("email", "==", email));
+      const q = query(usersRef, where("first_name", "==", firstName));
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
@@ -110,23 +110,24 @@ const AdminDashboard = () => {
       if (newStatus == 3) {
         try {
           const bookingCollectionRef = collection(db, "past_booking");
-          const tempBooking = bookings.find(docs => docs.booking_id == bookingId);
+          const tempBooking = bookings.find(
+            (docs) => docs.booking_id == bookingId
+          );
           await addDoc(bookingCollectionRef, {
             create_booking_date: tempBooking.create_booking_date,
             user_id: tempBooking.user_id,
             service: tempBooking.service,
             date: tempBooking.date,
             time: tempBooking.time,
-            amount: tempBooking.amount,
             notes: tempBooking.notes,
             status: 3,
             booking_id: tempBooking.booking_id,
           });
-  
+
           await deleteBooking(bookingId);
         } catch (error) {
           console.log(error);
-          ToastManager.notify('Status gagal diupdate', 'error');
+          ToastManager.notify("Status gagal diupdate", "error");
         }
       }
       const bookingCollectionRef = collection(db, "active_booking");
@@ -144,10 +145,13 @@ const AdminDashboard = () => {
       const bookingRef = doc(db, "active_booking", bookingDoc.id);
 
       await updateDoc(bookingRef, { status: newStatus });
-      ToastManager.notify('Booking ID: ' + bookingId + ' diupdate menjadi ' + newStatus + '!', 'success' );
+      ToastManager.notify(
+        "Booking ID: " + bookingId + " diupdate menjadi " + newStatus + "!",
+        "success"
+      );
       console.log("Booking status updated successfully");
     } catch (error) {
-      ToastManager.notify('Status gagal diubah!', 'error');
+      ToastManager.notify("Status gagal diubah!", "error");
       console.error("Failed to update booking:", error);
     }
   };
@@ -174,10 +178,13 @@ const AdminDashboard = () => {
       );
       fetchBookings();
 
-      ToastManager.notify('Booking ID: ' + booking_id + ' berhasil dihapus!', 'success');
+      ToastManager.notify(
+        "Booking ID: " + booking_id + " berhasil dihapus!",
+        "success"
+      );
       console.log(`Booking  has been deleted.`);
     } catch (error) {
-      ToastManager.notify('Booking gagal dihapus!', 'error');
+      ToastManager.notify("Booking gagal dihapus!", "error");
       console.error("Error deleting booking:", error);
     }
   };
@@ -185,7 +192,7 @@ const AdminDashboard = () => {
   const getNameFromBooking = (userId) => {
     const user = users.find((u) => u.user_id === userId);
     if (user) {
-      return user.first_name + " " + user.last_name;
+      return user.first_name;
     } else {
       return "User not found";
     }
@@ -203,7 +210,7 @@ const AdminDashboard = () => {
                 Date
               </th>
               <th className="border border-1 border-solid border-black">
-                Name
+                First Name
               </th>
               <th className="border border-1 border-solid border-black">
                 Service
@@ -235,7 +242,9 @@ const AdminDashboard = () => {
                   </button>
                 </td>
                 <td className="border border-1 border-solid border-black">
-                  {booking.name ? booking.name : getNameFromBooking(booking.user_id)}
+                  {booking.name
+                    ? booking.name
+                    : getNameFromBooking(booking.user_id)}
                 </td>
                 <td className="border border-1 border-solid border-black">
                   {booking.service}
@@ -272,7 +281,12 @@ const AdminDashboard = () => {
       </div>
 
       <div className="pt-12">
-        <h2 className="text-lg font-semibold">Users</h2>
+        <h2 className="text-lg font-semibold">
+          Users{" "}
+          <span className="text-red-600 font-base">
+            (Search with First Name!)
+          </span>
+        </h2>
         <div className="flex flex-row space-x-2 pb-12">
           <input
             type="text"
@@ -280,11 +294,10 @@ const AdminDashboard = () => {
             className="border border-1 border-orange1"
             onChange={(e) => {
               setEmail(e.target.value);
-              console.log(searchEmail);
             }}
           />
           <button
-            onClick={() => fetchUserByEmail(searchEmail)}
+            onClick={() => fetchUserByName(searchEmail)}
             className="px-4 bg-orange1 text-white"
           >
             Search
@@ -311,7 +324,11 @@ const AdminDashboard = () => {
               </td>
               <td className="border border-1 border-solid border-black">
                 {searchedUser
-                  ? searchedUser.first_name + " " + searchedUser.last_name + "-" + searchedUser.email
+                  ? searchedUser.first_name +
+                    " " +
+                    searchedUser.last_name +
+                    "-" +
+                    searchedUser.email
                   : "-"}
               </td>
               <td className="border border-1 border-solid border-black">
@@ -321,7 +338,7 @@ const AdminDashboard = () => {
           </tbody>
         </table>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };

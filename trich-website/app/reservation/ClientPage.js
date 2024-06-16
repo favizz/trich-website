@@ -30,9 +30,7 @@ const ClientPage = () => {
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data();
         const firstName = userData.first_name;
-        const lastName = userData.last_name;
-        console.log(firstName, lastName);
-        return (firstName + ' ' + lastName);
+        return firstName;
       } else {
         console.log("No such user!");
         return null;

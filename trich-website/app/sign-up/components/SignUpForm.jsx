@@ -58,7 +58,7 @@ const SignUpForm = () => {
 
       await addDoc(userCollectionRef, {
         user_id: auth?.currentUser?.uid,
-        first_name: formData.first_name,
+        first_name: formData.first_name.toUpperCase(),
         last_name: formData.last_name,
         email: formData.email,
         phone_number: formData.phone_number,
