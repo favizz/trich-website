@@ -14,6 +14,7 @@ import {
 
 import withAuthAdmin from "./withAuthAdmin";
 import ToastManager from "../components/toaster";
+import { ToastContainer } from "react-toastify";
 
 const AdminDashboard = () => {
   const [searchedUser, setSearchedUser] = useState(null);
@@ -31,12 +32,12 @@ const AdminDashboard = () => {
       fetchBookings();
       setLastFetched(Date.now());
     }
-  }, []);
+  }, [bookings]);
 
   const fetchUserByEmail = async (email) => {
     try {
-      const usersRef = collection(db, "user"); // Replace 'users' with your collection name
-      const q = query(usersRef, where("email", "==", email)); // Case-sensitive equality check
+      const usersRef = collection(db, "user");
+      const q = query(usersRef, where("email", "==", email));
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
@@ -163,13 +164,15 @@ const AdminDashboard = () => {
       }
 
       const bookingDoc = querySnapshot.docs[0];
-      const bookingRef = doc(db, "booking", bookingDoc.id);
+      const bookingRef = doc(db, "active_booking", bookingDoc.id);
 
       await deleteDoc(bookingRef);
       setBookings(
-        bookings.filter((booking) => booking.booking_id !== bookingId)
+        bookings.filter((booking) => booking.booking_id !== booking_id)
       );
-      ToastManager.notify('Booking ID: ' + bookingId + ' berhasil dihapus!', 'success');
+      fetchBookings();
+
+      ToastManager.notify('Booking ID: ' + booking_id + ' berhasil dihapus!', 'success');
       console.log(`Booking  has been deleted.`);
     } catch (error) {
       ToastManager.notify('Booking gagal dihapus!', 'error');
@@ -230,7 +233,7 @@ const AdminDashboard = () => {
                   </button>
                 </td>
                 <td className="border border-1 border-solid border-black">
-                  {getNameFromBooking(booking.user_id)}
+                  {booking.name ? booking.name : getNameFromBooking(booking.user_id)}
                 </td>
                 <td className="border border-1 border-solid border-black">
                   {booking.service}
@@ -316,6 +319,7 @@ const AdminDashboard = () => {
           </tbody>
         </table>
       </div>
+      <ToastContainer/>
     </div>
   );
 };

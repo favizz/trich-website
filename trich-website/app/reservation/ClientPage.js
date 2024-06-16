@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { auth, db } from "@/config/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
@@ -21,16 +21,39 @@ const ClientPage = () => {
   const userBookingRef = collection(db, "active_booking");
   const router = useRouter();
 
+  const getUserNameById = async (userId) => {
+    try {
+      const usersRef = collection(db, "user");
+      const q = query(usersRef, where("user_id", "==", userId));
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        const userData = querySnapshot.docs[0].data();
+        const firstName = userData.first_name;
+        const lastName = userData.last_name;
+        console.log(firstName, lastName);
+        return (firstName + ' ' + lastName);
+      } else {
+        console.log("No such user!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user data: ", error);
+      return null;
+    }
+  };
+
   const handleBooking = async (e) => {
     try {
       e.preventDefault();
+      const fullName = await getUserNameById(auth?.currentUser?.uid);
       await addDoc(userBookingRef, {
         create_booking_date: new Date(),
         user_id: auth?.currentUser?.uid,
+        name: fullName,
         service: pickedService.name,
         date: pickedDate,
         time: pickedTime,
-        amount: pickedService.price,
         notes: notes,
         status: 1,
         booking_id: uuidv4(),
