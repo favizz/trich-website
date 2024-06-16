@@ -110,20 +110,22 @@ const AdminDashboard = () => {
       if (newStatus == 3) {
         try {
           const bookingCollectionRef = collection(db, "past_booking");
+          const tempBooking = bookings.find(docs => docs.booking_id == bookingId);
           await addDoc(bookingCollectionRef, {
-            create_booking_date: new Date(),
-            user_id: auth?.currentUser?.uid,
-            service: pickedService.name,
-            date: pickedDate,
-            time: pickedTime,
-            amount: pickedService.price,
-            notes: notes,
-            status: 1,
-            booking_id: uuidv4(),
+            create_booking_date: tempBooking.create_booking_date,
+            user_id: tempBooking.user_id,
+            service: tempBooking.service,
+            date: tempBooking.date,
+            time: tempBooking.time,
+            amount: tempBooking.amount,
+            notes: tempBooking.notes,
+            status: 3,
+            booking_id: tempBooking.booking_id,
           });
   
           await deleteBooking(bookingId);
         } catch (error) {
+          console.log(error);
           ToastManager.notify('Status gagal diupdate', 'error');
         }
       }
@@ -139,7 +141,7 @@ const AdminDashboard = () => {
       }
 
       const bookingDoc = querySnapshot.docs[0];
-      const bookingRef = doc(db, "booking", bookingDoc.id);
+      const bookingRef = doc(db, "active_booking", bookingDoc.id);
 
       await updateDoc(bookingRef, { status: newStatus });
       ToastManager.notify('Booking ID: ' + bookingId + ' diupdate menjadi ' + newStatus + '!', 'success' );
