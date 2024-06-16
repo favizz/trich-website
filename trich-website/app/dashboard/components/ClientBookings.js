@@ -16,7 +16,7 @@ const ClientBookings = ({ handleBookingData }) => {
         return;
       }
       const q = query(
-        collection(db, "booking"),
+        collection(db, "active_booking"),
         where("user_id", "==", currentUserID)
       );
       const querySnapshot = await getDocs(q);
@@ -44,7 +44,7 @@ const ClientBookings = ({ handleBookingData }) => {
             time={booking.time}
             status={booking.status}
             isPaid={booking.is_paid}
-            price={booking.amount}
+            amount={"42.500"}
             notes={booking.notes}
           />
         ))}

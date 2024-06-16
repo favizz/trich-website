@@ -1,4 +1,4 @@
-const BookingCard = ({ date, time, price, status, notes }) => {
+const BookingCard = ({ date, time, amount, status, notes }) => {
   const handleStatus = (s) => {
     if (s === 3) return "FINISHED"; 
     else if (s === 2) return "PAID";
@@ -20,7 +20,7 @@ const BookingCard = ({ date, time, price, status, notes }) => {
       </div>
       <div className="pt-2 space-y-1">
         <p className="lg:text-sm">{time}</p>
-        <p className="font-extrabold">Rp {price}</p>
+        <p className="font-extrabold">Rp {amount}</p>
         <div className="pt-1">
           <p className="text-gray-600 lg:text-sm">Notes</p>
           <p className="lg:text-xs ">{notes}</p>
