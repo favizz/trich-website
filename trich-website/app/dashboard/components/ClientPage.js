@@ -11,7 +11,7 @@ import ClientInfo from "./ClientInfo";
 
 const ClientPage = () => {
   const [userData, setUserData] = useState(null);
-  const [currPage, setPage] = useState(1);
+  const [currPage, setPage] = useState(2);
   const [bookingData, setBookingData] = useState([]);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const ClientPage = () => {
           handlePaging={setPage}
           currPage={currPage}
         />
-        {currPage == 1 && <ClientStats bookingData={bookingData} handlePage={setPage}/>}
+        {/* {currPage == 1 && <ClientStats bookingData={bookingData} handlePage={setPage}/>} */}
         {currPage == 2 && <ClientBookings handleBookingData={setBookingData}/>}
         {currPage == 3 && (
           <ClientInfo
