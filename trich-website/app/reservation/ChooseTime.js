@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { db } from "@/config/firebase";
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 import LeftArrow from "@/public/reservationAssets/leftarrow.svg";
 import RightArrow from "@/public/reservationAssets/rightarrow.svg";
@@ -24,6 +24,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
 
   const [pickedTime, pickTime] = useState(0);
   const [operationalTimes, setOperationalTimes] = useState(allOperationalTimes);
+  const [isDateValid, toggleDateValid] = useState(true);
 
   const handleTimePick = (input) => {
     if (input === -1) {
@@ -39,10 +40,22 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
 
   useEffect(() => {
     handleTime(operationalTimes[pickedTime]);
-  }, [pickedTime, operationalTimes]);
+  }, [date, pickedTime, operationalTimes]);
 
   const handleDateChange = async (event) => {
     const inputDate = new Date(event.target.value);
+    const currentDate = new Date();
+
+    inputDate.setHours(8, 0, 0, 0);
+    currentDate.setHours(8, 0, 0, 0);
+
+    if (inputDate < currentDate) {
+      toggleDateValid(!isDateValid);
+      return;
+    }
+
+    toggleDateValid(true);
+
     inputDate.setMinutes(
       inputDate.getMinutes() + inputDate.getTimezoneOffset()
     );
@@ -62,67 +75,70 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
     let availableTimes = allOperationalTimes;
 
     if (inputDate.getDay() === 5) {
-      availableTimes = availableTimes.filter(time => time !== "12:00");
+      availableTimes = availableTimes.filter((time) => time !== "12:00");
     }
-    
-    const q = query(
-      collection(db, 'booking'),
-      where('date', '==', formattedDate)
-    );
 
-    const querySnapshot = await getDocs(q);
-    const bookings = querySnapshot.docs.map(doc => doc.data());
+    try {
+      const q = query(
+        collection(db, "active_booking"),
+        where("date", "==", formattedDate)
+      );
 
-    const fullyBookedTimes = bookings.reduce((acc, booking) => {
-      acc[booking.time] = (acc[booking.time] || 0) + 1;
-      return acc;
-    }, {});
+      const rq = query(
+        collection(db, "reservation_quota"),
+        where("date", "==", formattedDate)
+      );
 
-    availableTimes = availableTimes.filter(
-      time => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2
-    );
+      const querySnapshot = await getDocs(q);
+      const reservationQuerySnapshot = await getDocs(rq);
+      const bookings = querySnapshot.docs.map((doc) => doc.data());
+      const quotas = reservationQuerySnapshot.docs.map((doc) => doc.data());
 
-    setOperationalTimes(availableTimes);
+      let fullyBookedTimes = bookings.reduce((acc, booking) => {
+        acc[booking.time] = (acc[booking.time] || 0) + 1;
+        return acc;
+      }, {});
+      
+      quotas.forEach((quota) => {
+        if (!fullyBookedTimes[quota.time]) {
+          fullyBookedTimes[quota.time] = 0; // Initialize if not present
+        }
+        if (fullyBookedTimes[quota.time] >= quota.quota) {
+          fullyBookedTimes[quota.time] = 2; // Mark the time slot as fully booked
+        }
+      });
+
+      availableTimes = availableTimes.filter(
+        (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2
+      );
+
+      setOperationalTimes(availableTimes);
+    } catch (error) {
+      console.log(error);
+    }
+
     pickTime(0);
   };
 
-  // const handleDateChange = (event) => {
-  //   const inputDate = new Date(event.target.value);
-  //   inputDate.setMinutes(
-  //     inputDate.getMinutes() + inputDate.getTimezoneOffset()
-  //   );
-
-  //   const options = {
-  //     weekday: "long",
-  //     year: "numeric",
-  //     month: "long",
-  //     day: "numeric",
-  //   };
-  //   const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
-  //     inputDate
-  //   );
-
-  //   handleDate(formattedDate);
-
-  //   if (inputDate.getDay() === 5) {
-  //     setOperationalTimes(
-  //       allOperationalTimes.filter((time) => time !== "12:00")
-  //     );
-  //   } else {
-  //     setOperationalTimes(allOperationalTimes);
-  //   }
-  //   pickTime(0);
-  // };
-
   return (
     <div className="w-full flex flex-col items-center justify-center lg:text-sm xl:text-base 2xl:text-lg">
-      <input type="date" onChange={handleDateChange} className="my-4" />
+      <input
+        type="date"
+        onChange={(e) => handleDateChange(e)}
+        className="my-4"
+      />
       <div className="w-full h-[0.5px] bg-gray-600 mb-8"></div>
       <div className="space-y-4 flex flex-col items-center">
         <p className="font-bold">
           <span className="text-[#545454]">Selected Date:</span> {date}
         </p>
-        <p className="font-extrabold">Select Available Time</p>
+        <p className="font-extrabold">
+          {isDateValid ? (
+            "Select Available Time"
+          ) : (
+            <span className="text-orange1">Please select a valid date</span>
+          )}
+        </p>
         <div className="flex flex-row space-x-8">
           <Image
             onClick={() => handleTimePick(-1)}
@@ -139,7 +155,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
           />
         </div>
         <div
-          onClick={() => (date !== null ? handlePage(3) : null)}
+          onClick={() => (date !== null && isDateValid ? handlePage(3) : null)}
           className="border border-1 border-orange1 text-orange1 font-bold px-12 py-2 rounded"
         >
           Pay
