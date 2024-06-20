@@ -17,21 +17,6 @@ import withAuthAdmin from "./withAuthAdmin";
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
 
-const timeSlots = [
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-  "18:00",
-  "19:00",
-  "20:00",
-  "21:00",
-];
-
 const AdminDashboard = () => {
   const [searchedUser, setSearchedUser] = useState(null);
   const [users, setUsers] = useState([]);
@@ -41,7 +26,6 @@ const AdminDashboard = () => {
 
   const [quotas, setQuotas] = useState([]);
   const [quotaDate, setQuotaDate] = useState(null);
-  const [quotaTime, setQuotaTime] = useState(null);
   const [quotaQuota, setQuotaQuota] = useState(null);
 
   const [lastFetched, setLastFetched] = useState(null);
@@ -238,7 +222,6 @@ const AdminDashboard = () => {
       const quotaData = {
         quota_id: uuidv4(),
         date: quotaDate,
-        time: quotaTime,
         quota: quotaQuota,
       };
 
@@ -381,23 +364,6 @@ const AdminDashboard = () => {
             className="border border-1 border-orange1"
             onChange={(e) => setQuotaDate(formatDate(e.target.value))}
           />
-          <form>
-            <select
-              id="timeSlots"
-              name="timeSlots"
-              value={quotaTime}
-              onChange={(e) => setQuotaTime(e.target.value)}
-            >
-              <option value="" disabled>
-                Select a time
-              </option>
-              {timeSlots.map((time) => (
-                <option key={time} value={time}>
-                  {time}
-                </option>
-              ))}
-            </select>
-          </form>
           <input
             type="number"
             placeholder="quota"
@@ -420,9 +386,6 @@ const AdminDashboard = () => {
                 Date
               </th>
               <th className="border border-1 border-solid border-black">
-                Time
-              </th>
-              <th className="border border-1 border-solid border-black">
                 Quota
               </th>
             </tr>
@@ -439,9 +402,6 @@ const AdminDashboard = () => {
                       >
                         Delete
                       </button>
-                    </td>
-                    <td className="border border-1 border-solid border-black">
-                      {quota.time ? quota.time : "-"}
                     </td>
                     <td className="border border-1 border-solid border-black">
                       {quota.quota ? quota.quota : "-"}
