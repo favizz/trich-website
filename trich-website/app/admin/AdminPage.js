@@ -11,10 +11,26 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
+import { v4 as uuidv4 } from "uuid";
 
 import withAuthAdmin from "./withAuthAdmin";
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
+
+const timeSlots = [
+  "10:00",
+  "11:00",
+  "12:00",
+  "13:00",
+  "14:00",
+  "15:00",
+  "16:00",
+  "17:00",
+  "18:00",
+  "19:00",
+  "20:00",
+  "21:00",
+];
 
 const AdminDashboard = () => {
   const [searchedUser, setSearchedUser] = useState(null);
@@ -23,6 +39,11 @@ const AdminDashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [status, setStatus] = useState();
 
+  const [quotas, setQuotas] = useState([]);
+  const [quotaDate, setQuotaDate] = useState(null);
+  const [quotaTime, setQuotaTime] = useState(null);
+  const [quotaQuota, setQuotaQuota] = useState(null);
+
   const [lastFetched, setLastFetched] = useState(null);
   const refreshSpan = 30 * 60 * 1000;
 
@@ -30,6 +51,7 @@ const AdminDashboard = () => {
     if (!bookings.length || Date.now() - lastFetched > refreshSpan) {
       fetchUser();
       fetchBookings();
+      fetchQuotas();
       setLastFetched(Date.now());
     }
   }, [bookings]);
@@ -176,13 +198,11 @@ const AdminDashboard = () => {
       setBookings(
         bookings.filter((booking) => booking.booking_id !== booking_id)
       );
-      fetchBookings();
 
       ToastManager.notify(
         "Booking ID: " + booking_id + " berhasil dihapus!",
         "success"
       );
-      console.log(`Booking  has been deleted.`);
     } catch (error) {
       ToastManager.notify("Booking gagal dihapus!", "error");
       console.error("Error deleting booking:", error);
@@ -196,6 +216,79 @@ const AdminDashboard = () => {
     } else {
       return "User not found";
     }
+  };
+
+  const fetchQuotas = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "reservation_quota"));
+      const quotaData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setQuotas(quotaData);
+    } catch (error) {
+      console.error("Failed to fetch quotas: ", error);
+    }
+  };
+
+  const addQuota = async () => {
+    try {
+      const reservationQuotaRef = collection(db, "reservation_quota");
+
+      const quotaData = {
+        quota_id: uuidv4(),
+        date: quotaDate,
+        time: quotaTime,
+        quota: quotaQuota,
+      };
+
+      await addDoc(reservationQuotaRef, quotaData);
+
+      ToastManager.notify("Quota berhasil ditambahkan", "success");
+      console.log("Quota added successfully");
+    } catch (error) {
+      ToastManager.notify("Quota gagal ditambahkan", "error");
+      console.error("Failed to add quota: ", error);
+    }
+  };
+
+  const deleteQuota = async (quotaId) => {
+    try {
+      const quotaCollectionRef = collection(db, "reservation_quota");
+      const q = query(quotaCollectionRef, where("quota_id", "==", quotaId));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        throw new Error(`No quota found`);
+      }
+      const quotaDoc = querySnapshot.docs[0];
+      const quotaRef = doc(db, "reservation_quota", quotaDoc.id);
+
+      await deleteDoc(quotaRef);
+
+      setQuotas(quotas.filter((quota) => quota.quota_id !== quotaId));
+
+      ToastManager.notify(
+        "Quota ID: " + quotaId + " berhasil dihapus!",
+        "success"
+      );
+    } catch (error) {
+      ToastManager.notify("Quota gagal dihapus!", "error");
+      console.error("Failed to delete quota: ", error);
+    }
+  };
+
+  const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    const formattedDate = date.toLocaleDateString("en-US", options);
+
+    return formattedDate;
   };
 
   return (
@@ -281,13 +374,93 @@ const AdminDashboard = () => {
       </div>
 
       <div className="pt-12">
+        <h2 className="text-lg font-semibold">Set Quota</h2>
+        <div className="flex flex-row space-x-2 pb-3">
+          <input
+            type="date"
+            className="border border-1 border-orange1"
+            onChange={(e) => setQuotaDate(formatDate(e.target.value))}
+          />
+          <form>
+            <select
+              id="timeSlots"
+              name="timeSlots"
+              value={quotaTime}
+              onChange={(e) => setQuotaTime(e.target.value)}
+            >
+              <option value="" disabled>
+                Select a time
+              </option>
+              {timeSlots.map((time) => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </select>
+          </form>
+          <input
+            type="number"
+            placeholder="quota"
+            className="border border-1 border-orange1"
+            onChange={(e) => {
+              setQuotaQuota(e.target.value);
+            }}
+          />
+          <button
+            onClick={() => addQuota()}
+            className="px-4 bg-orange1 text-white"
+          >
+            Set Quota
+          </button>
+        </div>
+        <table className="w-1/2">
+          <thead>
+            <tr className="bg-orange1 font-bold text-white">
+              <th className="border border-1 border-solid border-black">
+                Date
+              </th>
+              <th className="border border-1 border-solid border-black">
+                Time
+              </th>
+              <th className="border border-1 border-solid border-black">
+                Quota
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {quotas.length > 0
+              ? quotas.map((quota, idx) => (
+                  <tr key={idx}>
+                    <td className="border border-1 border-solid border-black flex flex-row justify-between">
+                      {quota.date ? quota.date : "-"}
+                      <button
+                        onClick={() => deleteQuota(quota.quota_id)}
+                        className="text-white bg-orange1"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                    <td className="border border-1 border-solid border-black">
+                      {quota.time ? quota.time : "-"}
+                    </td>
+                    <td className="border border-1 border-solid border-black">
+                      {quota.quota ? quota.quota : "-"}
+                    </td>
+                  </tr>
+                ))
+              : ""}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="pt-12">
         <h2 className="text-lg font-semibold">
           Users{" "}
           <span className="text-red-600 font-base">
             (Search with First Name!)
           </span>
         </h2>
-        <div className="flex flex-row space-x-2 pb-12">
+        <div className="flex flex-row space-x-2 pb-3">
           <input
             type="text"
             placeholder="search customer"
