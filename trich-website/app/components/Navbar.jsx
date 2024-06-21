@@ -109,7 +109,7 @@ const Navbar = () => {
                   }
                 >
                   <p
-                    className={`hover:text-orange1 hover:underline lg:text-lg xl:text-xl lg:tracking-wider font-extrabold ${
+                    className={`hover:text-orange1 lg:text-lg xl:text-xl lg:tracking-wider font-extrabold ${
                       navColor() ? "text-black" : ""
                     }`}
                   >

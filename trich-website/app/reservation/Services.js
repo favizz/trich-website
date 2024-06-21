@@ -1,24 +1,60 @@
 export const Services = [
     {
+        name:"The Trich Experience",
+        price:"100.000",
+        nominal:100000,
+        actual_price: 135000,
+        duration: 2,
+    },
+    {
         name:"The Cutting Edge",
         price:"42.500",
+        nominal:42500,
+        actual_price: 85000,
+        duration: 1,
     },
-    // {
-    //     name:"Permification - Classic",
-    //     price:"350.000",
-    // },
-    // {
-    //     name:"Permification - Root",
-    //     price:"150.000",
-    // },
-    // {
-    //     name:"Permification - Down",
-    //     price:"150.000",
-    // },
-    // {
-    //     name:"Smooth Operator",
-    //     price:"250.000",
-    // },
+    {
+        name:"Permification - Classic",
+        price:"100.000",
+        nominal:100000,
+        actual_price: 250000,
+        duration: 3,
+    },
+    {
+        name:"Permification - Root Lift",
+        price:"100.000",
+        nominal:100000,
+        actual_price: 150000,
+        duration: 1,
+    },
+    {
+        name:"Permification - Down",
+        price:"100.000",
+        nominal:100000,
+        actual_price: 150000,
+        duration: 1,
+    },
+    {
+        name:"Smooth Operator",
+        price:"100.000",
+        nominal:100000,
+        actual_price: 250000,
+        duration: 2,
+    },
+    {
+        name:"Trim & Treat",
+        price:"17.500",
+        nominal:17500,
+        actual_price: 35000,
+        duration: 1,
+    },
+    {
+        name: "Mask Off",
+        price:"17.500",
+        nominal:17500,
+        actual_price: 250000,
+        duration: 1,
+    },
     // {
     //     name: "True Colors - Full",
     //     price:"250.000",
@@ -32,15 +68,7 @@ export const Services = [
     //     price:"50.000",
     // },
     // {
-    //     name:"Trim & Treat",
-    //     price:"35.000",
-    // },
-    // {
     //     name: "Wax Mining",
     //     price:"35.000",
-    // },
-    // {
-    //     name: "Mask Off",
-    //     price: "35.000",
     // },
 ];

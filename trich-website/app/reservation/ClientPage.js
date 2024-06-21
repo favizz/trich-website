@@ -26,7 +26,7 @@ const ClientPage = () => {
       const usersRef = collection(db, "user");
       const q = query(usersRef, where("user_id", "==", userId));
       const querySnapshot = await getDocs(q);
-  
+
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data();
         const firstName = userData.first_name;
@@ -49,7 +49,8 @@ const ClientPage = () => {
         create_booking_date: new Date(),
         user_id: auth?.currentUser?.uid,
         name: fullName,
-        service: pickedService.name,
+        service: pickedService,
+        amount: totalPrice,
         date: pickedDate,
         time: pickedTime,
         notes: notes,
@@ -70,6 +71,8 @@ const ClientPage = () => {
   };
 
   const [currPage, setPage] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalActualPrice, setTotalActualPrice] = useState(0);
   const [isConfirm, toggleConfirm] = useState(false);
   const [pickedService, setService] = useState(null);
   const [pickedDate, setDate] = useState(null);
@@ -114,6 +117,8 @@ const ClientPage = () => {
         <ChooseService
           handlePage={setPage}
           handleService={setService}
+          handleTotalPrice={setTotalPrice}
+          handleTotalActualPrice={setTotalActualPrice}
           toggleConfirm={toggleConfirm}
         />
       )}
@@ -138,6 +143,8 @@ const ClientPage = () => {
           date={pickedDate}
           time={pickedTime}
           service={pickedService}
+          price={totalPrice}
+          actualPrice={totalActualPrice}
           notes={notes}
           handlePage={setPage}
         />
@@ -148,8 +155,8 @@ const ClientPage = () => {
             Scan To Complete Your Payment
           </p>
           <p className="font-semibold lg:text-sm">TRICH BARBERSPACE</p>
-          <p className="font-extrabold text-orange1 lg:text-base">
-            {pickedService.price}
+          <p className="font-extrabold text-orange1 lg:text-base xl:text-lg 2xl:text-xl">
+            IDR {totalPrice >= 100000 ? "100.000" : totalPrice}
           </p>
           <Image src={Qris} alt="Trich-QRIS" width={250} />
           <div className="flex flex-row space-x-1 md:space-x-4 py-4 text-xs lg:text-sm">
@@ -169,7 +176,7 @@ const ClientPage = () => {
         </div>
       )}
       <div className="w-0 h-0">
-        <ToastContainer/>
+        <ToastContainer />
       </div>
     </section>
   );
