@@ -8,7 +8,7 @@ const services = [
     desc: "The Cutting Edge + 2 additional services (Trim & Treat/Wax Mining/Mask Off)",
     price: "135.000",
     duration: "2 Hours",
-    is_coming_soon: true,
+    is_coming_soon: false,
   },
   {
     name: "THE CUTTING EDGE",
@@ -17,18 +17,18 @@ const services = [
     duration: "1 Hour",
     is_coming_soon: false,
   },
-  // {
-  //   name: "PERMIFICATION",
-  //   desc: "Our pro-grade Perm Service unlocks effortless texture and lasting volume. Our expert barbermen craft customized perms for natural waves or defined curls, using top-of-the-line solutions and premium products. Experience lasting volume and textures to invest in your confidence!",
-  //   price: "150.000-500.000*",
-  //   duration: "30 Minutes-3 Hours",
-  // },
-  // {
-  //   name: "SMOOTH OPERATOR",
-  //   desc: "Get the executive edge with our Smooth Operator service! This utilizes advanced formulas, but keeps things simple to achieve sleek, smoother hair and easier to manage. Look sharp and feel confident with a polished look that’s anything but ordinary.",
-  //   price: "250.000 - 500.000*",
-  //   duration: "2 Hours",
-  // },
+  {
+    name: "PERMIFICATION",
+    desc: "Our pro-grade Perm Service unlocks effortless texture and lasting volume. Our expert barbermen craft customized perms for natural waves or defined curls, using top-of-the-line solutions and premium products. Experience lasting volume and textures to invest in your confidence!",
+    price: "150.000-500.000*",
+    duration: "30 Minutes-3 Hours",
+  },
+  {
+    name: "SMOOTH OPERATOR",
+    desc: "Get the executive edge with our Smooth Operator service! This utilizes advanced formulas, but keeps things simple to achieve sleek, smoother hair and easier to manage. Look sharp and feel confident with a polished look that’s anything but ordinary.",
+    price: "250.000 - 500.000*",
+    duration: "2 Hours",
+  },
   // {
   //   name: "TRUE COLORS",
   //   desc: "Forge a fresh look with our Sharp-Edge Hair Coloring service. Our barbermen are certified colorists who use premium, scalp-friendly dyes to create your perfect shades, all while keeping your hair healthy and vibrant!",
@@ -41,24 +41,24 @@ const services = [
   //   price: "50.000 - 150.000*",
   //   duration: "15-45 Minutes*",
   // },
-  // {
-  //   name: "TRIM & TREAT",
-  //   desc: "Refine your looks and get the best of both worlds! We’ll expertly detail your beard and mustache and deliver a refreshingly close shave with warm towel and premium products. Leave feeling sleek, smooth, and ready!",
-  //   price: "35.000",
-  //   duration: "15 Minutes",
-  // },
+  {
+    name: "TRIM & TREAT",
+    desc: "Refine your looks and get the best of both worlds! We’ll expertly detail your beard and mustache and deliver a refreshingly close shave with warm towel and premium products. Leave feeling sleek, smooth, and ready!",
+    price: "35.000",
+    duration: "15 Minutes",
+  },
   // {
   //   name: "WAX MINING",
   //   desc: "Elevate your grooming experience with our discreet and comfortable Ear & Nose Wax service. Our expert barbers utilize a gentle technique to remove unwanted hair, leaving you feeling refreshed and looking your sharpest.",
   //   price: "35.000",
   //   duration: "30 Minutes",
   // },
-  // {
-  //   name: "MASK OFF",
-  //   desc: "Upgrade your haircut experience with our post-trim Face Treatment. We'll cleanse, soothe, and invigorate your skin with a premium mask, leaving you feeling refreshed and ready to face the day",
-  //   price: "35.000",
-  //   duration: "30 Minutes",
-  // },
+  {
+    name: "MASK OFF",
+    desc: "Upgrade your haircut experience with our post-trim Face Treatment. We'll cleanse, soothe, and invigorate your skin with a premium mask, leaving you feeling refreshed and ready to face the day",
+    price: "35.000",
+    duration: "30 Minutes",
+  },
 ];
 
 const ViewServices = () => {
