@@ -19,12 +19,6 @@ const ConfirmPay = ({ date, time, service, price, actualPrice, notes, handlePage
           <p className="font-bold">{service}</p>
         </div>
         <div className="flex flex-row items-center justify-between">
-          <p className="text-[#545454] font-semibold">Total Price</p>
-          <p className="font-extrabold text-orange1 lg:text-base">
-            IDR {price}
-          </p>
-        </div>
-        <div className="flex flex-row items-center justify-between">
           <p className="text-[#545454] font-semibold">Down Payment</p>
           <p className="font-extrabold text-orange1 lg:text-base">
             IDR {price >= 100000 ? "100.000" : price}

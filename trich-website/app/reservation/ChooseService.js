@@ -69,7 +69,7 @@ const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice
                 <p className="text-sm lg:text-sm xl:text-base 2xl:text-lg">
                   {service.name} -{" "}
                   <span className="text-orange1 font-semibold">
-                    {service.price}
+                    {service.actual_price}
                   </span>
                 </p>
                 <p className="text-gray-500 font-semibold text-sm lg:text-sm xl:text-base 2xl:text-lg">
