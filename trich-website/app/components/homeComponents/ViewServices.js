@@ -64,6 +64,7 @@ const services = [
 const ViewServices = () => {
   return (
     <section
+      id="services"
       style={{ backgroundImage: `url(${ServicesBg.src})` }}
       className="bg-cover bg-center bg-no-repeat flex flex-col items-center justify-center tracking-wider text-white py-8 px-6 lg:px-12"
     >

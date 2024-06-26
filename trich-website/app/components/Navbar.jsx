@@ -11,7 +11,7 @@ import Sidebar from "./Sidebar";
 import NavbarLogoWhite from "@/public/components/navbar_components/NavbarLogoWhite.svg";
 import NavbarLogoBlack from "@/public/components/navbar_components/NavbarLogoBlack.svg";
 import UserIcon from "@/public/components/navbar_components/userimage.png";
-import SideBarIcon from "@/public/components/navbar_components/sidebaricon.svg";
+import SideBarIcon from "@/public/components/navbar_components/sidebar.svg";
 
 const paths = [
   {
@@ -81,13 +81,13 @@ const Navbar = () => {
 
         {/* Logo on the left */}
         {navColor() ? (
-          <div className="flex items-center">
+          <div className="hidden md:flex items-center">
             <Link href="/">
               <Image src={NavbarLogoBlack} alt="Logo-Black" />
             </Link>
           </div>
         ) : (
-          <div className="flex items-center">
+          <div className="hidden md:flex items-center">
             <Link href="/">
               <Image src={NavbarLogoWhite} alt="Logo-White" />
             </Link>
@@ -100,7 +100,7 @@ const Navbar = () => {
             return (
               <li key={idx}>
                 <Link
-                  href={path.url}
+                  href={path.name == "Services" ? "#services" : path.url}
                   className={
                     pathname === path.url ||
                     pathname?.split("/")[1] === path.name.toLowerCase()
@@ -124,8 +124,8 @@ const Navbar = () => {
         {/* "Book Now" button and user icon on the right */}
         {userLoggedIn ? (
           <div className="flex items-center space-x-4">
-            <Link href="/reservation" className="hidden md:flex">
-              <button className="bg-orange1 hover:bg-orange-300 text-white font-normal text-[10px] lg:text-[12px] xl:text-base py-2 px-6 rounded">
+            <Link href="/reservation" className="flex">
+              <button className="bg-orange1 hover:bg-orange-300 text-white md:font-normal font-semibold text-[14px] lg:text-[12px] xl:text-base py-2 px-6 rounded">
                 Book Now
               </button>
             </Link>

@@ -5,7 +5,7 @@ const page = () => {
   return (
     <main
       style={{ backgroundImage: `url(${DescBg.src})` }}
-      className="flex min-h-screen items-center justify-center"
+      className="flex min-h-screen items-center justify-center px-4"
     >
       <ClientPage />
     </main>

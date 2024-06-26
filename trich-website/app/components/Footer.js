@@ -64,16 +64,30 @@ const Footer = () => {
         <p className="font-semibold">Contact us</p>
         <div className="flex flex-row items-center justify-center space-x-3">
           <Image src={PhoneIcon} width={15} alt="Phone-Icon" />
-          <p className="opacity-50 lg:text-xs">+62 821-2878-5274</p>
+          <p className="opacity-50 lg:text-xs">
+            <a href="tel:+6282128785274">+62 821-2878-5274</a>
+          </p>
         </div>
         <div className="flex flex-row items-center justify-center space-x-3">
           <Image src={MailIcon} width={15} alt="Mail-Icon" />
-          <p className="opacity-50 lg:text-xs">trichbarberspace@gmail.com</p>
+          <p className="opacity-50 lg:text-xs">
+            <a href="mailto:trichbarberspace@gmail.com">
+              trichbarberspace@gmail.com
+            </a>
+          </p>
         </div>
         <p className="font-semibold">Visit us</p>
         <div className="flex flex-row items-center justify-center space-x-3">
           <Image src={HomeIcon} width={15} alt="Home-Icon" />
-          <p className="opacity-50 lg:text-xs">Jl. Sumbawa no. 24</p>
+          <p className="opacity-50 lg:text-xs">
+            <a
+              href="https://www.google.com/maps?gs_lcrp=EgZjaHJvbWUyBggAEEUYOdIBCDM0MDdqMGoxqAIAsAIA&um=1&ie=UTF-8&fb=1&gl=id&sa=X&geocode=KR-6JXQA52guMatoHFLRyXT_&daddr=Jl.+Sumbawa+No.24,+Merdeka,+Kec.+Sumur+Bandung,+Kota+Bandung,+Jawa+Barat+40113"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Jl. Sumbawa no. 24
+            </a>
+          </p>
         </div>
       </div>
     </footer>

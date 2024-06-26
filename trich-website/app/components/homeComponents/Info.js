@@ -55,7 +55,6 @@ const Info = () => {
       }
     };
 
-
     updateImageWidth();
 
     window.addEventListener("resize", updateImageWidth);
@@ -74,18 +73,28 @@ const Info = () => {
           <Image src={PinIcon} alt="Pin-Icon" />
           {/* Location Info flex-col */}
           <div className="flex flex-col space-y-4 items-start text-sm">
-            <h2 className="font-bold text-2xl lg:text-3xl xl:text-4xl">Location</h2>
+            <h2 className="font-bold text-2xl lg:text-3xl xl:text-4xl">
+              Location
+            </h2>
             <div className="flex flex-row items-center justify-center space-x-3">
               <Image src={HomeIcon} alt="Home-Icon" />
-              <p className="xl:text-lg">Jl. Sumbawa no. 24, Merdeka, Sumur Bandung, Kota Bandung</p>
+              <p className="xl:text-lg">
+                Jl. Sumbawa no. 24, Merdeka, Sumur Bandung, Kota Bandung
+              </p>
             </div>
             <div className="flex flex-row items-center justify-center space-x-3">
               <Image src={PhoneIcon} alt="Phone-Icon" />
-              <p className="xl:text-lg">+62 821-2878-5274</p>
+              <p className="xl:text-lg">
+                <a href="tel:+6282128785274">+62 821-2878-5274</a>
+              </p>
             </div>
             <div className="flex flex-row items-center justify-center space-x-3">
               <Image src={MailIcon} alt="Mail-Icon" />
-              <p className="xl:text-lg">trichbarberspace@gmail.com</p>
+              <p className="xl:text-lg">
+                <a href="mailto:trichbarberspace@gmail.com">
+                  trichbarberspace@gmail.com
+                </a>
+              </p>
             </div>
           </div>
         </div>
@@ -99,7 +108,7 @@ const Info = () => {
             </h2>
             {Schedule.map((s, idx) => {
               return (
-                <div className="flex flex-row items-center w-full justify-between xl:text-lg">
+                <div key={idx} className="flex flex-row items-center w-full space-x-3 justify-between xl:text-lg">
                   <p className="font-semibold">{s.date}</p>
                   <p>{s.hour}</p>
                 </div>
@@ -111,12 +120,18 @@ const Info = () => {
 
       {/* Map */}
       <div>
-        <Image
-          src={Map}
-          width={imageWidth}
-          alt="Map-Img"
-          object-fit="contain"
-        />
+        <a
+          href="https://www.google.com/maps?gs_lcrp=EgZjaHJvbWUyBggAEEUYOdIBCDM0MDdqMGoxqAIAsAIA&um=1&ie=UTF-8&fb=1&gl=id&sa=X&geocode=KR-6JXQA52guMatoHFLRyXT_&daddr=Jl.+Sumbawa+No.24,+Merdeka,+Kec.+Sumur+Bandung,+Kota+Bandung,+Jawa+Barat+40113"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            src={Map}
+            width={imageWidth}
+            alt="Map-Img"
+            object-fit="contain"
+          />
+        </a>
       </div>
     </section>
   );

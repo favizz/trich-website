@@ -21,7 +21,7 @@ const Sidebar = ({ paths, isOpen, toggleSidebar, pathname }) => {
       <ul className="mt-4 space-y-4">
         {paths.map((path, idx) => (
           <li key={idx} onClick={toggleSidebar}>
-            <Link href={path.url}>
+            <Link href={path.name == "Services" ? "#services" : path.url}>
               <p
                 className={`block px-8 py-2 font-bold text-xl rounded hover:bg-gray-700 ${
                   pathname === path.url ||

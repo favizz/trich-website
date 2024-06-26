@@ -13,11 +13,9 @@ const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice
     let updatedServices;
 
     if (chosenServices.includes(service)) {
-      // Remove the service if it is already selected
       updatedServices = chosenServices.filter((s) => s !== service);
     } else {
       if (service === "The Trich Experience") {
-        // If Service A is selected, remove Services B and C from the list
         updatedServices = [
           "The Trich Experience",
           ...chosenServices.filter(
@@ -32,7 +30,6 @@ const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice
         service === "Trim & Treat" ||
         service === "Mask Off"
       ) {
-        // If Service B or C is selected and Service A is in the list, do not add B or C
         if (chosenServices.includes("The Trich Experience")) {
           ToastManager.notify('Trich Experience already includes these services', 'error')
           return;
@@ -55,6 +52,14 @@ const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice
       return total + (serviceObj ? serviceObj.actual_price : 0);
     }, 0));
   };
+
+  const handleSubmit = () => {
+    if (chosenServices.length == 0) {
+      ToastManager.notify('Please select a service!', 'error');
+      return;
+    } 
+    toggleConfirm(true);
+  }
 
   return (
     <div className="w-full space-y-2">
@@ -81,7 +86,7 @@ const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice
               </div>
               <input
                 type="checkbox"
-                className="w-6 h-6 rounded-xl accent-orange1"
+                className="md:w-6 md:h-6 rounded-xl accent-orange1"
                 checked={chosenServices.includes(service.name)}
                 onChange={() => handleServiceChange(service.name)}
               />
@@ -94,13 +99,10 @@ const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice
         <div
             onClick={() => {
               const tempService = chosenServices.join(", ");
-              console.log(tempService)
               handleService(tempService);
               handleTotalPrice(totalPrice);
               handleTotalActualPrice(totalActualPrice);
-              toggleConfirm(true);
-              console.log(totalPrice);
-              console.log(totalActualPrice);
+              handleSubmit();
             }}
           className="text-center border hover:border-orange1 hover:bg-white bg-orange1 hover:text-orange1 text-white font-bold  px-12 py-2 rounded"
         >

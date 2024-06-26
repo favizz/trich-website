@@ -12,9 +12,6 @@ const ServiceCard = ({name, desc, price, duration, isComingSoon}) => {
       <p className="text-[#545454] lg:text-xs text-justify tracking-wider">
         {desc}
       </p>
-      <Link href="/reservation">
-        <div className="bg-orange1 mt-4 text-white rounded font-bold px-8 py-3 lg:text-xs">Book now</div>
-      </Link>
     </div>
     <div className={`${isComingSoon ? "" : "hidden"} max-w-[400px] h-[440px] lg:h-[360px] rounded-[10px] flex flex-col items-center justify-center bg-white tracking-widest`}>
       <p className="text-orange1 font-bold text-2xl">MORE COMING SOON...</p>
