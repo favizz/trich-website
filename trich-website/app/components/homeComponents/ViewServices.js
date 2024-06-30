@@ -26,7 +26,7 @@ const services = [
     desc: "Our pro-grade Perm Service unlocks effortless texture and lasting volume. Our expert barbermen craft customized perms for natural waves or defined curls, using top-of-the-line solutions and premium products. Experience lasting volume and textures to invest in your confidence!",
     services: "Classic Perm / Down Perm / Root Lift",
     price: "150.000-500.000*",
-    duration: "30 Minutes-3 Hours",
+    duration: "30 Minutes-2 Hours",
     is_price_range: true,
   },
   {
@@ -54,7 +54,7 @@ const services = [
     desc: "Transform your hair and indulge in pure relaxation with our revitalizing Creambath service. This all-inclusive hair treatment will leave your hair that feels as good as it looks!",
     services: "Shaving + Warm Towel + After-shave Serum",
     price: "35.000",
-    duration: "15 Minutes",
+    duration: "30 Minutes",
     is_price_range: false,
   },
   // {

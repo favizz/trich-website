@@ -80,6 +80,7 @@ const ClientPage = () => {
   const [pickedDate, setDate] = useState(null);
   const [pickedTime, setTime] = useState(null);
   const [notes, setNotes] = useState(null);
+  const [totalDuration, setDuration] = useState(null);
 
   return (
     <section className="flex flex-col items-center bg-white rounded-lg py-8 my-28 shadow-xl tracking-wider">
@@ -121,6 +122,7 @@ const ClientPage = () => {
           handleService={setService}
           handleTotalPrice={setTotalPrice}
           handleTotalActualPrice={setTotalActualPrice}
+          handleDuration={setDuration}
           toggleConfirm={toggleConfirm}
         />
       )}
@@ -146,7 +148,7 @@ const ClientPage = () => {
           time={pickedTime}
           service={pickedService}
           price={totalPrice}
-          actualPrice={totalActualPrice}
+          duration={totalDuration}
           notes={notes}
           handlePage={setPage}
         />
@@ -158,7 +160,7 @@ const ClientPage = () => {
           </p>
           <p className="font-semibold lg:text-sm">TRICH BARBERSPACE</p>
           <p className="font-extrabold text-orange1 lg:text-base xl:text-lg 2xl:text-xl">
-            IDR {totalPrice >= 100000 ? "100.000" : formatPrice(totalPrice)}
+            IDR {totalPrice >= 200000 ? "100.000" : formatPrice(totalPrice)}
           </p>
           <Image src={Qris} alt="Trich-QRIS" width={250} />
           <div className="flex flex-row space-x-1 md:space-x-4 py-4 text-xs lg:text-sm">

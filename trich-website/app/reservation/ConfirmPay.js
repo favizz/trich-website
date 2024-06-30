@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { formatPrice } from "./ChooseService";
 
-const ConfirmPay = ({ date, time, service, price, actualPrice, notes, handlePage }) => {
+const ConfirmPay = ({ date, time, service, price, duration, notes, handlePage }) => {
   const [agreePolicy, setAgreePolicy] = useState(false);
 
   return (
@@ -20,9 +20,13 @@ const ConfirmPay = ({ date, time, service, price, actualPrice, notes, handlePage
           <p className="font-bold">{service}</p>
         </div>
         <div className="flex flex-row items-center justify-between">
+          <p className="text-[#545454] font-semibold">Duration</p>
+          <p className="font-bold">{duration*60} Minutes</p>
+        </div>
+        <div className="flex flex-row items-center justify-between">
           <p className="text-[#545454] font-semibold">Down Payment</p>
           <p className="font-extrabold text-orange1 lg:text-base">
-            IDR {price >= 100000 ? "100.000" : formatPrice(price)}
+            IDR {price >= 200000 ? "100.000" : formatPrice(price)}
           </p>
         </div>
         <div className="flex flex-row items-center justify-between">
@@ -33,7 +37,10 @@ const ConfirmPay = ({ date, time, service, price, actualPrice, notes, handlePage
       <div className="w-full h-[0.5px] bg-gray-600"></div>
       <div className="px-4 lg:px-6 space-y-2 mt-4">
         <p className="font-bold">Cancellation Policy:</p>
-        <p className="max-w-[80vw] lg:max-w-[50vw] xl:max-w-[40vw]  2xl:max-w-[30vw] lg:text-xs ">
+        <p className="text-orange1 font-bold max-w-[80vw] lg:max-w-[50vw] xl:max-w-[40vw] 2xl:max-w-[30vw] text-[11px] lg:text-xs ">
+          Please arrive 10 minutes before appointment
+        </p>
+        <p className="max-w-[80vw] lg:max-w-[50vw] xl:max-w-[40vw]  2xl:max-w-[30vw] text-[11px]  lg:text-xs ">
           Cancellations are accepted; however, the down payment is
           non-refundable. We appreciate your understanding and cooperation.
         </p>
