@@ -5,29 +5,37 @@ import RevealTitle from "../animation/Reveal";
 const services = [
   {
     name: "THE TRICH EXPERIENCE",
-    desc: "The Cutting Edge + 2 additional services (Trim & Treat/Wax Mining/Mask Off)",
+    desc: "",
+    services: "The Cutting Edge + 2 additional services (Trim & Treat/Wax Mining/Mask Off)",
     price: "135.000",
     duration: "2 Hours",
     is_coming_soon: false,
+    is_price_range: false,
   },
   {
     name: "THE CUTTING EDGE",
     desc: "Achieve a Haircut as sharp as your style with our signature service. Our comprehensive service features a cleansing wash, a relaxing warm towel treatment, a stimulating scalp massage, and your very own choice of premium styling product, for elevated grooming experience.",
+    services: "Haircut + Hair Wash + Warm Towel + Hot Stone Massage + Hairstyling",
     price: "85.000",
     duration: "1 Hour",
     is_coming_soon: false,
+    is_price_range: false,
   },
   {
     name: "PERMIFICATION",
     desc: "Our pro-grade Perm Service unlocks effortless texture and lasting volume. Our expert barbermen craft customized perms for natural waves or defined curls, using top-of-the-line solutions and premium products. Experience lasting volume and textures to invest in your confidence!",
+    services: "Classic Perm / Down Perm / Root Lift",
     price: "150.000-500.000*",
     duration: "30 Minutes-3 Hours",
+    is_price_range: true,
   },
   {
     name: "SMOOTH OPERATOR",
     desc: "Get the executive edge with our Smooth Operator service! This utilizes advanced formulas, but keeps things simple to achieve sleek, smoother hair and easier to manage. Look sharp and feel confident with a polished look that’s anything but ordinary.",
+    services: "Hair Smoothing + Hair Vitamin Serum",
     price: "250.000 - 500.000*",
     duration: "2 Hours",
+    is_price_range: true,
   },
   // {
   //   name: "TRUE COLORS",
@@ -44,8 +52,10 @@ const services = [
   {
     name: "TRIM & TREAT",
     desc: "Refine your looks and get the best of both worlds! We’ll expertly detail your beard and mustache and deliver a refreshingly close shave with warm towel and premium products. Leave feeling sleek, smooth, and ready!",
+    services: "Shaving + Warm Towel + After-shave Serum",
     price: "35.000",
     duration: "15 Minutes",
+    is_price_range: false,
   },
   // {
   //   name: "WAX MINING",
@@ -56,8 +66,10 @@ const services = [
   {
     name: "MASK OFF",
     desc: "Upgrade your haircut experience with our post-trim Face Treatment. We'll cleanse, soothe, and invigorate your skin with a premium mask, leaving you feeling refreshed and ready to face the day",
+    services: "Face Mask + Face Wash + Warm Towel",
     price: "35.000",
     duration: "30 Minutes",
+    is_price_range: false,
   },
 ];
 
@@ -87,6 +99,8 @@ const ViewServices = () => {
                 price={c.price}
                 duration={c.duration}
                 isComingSoon={c.is_coming_soon}
+                isPriceRange={c.is_price_range}
+                service={c.services}
               />
             </RevealTitle>
           );

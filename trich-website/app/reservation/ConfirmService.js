@@ -20,13 +20,13 @@ const ConfirmService = ({
         <p className="font-bold">Do you want to continue?</p>
         <div className="flex flex-row space-x-4 py-4">
           <div
-            onClick={() => handlePage(2)}
+            onClick={() => toggleConfirm(false)}
             className="border border-orange1 hover:bg-orange1 text-orange1 hover:text-white font-bold  px-12 py-2 rounded"
           >
             No
           </div>
           <div
-            onClick={() => toggleConfirm(false)}
+            onClick={() => handlePage(2)}   
             className="bg-green2 hover:bg-white text-white hover:text-green2 border hover:border-green2 font-bold px-10 py-2 rounded"
           >
             Yes
