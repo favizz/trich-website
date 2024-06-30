@@ -6,7 +6,7 @@ const services = [
   {
     name: "THE TRICH EXPERIENCE",
     desc: "",
-    services: "The Cutting Edge + 2 additional services (Trim & Treat/Wax Mining/Mask Off)",
+    services: "The Cutting Edge + 2 additional services (Trim & Treat/Creambath/Mask Off)",
     price: "135.000",
     duration: "2 Hours",
     is_coming_soon: false,
@@ -51,7 +51,7 @@ const services = [
   // },
   {
     name: "TRIM & TREAT",
-    desc: "Refine your looks and get the best of both worlds! We’ll expertly detail your beard and mustache and deliver a refreshingly close shave with warm towel and premium products. Leave feeling sleek, smooth, and ready!",
+    desc: "Transform your hair and indulge in pure relaxation with our revitalizing Creambath service. This all-inclusive hair treatment will leave your hair that feels as good as it looks!",
     services: "Shaving + Warm Towel + After-shave Serum",
     price: "35.000",
     duration: "15 Minutes",
@@ -67,6 +67,14 @@ const services = [
     name: "MASK OFF",
     desc: "Upgrade your haircut experience with our post-trim Face Treatment. We'll cleanse, soothe, and invigorate your skin with a premium mask, leaving you feeling refreshed and ready to face the day",
     services: "Face Mask + Face Wash + Warm Towel",
+    price: "35.000",
+    duration: "30 Minutes",
+    is_price_range: false,
+  },
+  {
+    name: "CREAMBATH",
+    desc: "Upgrade your haircut experience with our post-trim Face Treatment. We'll cleanse, soothe, and invigorate your skin with a premium mask, leaving you feeling refreshed and ready to face the day",
+    services: "Hair Wash + Hair Creambath + Scalp Massage + Hair Vitamin Serum",
     price: "35.000",
     duration: "30 Minutes",
     is_price_range: false,
