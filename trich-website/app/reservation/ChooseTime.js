@@ -22,9 +22,20 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
     "21:00",
   ];
 
+  const [pickedDate, pickDate] = useState("");
   const [pickedTime, pickTime] = useState(0);
   const [operationalTimes, setOperationalTimes] = useState(allOperationalTimes);
   const [isDateValid, toggleDateValid] = useState(true);
+
+  const getTodaysDate = () => {
+    const date = new Date();
+
+    const year = String(date.getFullYear()).padStart(4, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  }
 
   const handleTimePick = (input) => {
     if (input === -1) {
@@ -38,7 +49,23 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
     }
   };
 
+  const handleAvailableHours = () => {
+    const nowDate = new Date();
+    if (pickedDate !== "") {
+      if (pickedDate == getTodaysDate()) {
+        const filteredTimes = allOperationalTimes.filter((timeString) => {
+          const [hours, minutes] = timeString.split(":").map(Number);
+          const operationalTime = new Date();
+          operationalTime.setHours(hours, minutes, 0, 0);
+          return operationalTime > nowDate;
+        });
+        setOperationalTimes(filteredTimes);
+      }
+    }
+  };
+
   useEffect(() => {
+    handleAvailableHours();
     handleTime(operationalTimes[pickedTime]);
   }, [date, pickedTime, operationalTimes]);
 
@@ -98,7 +125,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
         acc[booking.time] = (acc[booking.time] || 0) + 1;
         return acc;
       }, {});
-      
+
       quotas.forEach((quota) => {
         if (!fullyBookedTimes[quota.time]) {
           fullyBookedTimes[quota.time] = 0; // Initialize if not present
@@ -124,7 +151,10 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
     <div className="w-full flex flex-col items-center justify-center lg:text-sm xl:text-base 2xl:text-lg">
       <input
         type="date"
-        onChange={(e) => handleDateChange(e)}
+        onChange={(e) => {
+          handleDateChange(e);
+          pickDate(e.target.value);
+        }}
         className="my-4"
       />
       <div className="w-full h-[0.5px] bg-gray-600 mb-8"></div>

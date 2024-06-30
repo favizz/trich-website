@@ -15,6 +15,8 @@ import ConfirmPay from "./ConfirmPay";
 import { ToastContainer } from "react-toastify";
 import ToastManager from "../components/toaster";
 
+import { formatPrice } from "./ChooseService";
+
 import Qris from "@/public/reservationAssets/qris.png";
 
 const ClientPage = () => {
@@ -156,7 +158,7 @@ const ClientPage = () => {
           </p>
           <p className="font-semibold lg:text-sm">TRICH BARBERSPACE</p>
           <p className="font-extrabold text-orange1 lg:text-base xl:text-lg 2xl:text-xl">
-            IDR {totalPrice >= 100000 ? "100.000" : totalPrice}
+            IDR {totalPrice >= 100000 ? "100.000" : formatPrice(totalPrice)}
           </p>
           <Image src={Qris} alt="Trich-QRIS" width={250} />
           <div className="flex flex-row space-x-1 md:space-x-4 py-4 text-xs lg:text-sm">

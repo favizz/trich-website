@@ -4,6 +4,38 @@ import { Services } from "./Services";
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
 
+export const formatPrice = (number) => {
+  if (isNaN(number)) {
+    return null; // Handle invalid input (optional)
+  }
+
+  // Convert the number to a string
+  const numberString = number.toString();
+
+  // Split the number into integer and decimal parts (if any)
+  const [integerPart, decimalPart = ""] = numberString.split(".");
+
+  // Reverse the integer part for easier processing
+  const reversedInteger = integerPart.split("").reverse().join("");
+
+  // Add commas every 3 digits using a loop
+  let formattedInteger = "";
+  for (let i = 0; i < reversedInteger.length; i++) {
+    if (i > 0 && i % 3 === 0) {
+      formattedInteger += ".";
+    }
+    formattedInteger += reversedInteger[i];
+  }
+
+  // Reverse the formatted integer back to normal order
+  formattedInteger = formattedInteger.split("").reverse().join("");
+
+  // Combine formatted integer and decimal part (if any)
+  const formattedNumber = `${formattedInteger}${decimalPart ? "." + decimalPart : ""}`;
+
+  return formattedNumber;
+}
+
 const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice, toggleConfirm }) => {
   const [chosenServices, setChosenServices] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -74,7 +106,7 @@ const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice
                 <p className="text-sm lg:text-sm xl:text-base 2xl:text-lg">
                   {service.name} -{" "}
                   <span className="text-orange1 font-semibold">
-                    {service.actual_price}
+                    {formatPrice(service.actual_price)}
                   </span>
                 </p>
                 <p className="text-gray-500 font-semibold text-sm lg:text-sm xl:text-base 2xl:text-lg">

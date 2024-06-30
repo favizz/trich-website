@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatPrice } from "./ChooseService";
 
 const ConfirmPay = ({ date, time, service, price, actualPrice, notes, handlePage }) => {
   const [agreePolicy, setAgreePolicy] = useState(false);
@@ -21,12 +22,12 @@ const ConfirmPay = ({ date, time, service, price, actualPrice, notes, handlePage
         <div className="flex flex-row items-center justify-between">
           <p className="text-[#545454] font-semibold">Down Payment</p>
           <p className="font-extrabold text-orange1 lg:text-base">
-            IDR {price >= 100000 ? "100.000" : price}
+            IDR {price >= 100000 ? "100.000" : formatPrice(price)}
           </p>
         </div>
         <div className="flex flex-row items-center justify-between">
           <p className="text-[#545454] font-semibold">Notes</p>
-          <p className="font-light lg:text-sm">{notes ? notes : "-"}</p>
+          <p className="font-light lg:text-sm">{notes ? notes : "---"}</p>
         </div>
       </div>
       <div className="w-full h-[0.5px] bg-gray-600"></div>
