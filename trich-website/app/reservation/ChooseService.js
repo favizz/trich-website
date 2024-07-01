@@ -18,11 +18,19 @@ export const formatPrice = (number) => {
   }
 
   formattedInteger = formattedInteger.split("").reverse().join("");
-  const formattedNumber = `${formattedInteger}${decimalPart ? "." + decimalPart : ""}`;
+  const formattedNumber = `${formattedInteger}${
+    decimalPart ? "." + decimalPart : ""
+  }`;
   return formattedNumber;
-}
+};
 
-const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice, handleDuration, toggleConfirm }) => {
+const ChooseService = ({
+  handleService,
+  handleTotalPrice,
+  handleTotalActualPrice,
+  handleDuration,
+  toggleConfirm,
+}) => {
   const [chosenServices, setChosenServices] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalActualPrice, setTotalActualPrice] = useState(0);
@@ -50,7 +58,10 @@ const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice
         service === "Mask Off"
       ) {
         if (chosenServices.includes("The Trich Experience")) {
-          ToastManager.notify('Trich Experience already includes these services', 'error')
+          ToastManager.notify(
+            "Trich Experience already includes these services",
+            "error"
+          );
           return;
         }
         updatedServices = [...chosenServices, service];
@@ -61,40 +72,50 @@ const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice
 
     setChosenServices(updatedServices);
 
-    setTotalPrice(updatedServices.reduce((total, service) => {
-      const serviceObj = Services.find(s => s.name === service);
-      return total + (serviceObj ? serviceObj.nominal : 0);
-    }, 0));
+    setTotalPrice(
+      updatedServices.reduce((total, service) => {
+        const serviceObj = Services.find((s) => s.name === service);
+        return total + (serviceObj ? serviceObj.nominal : 0);
+      }, 0)
+    );
 
-    setTotalActualPrice(updatedServices.reduce((total, service) => {
-      const serviceObj = Services.find(s => s.name === service);
-      return total + (serviceObj ? serviceObj.actual_price : 0);
-    }, 0));
+    setTotalActualPrice(
+      updatedServices.reduce((total, service) => {
+        const serviceObj = Services.find((s) => s.name === service);
+        return total + (serviceObj ? serviceObj.actual_price : 0);
+      }, 0)
+    );
 
-    setDuration(updatedServices.reduce((total, service) => {
-      const serviceObj = Services.find(s => s.name === service);
-      return total + (serviceObj ? serviceObj.duration : 0);
-    }, 0));
-
-    console.log(totalDuration)
+    setDuration(
+      updatedServices.reduce((total, service) => {
+        const serviceObj = Services.find((s) => s.name === service);
+        return total + (serviceObj ? serviceObj.duration : 0);
+      }, 0)
+    );
   };
 
   const handleSubmit = () => {
     if (chosenServices.length == 0) {
-      ToastManager.notify('Please select a service!', 'error');
+      ToastManager.notify("Please select a service!", "error");
       return;
-    } 
+    }
+    if (
+      chosenServices.length == 1 &&
+      (chosenServices.includes("Mask Off") ||
+        chosenServices.includes("Wax Mining") ||
+        chosenServices.includes("Trim & Treat"))
+    ) {
+      ToastManager.notify("Please add another service!", "error");
+      return;
+    }
     toggleConfirm(true);
-  }
+  };
 
   return (
     <div className="w-full space-y-2">
       {Services.map((service, idx) => {
         return (
-          <div
-            key={idx}
-            className="py-[2px]"
-          >
+          <div key={idx} className="py-[2px]">
             <div className="flex flex-row items-center justify-between font-bold px-4 lg:px-6 xl:px-10">
               <div className="flex flex-col space-y-0">
                 <p className="font-bold text-sm lg:text-sm xl:text-base 2xl:text-lg">
@@ -104,10 +125,14 @@ const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice
                   </span>
                 </p>
                 <p className="text-gray-500 font-semibold text-sm lg:text-sm xl:text-base 2xl:text-lg">
-                  duration: <span className="font-bold">{service.duration*60}</span> minutes
+                  duration:{" "}
+                  <span className="font-bold">{service.duration * 60}</span>{" "}
+                  minutes
                 </p>
                 <p className="text-green2 font-semibold text-xs xl:text-sm 2xl:text-base w-3/4">
-                  {service.name == "The Trich Experience" ? "*  The Trich Experience includes The Cutting Edge and 2 additional services" : ""}
+                  {service.name == "The Trich Experience"
+                    ? "*  The Trich Experience includes The Cutting Edge and 2 additional services"
+                    : ""}
                 </p>
               </div>
               <input
@@ -123,14 +148,14 @@ const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice
       })}
       <div className="flex flex-col items-center justify-center space-y-2">
         <div
-            onClick={() => {
-              const tempService = chosenServices.join(", ");
-              handleService(tempService);
-              handleTotalPrice(totalPrice);
-              handleTotalActualPrice(totalActualPrice);
-              handleDuration(totalDuration);
-              handleSubmit();
-            }}
+          onClick={() => {
+            const tempService = chosenServices.join(", ");
+            handleService(tempService);
+            handleTotalPrice(totalPrice);
+            handleTotalActualPrice(totalActualPrice);
+            handleDuration(totalDuration);
+            handleSubmit();
+          }}
           className="text-center border hover:border-orange1 hover:bg-white bg-orange1 hover:text-orange1 text-white font-bold  px-12 py-2 rounded"
         >
           Continue
@@ -139,7 +164,7 @@ const ChooseService = ({ handleService, handleTotalPrice, handleTotalActualPrice
           You can choose more than 1 service
         </p>
       </div>
-      
+
       <div className="w-0 h-0">
         <ToastContainer />
       </div>
