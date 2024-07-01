@@ -103,7 +103,8 @@ const ChooseService = ({
       chosenServices.length == 1 &&
       (chosenServices.includes("Mask Off") ||
         chosenServices.includes("Wax Mining") ||
-        chosenServices.includes("Trim & Treat"))
+        chosenServices.includes("Trim & Treat")) ||
+        chosenServices.includes("Creambath")
     ) {
       ToastManager.notify("Please add another service!", "error");
       return;
@@ -121,7 +122,7 @@ const ChooseService = ({
                 <p className="font-bold text-sm lg:text-sm xl:text-base 2xl:text-lg">
                   {service.name} -{" "}
                   <span className="text-orange1 font-semibold">
-                    {formatPrice(service.actual_price)}
+                    {service.is_promo ? <span className="line-through">300.000</span> : ""}{"  "}{formatPrice(service.actual_price)}
                   </span>
                 </p>
                 <p className="text-gray-500 font-semibold text-sm lg:text-sm xl:text-base 2xl:text-lg">

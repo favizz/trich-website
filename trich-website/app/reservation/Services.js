@@ -5,6 +5,7 @@ export const Services = [
         nominal:67500,
         actual_price: 135000,
         duration: 2,
+        is_promo: false,
     },
     {
         name:"The Cutting Edge",
@@ -12,6 +13,15 @@ export const Services = [
         nominal:42500,
         actual_price: 85000,
         duration: 1,
+        is_promo: false,
+    },
+    {
+        name:"Root Lift & Down Perm",
+        price:"100.000",
+        nominal:100000,
+        actual_price: 250000,
+        duration: 1.5,
+        is_promo: true,
     },
     {
         name:"Permification - Classic",
@@ -19,6 +29,7 @@ export const Services = [
         nominal:100000,
         actual_price: 250000,
         duration: 2,
+        is_promo: false,
     },
     {
         name:"Permification - Root Lift",
@@ -26,6 +37,7 @@ export const Services = [
         nominal:75000,
         actual_price: 150000,
         duration: 0.75,
+        is_promo: false,
     },
     {
         name:"Permification - Down",
@@ -33,6 +45,7 @@ export const Services = [
         nominal:75000,
         actual_price: 150000,
         duration: 0.75,
+        is_promo: false,
     },
     {
         name:"Smooth Operator",
@@ -40,6 +53,7 @@ export const Services = [
         nominal:100000,
         actual_price: 250000,
         duration: 2,
+        is_promo: false,
     },
     {
         name:"Trim & Treat",
@@ -47,6 +61,7 @@ export const Services = [
         nominal:17500,
         actual_price: 35000,
         duration: 0.5,
+        is_promo: false,
     },
     {
         name: "Mask Off",
@@ -54,6 +69,7 @@ export const Services = [
         nominal:17500,
         actual_price: 250000,
         duration: 0.5,
+        is_promo: false,
     },
     {
         name: "Creambath",
@@ -61,6 +77,7 @@ export const Services = [
         nominal:17500,
         actual_price: 35000,
         duration: 0.5,
+        is_promo: false,
     },
     // {
     //     name: "True Colors - Full",
