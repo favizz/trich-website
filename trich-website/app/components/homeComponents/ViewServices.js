@@ -73,7 +73,7 @@ const services = [
   },
   {
     name: "CREAMBATH",
-    desc: "Upgrade your haircut experience with our post-trim Face Treatment. We'll cleanse, soothe, and invigorate your skin with a premium mask, leaving you feeling refreshed and ready to face the day",
+    desc: "Transform your hair and indulge in pure relaxation with our revitalizing Creambath service. This all-inclusive hair treatment will leave your hair that feels as good as it looks!",
     services: "Hair Wash + Hair Creambath + Scalp Massage + Hair Vitamin Serum",
     price: "35.000",
     duration: "30 Minutes",
