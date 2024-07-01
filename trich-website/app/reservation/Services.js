@@ -2,7 +2,7 @@ export const Services = [
     {
         name:"The Trich Experience",
         price:"100.000",
-        nominal:100000,
+        nominal:67500,
         actual_price: 135000,
         duration: 2,
     },
@@ -23,14 +23,14 @@ export const Services = [
     {
         name:"Permification - Root Lift",
         price:"100.000",
-        nominal:100000,
+        nominal:75000,
         actual_price: 150000,
         duration: 0.75,
     },
     {
         name:"Permification - Down",
         price:"100.000",
-        nominal:100000,
+        nominal:75000,
         actual_price: 150000,
         duration: 0.75,
     },
