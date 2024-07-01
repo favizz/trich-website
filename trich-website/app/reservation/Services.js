@@ -67,7 +67,7 @@ export const Services = [
         name: "Mask Off",
         price:"17.500",
         nominal:17500,
-        actual_price: 250000,
+        actual_price: 35000,
         duration: 0.5,
         is_promo: false,
     },
