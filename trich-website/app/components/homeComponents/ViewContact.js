@@ -32,7 +32,7 @@ const ViewContact = () => {
         </div>
         <div className="border border-gray-500 flex items-center justify-center text-white font-normal lg:text-[12px] xl:text-base py-3 px-12 lg:w-[140px] xl:w-[160px] rounded">
           <a
-            href="https://www.instagram.com/trichbarber/"
+            href="https://wa.me/628992310069"
             target="_blank"
             rel="noopener noreferrer"
           >

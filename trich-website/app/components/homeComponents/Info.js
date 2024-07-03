@@ -85,7 +85,7 @@ const Info = () => {
             <div className="flex flex-row items-center justify-center space-x-3">
               <Image src={PhoneIcon} alt="Phone-Icon" />
               <p className="xl:text-lg">
-                <a href="tel:+6282128785274">+62 821-2878-5274</a>
+                <a href="tel:+628992310069">+62 899-2310-069</a>
               </p>
             </div>
             <div className="flex flex-row items-center justify-center space-x-3">

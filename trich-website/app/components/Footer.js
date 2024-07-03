@@ -65,7 +65,7 @@ const Footer = () => {
         <div className="flex flex-row items-center justify-center space-x-3">
           <Image src={PhoneIcon} width={15} alt="Phone-Icon" />
           <p className="opacity-50 lg:text-xs">
-            <a href="tel:+6282128785274">+62 821-2878-5274</a>
+            <a href="tel:+628992310069">+62 899-2310-069</a>
           </p>
         </div>
         <div className="flex flex-row items-center justify-center space-x-3">
