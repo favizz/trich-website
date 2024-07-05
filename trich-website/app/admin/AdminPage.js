@@ -26,7 +26,7 @@ const AdminDashboard = () => {
 
   const [quotas, setQuotas] = useState([]);
   const [quotaDate, setQuotaDate] = useState(null);
-  const [quotaQuota, setQuotaQuota] = useState(null);
+  const [quotaQuota, setQuotaQuota] = useState(0);
 
   const [lastFetched, setLastFetched] = useState(null);
   const refreshSpan = 30 * 60 * 1000;
@@ -222,7 +222,7 @@ const AdminDashboard = () => {
       const quotaData = {
         quota_id: uuidv4(),
         date: quotaDate,
-        quota: quotaQuota,
+        quota: parseInt(quotaQuota),
       };
 
       await addDoc(reservationQuotaRef, quotaData);

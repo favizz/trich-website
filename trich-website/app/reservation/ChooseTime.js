@@ -66,8 +66,11 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
 
   useEffect(() => {
     handleAvailableHours();
-    handleTime(operationalTimes[pickedTime]);
-  }, [date, pickedTime, operationalTimes]);
+  }, [pickedDate]);
+  
+  useEffect(() => {
+    handleTime(operationalTimes[pickedTime] || null);
+  }, [pickedTime, operationalTimes]);
 
   const handleDateChange = async (event) => {
     const inputDate = new Date(event.target.value);
@@ -127,12 +130,21 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
       }, {});
 
       quotas.forEach((quota) => {
-        if (!fullyBookedTimes[quota.time]) {
-          fullyBookedTimes[quota.time] = 0; // Initialize if not present
-        }
-        if (fullyBookedTimes[quota.time] >= quota.quota) {
-          fullyBookedTimes[quota.time] = 2; // Mark the time slot as fully booked
-        }
+        operationalTimes.forEach((time) => {
+          if (!fullyBookedTimes[time]) {
+            fullyBookedTimes[time] = 0;
+          }
+          if (fullyBookedTimes[time] >= quota.quota) {
+            fullyBookedTimes[time] = 2;
+          }
+        })
+
+        // if (!fullyBookedTimes[quota.time]) {
+        //   fullyBookedTimes[quota.time] = 0; // Initialize if not present
+        // }
+        // if (fullyBookedTimes[quota.time] >= quota.quota) {
+        //   fullyBookedTimes[quota.time] = 2; // Mark the time slot as fully booked
+        // }
       });
 
       availableTimes = availableTimes.filter(
