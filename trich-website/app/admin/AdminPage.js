@@ -36,6 +36,7 @@ const AdminDashboard = () => {
       fetchUser();
       fetchBookings();
       fetchQuotas();
+      automateRemoveActiveBooking();
       setLastFetched(Date.now());
     }
   }, [bookings]);
@@ -160,6 +161,21 @@ const AdminDashboard = () => {
       ToastManager.notify("Status gagal diubah!", "error");
       console.error("Failed to update booking:", error);
     }
+  };
+
+  const automateRemoveActiveBooking = () => {
+    const currentDate = new Date();
+    // expired booking are bookings that are paid but status not yet turned 3
+    const expiredBooking = bookings.find((book) => {
+      book.date < currentDate;
+    });
+    console.log(expiredBooking);
+
+    expiredBooking.map((booking) => {
+      if (booking.status == 1 || booking.status == 2) {
+        updateBookingStatusByBookingId(booking.booking_id, 3);
+      }
+    });
   };
 
   const deleteBooking = async (booking_id) => {
