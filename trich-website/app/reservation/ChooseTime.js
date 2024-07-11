@@ -19,7 +19,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
     "18:00",
     "19:00",
     "20:00",
-    "21:00",
+    "21:00",  
   ];
 
   const [pickedDate, pickDate] = useState("");
@@ -53,7 +53,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
     const nowDate = new Date();
     if (pickedDate !== "") {
       if (pickedDate == getTodaysDate()) {
-        const filteredTimes = allOperationalTimes.filter((timeString) => {
+        const filteredTimes = operationalTimes.filter((timeString) => {
           const [hours, minutes] = timeString.split(":").map(Number);
           const operationalTime = new Date();
           operationalTime.setHours(hours, minutes, 0, 0);
@@ -102,7 +102,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
 
     handleDate(formattedDate);
 
-    let availableTimes = allOperationalTimes;
+    let availableTimes = operationalTimes;
 
     if (inputDate.getDay() === 5) {
       availableTimes = availableTimes.filter((time) => time !== "12:00");
