@@ -24,7 +24,6 @@ const SignUpForm = () => {
     last_name: "",
     email: "",
     phone_number: "",
-    address: "",
   });
 
   const signUpCheck = () => {
@@ -42,8 +41,7 @@ const SignUpForm = () => {
       formData.first_name == "" ||
       formData.last_name == "" ||
       formData.email == "" ||
-      formData.phone_number == "" ||
-      formData.address == ""
+      formData.phone_number == ""
     ) {
       ToastManager.notify("Please fill all the fields!", "error");
     }
@@ -62,7 +60,6 @@ const SignUpForm = () => {
         last_name: formData.last_name,
         email: formData.email,
         phone_number: formData.phone_number,
-        address: formData.address,
       })
         .then((response) => {
           router.push("/");
@@ -141,19 +138,6 @@ const SignUpForm = () => {
           className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
           placeholder="(xx) xxx-xxx"
           value={formData.phone_number}
-          onChange={handleChange}
-        />
-      </label>
-      <div className="h-6"></div>
-      <label htmlFor="address">
-        <p className="font-medium text-slate-700">Address</p>
-        <input
-          id="address"
-          name="address"
-          type="text"
-          className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-          placeholder="Enter address"
-          value={formData.address}
           onChange={handleChange}
         />
       </label>

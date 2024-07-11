@@ -54,7 +54,6 @@ const ClientPage = () => {
             first_name={userData?.first_name}
             last_name={userData?.last_name}
             email={userData?.email}
-            address={userData?.address}
             phone_number={userData?.phone_number}
           />
         )}
