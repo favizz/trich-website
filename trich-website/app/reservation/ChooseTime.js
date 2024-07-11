@@ -53,6 +53,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
     const nowDate = new Date();
     if (pickedDate !== "") {
       if (pickedDate == getTodaysDate()) {
+        console.log("sama");
         const filteredTimes = operationalTimes.filter((timeString) => {
           const [hours, minutes] = timeString.split(":").map(Number);
           const operationalTime = new Date();
@@ -60,6 +61,8 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
           return operationalTime > nowDate;
         });
         setOperationalTimes(filteredTimes);
+      } else {
+        setOperationalTimes(allOperationalTimes);
       }
     }
   };
