@@ -124,7 +124,7 @@ const Navbar = () => {
         {/* "Book Now" button and user icon on the right */}
         {userLoggedIn ? (
           <div className="flex items-center space-x-4">
-            <Link href="/reservation" className="flex">
+            <Link href="/reservation" className={`flex ${pathname?.split("/")[1] == "reservation" ? "hidden" : ""}`}>
               <button className="bg-orange1 hover:bg-orange-300 text-white md:font-normal font-semibold text-[14px] lg:text-[12px] xl:text-base py-2 px-6 rounded">
                 Book Now
               </button>
