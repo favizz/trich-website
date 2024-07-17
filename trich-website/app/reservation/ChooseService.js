@@ -75,9 +75,9 @@ const ChooseService = ({
     setTotalPrice(
       updatedServices.reduce((total, service) => {
         let serviceObj = Services.find((s) => s.name === service);
-        serviceObj.nominal = promoPricing(serviceObj.name)
-          ? 37500
-          : serviceObj.nominal;
+        // serviceObj.nominal = promoPricing(serviceObj.name)
+        //   ? 37500
+        //   : serviceObj.nominal;
         return total + (serviceObj ? serviceObj.nominal : 0);
       }, 0)
     );
@@ -85,9 +85,9 @@ const ChooseService = ({
     setTotalActualPrice(
       updatedServices.reduce((total, service) => {
         let serviceObj = Services.find((s) => s.name === service);
-        serviceObj.actual_price = promoPricing(serviceObj.name)
-          ? 65000
-          : serviceObj.actual_price;
+        // serviceObj.actual_price = promoPricing(serviceObj.name)
+        //   ? 65000
+        //   : serviceObj.actual_price;
         return total + (serviceObj ? serviceObj.actual_price : 0);
       }, 0)
     );
@@ -114,7 +114,8 @@ const ChooseService = ({
 
   const handleActualPromoPricing = (service, actualPrice) => {
     const nowDate = new Date();
-    if (service === "The Cutting Edge") {
+    // GANTI KALO UDH PERLU
+    if (service === "sbdjsdbs") {
       if (nowDate.getHours() >= 10 && nowDate.getHours() < 13) {
         return (
           <>
@@ -160,8 +161,7 @@ const ChooseService = ({
                     ) : (
                       ""
                     )}
-                    {"  "}
-                    {handleActualPromoPricing(
+                    {"  "}{handleActualPromoPricing(
                       service.name,
                       service.actual_price
                     )}
