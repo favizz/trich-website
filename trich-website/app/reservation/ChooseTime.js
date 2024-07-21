@@ -51,7 +51,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
 
   const handleAvailableHours = () => {
     const nowDate = new Date();
-    if (pickedDate !== "") {
+    if (pickedDate != "") {
       if (pickedDate == getTodaysDate()) {
         const filteredTimes = operationalTimes.filter((timeString) => {
           const [hours, minutes] = timeString.split(":").map(Number);
@@ -68,7 +68,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
 
   useEffect(() => {
     handleAvailableHours();
-  }, [pickedDate]);
+  }, [pickedDate, operationalTimes]);
   
   useEffect(() => {
     handleTime(operationalTimes[pickedTime] || null);
