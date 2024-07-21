@@ -156,8 +156,13 @@ const ChooseService = ({
                 <p className="font-bold text-sm lg:text-sm xl:text-base 2xl:text-lg">
                   {service.name} -{" "}
                   <span className="text-orange1 font-semibold">
-                    {service.is_promo ? (
+                    {service.is_promo  && service.name == "Root Lift & Down Perm" ? (
                       <span className="line-through">300.000</span>
+                    ) : (
+                      ""
+                    )}
+                    {service.is_promo  && service.name == "Morning Edge" ? (
+                      <span className="line-through">85.000</span>
                     ) : (
                       ""
                     )}
@@ -176,6 +181,11 @@ const ChooseService = ({
                   {service.name == "The Trich Experience"
                     ? "*  The Trich Experience includes The Cutting Edge and 2 additional services"
                     : ""}
+                  {
+                    service.name == "Back To School Promo!" || service.name == "Morning Edge" ? 
+                    "Please refer to the provided t&c"
+                    : ""
+                  } 
                 </p>
               </div>
               <input
