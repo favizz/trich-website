@@ -17,7 +17,7 @@ import ToastManager from "../components/toaster";
 
 import { formatPrice } from "./ChooseService";
 
-import Qris from "@/public/reservationAssets/qris.png";
+import Qris from "@/public/reservationAssets/qris.jpg";
 
 const ClientPage = () => {
   const userBookingRef = collection(db, "active_booking");
