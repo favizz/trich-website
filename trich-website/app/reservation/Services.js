@@ -1,7 +1,7 @@
 export const Services = [
     {
         name:"Back To School Promo!",
-        price:"100.000",
+        price:"65.000",
         nominal:65000,
         actual_price: 130000,
         duration: 1,
@@ -9,15 +9,15 @@ export const Services = [
     },
     {
         name:"Morning Edge",
-        price:"100.000",
-        nominal:37500,
+        price:"32.500",
+        nominal:32500,
         actual_price: 65000,
         duration: 1,
         is_promo: true,
     },
     {
         name:"The Trich Experience",
-        price:"100.000",
+        price:"67.500",
         nominal:67500,
         actual_price: 135000,
         duration: 2,
