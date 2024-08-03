@@ -134,11 +134,12 @@ const ChooseService = ({
       return;
     }
     if (
-      (chosenServices.length == 1 &&
+      (chosenServices.length < 2 &&
         (chosenServices.includes("Mask Off") ||
           chosenServices.includes("Wax Mining") ||
-          chosenServices.includes("Trim & Treat"))) ||
-      chosenServices.includes("Creambath")
+          chosenServices.includes("Trim & Treat") ||
+          chosenServices.includes("Creambath")
+        ))
     ) {
       ToastManager.notify("Please add another service!", "error");
       return;
