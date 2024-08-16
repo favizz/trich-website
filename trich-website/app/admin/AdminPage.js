@@ -34,7 +34,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (!bookings.length || Date.now() - lastFetched > refreshSpan) {
       fetchUser();
-      fetchBookings();
+      fetchActiveBookings();
       fetchQuotas();
       setLastFetched(Date.now());
     }
@@ -69,25 +69,13 @@ const AdminDashboard = () => {
     }
   };
 
-  const fetchBookings = async () => {
+  const fetchActiveBookings = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "active_booking"));
       let bookingData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-
-      const parseDateString = (dateString) => {
-        const [dayOfWeek, monthDay, year] = dateString.split(", ");
-        return new Date(`${monthDay}, ${year}`);
-      };
-
-      const parseTimeString = (timeString) => {
-        const [hours, minutes] = timeString.split(":").map(Number);
-        const date = new Date();
-        date.setHours(hours, minutes, 0, 0);
-        return date;
-      };
 
       bookingData = bookingData.sort((a, b) => {
         const dateA = parseDateString(a.date);
@@ -272,6 +260,24 @@ const AdminDashboard = () => {
     const formattedDate = date.toLocaleDateString("en-US", options);
 
     return formattedDate;
+  };
+
+  const parseDateString = (dateString) => {
+    if (dateString) {
+      const [dayOfWeek, monthDay, year] = dateString.split(", ");
+      return new Date(`${monthDay}, ${year}`);
+    }
+    return;
+  };
+
+  const parseTimeString = (timeString) => {
+    if (timeString) {
+      const [hours, minutes] = timeString.split(":").map(Number);
+      const date = new Date();
+      date.setHours(hours, minutes, 0, 0);
+      return date;
+    }
+    return;
   };
 
   return (
