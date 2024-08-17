@@ -5,7 +5,6 @@ import HomeLogo from "@/public/homeAssets/TrichHomeLogo.svg";
 import RevealTitle from "../animation/Reveal";
 import PromoHeading from "./PromoHeading";
 import MorningEdgeBox from "./bannerComponents/MorningEdgeBox";
-import MePopUp from "./bannerComponents/MePopUp";
 
 const Banner = () => {
   return (
