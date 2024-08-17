@@ -42,7 +42,7 @@ const Footer = () => {
         <p className="font-semibold">Navigation</p>
         {paths.map((p, idx) => {
           return (
-            <Link href={p.url}>
+            <Link href={p.url} key={idx}>
               <p className="opacity-50 text-xs">{p.name}</p>
             </Link>
           );

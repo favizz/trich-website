@@ -6,7 +6,8 @@ const services = [
   {
     name: "THE TRICH EXPERIENCE",
     desc: "",
-    services: "The Cutting Edge + 2 additional services (Trim & Treat/Creambath/Mask Off)",
+    services:
+      "The Cutting Edge + 2 additional services (Trim & Treat/Creambath/Mask Off)",
     price: "135.000",
     duration: "2 Hours",
     is_coming_soon: false,
@@ -15,7 +16,8 @@ const services = [
   {
     name: "THE CUTTING EDGE",
     desc: "Achieve a Haircut as sharp as your style with our signature service. Our comprehensive service features a cleansing wash, a relaxing warm towel treatment, a stimulating scalp massage, and your very own choice of premium styling product, for elevated grooming experience.",
-    services: "Haircut + Hair Wash + Warm Towel + Hot Stone Massage + Hairstyling",
+    services:
+      "Haircut + Hair Wash + Warm Towel + Hot Stone Massage + Hairstyling",
     price: "85.000",
     duration: "1 Hour",
     is_coming_soon: false,
@@ -100,17 +102,19 @@ const ViewServices = () => {
       <div className="grid lg:grid-cols-2 2xl:grid-cols-2 gap-6 py-8">
         {services.map((c, idx) => {
           return (
-            <RevealTitle>
-              <ServiceCard
-                name={c.name}
-                desc={c.desc}
-                price={c.price}
-                duration={c.duration}
-                isComingSoon={c.is_coming_soon}
-                isPriceRange={c.is_price_range}
-                service={c.services}
-              />
-            </RevealTitle>
+            <div key={idx}>
+              <RevealTitle>
+                <ServiceCard
+                  name={c.name}
+                  desc={c.desc}
+                  price={c.price}
+                  duration={c.duration}
+                  isComingSoon={c.is_coming_soon}
+                  isPriceRange={c.is_price_range}
+                  service={c.services}
+                />
+              </RevealTitle>
+            </div>
           );
         })}
       </div>
