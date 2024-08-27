@@ -93,24 +93,24 @@ const ClientPage = () => {
           onClick={() => setPage(1)}
           className={`${
             currPage == 1 ? "bg-green1 text-white" : "text-black"
-          } rounded-[30px] font-extrabold text-[8px] lg:text-xs xl:text-sm 2xl:text-base px-2 py-2 md:px-4`}
+          } rounded-[30px] font-extrabold text-xs lg:text-xs xl:text-sm 2xl:text-base px-6 py-2`}
         >
-          Choose Service
+          Service
         </div>
         <p>&gt;</p>
         <div
           onClick={() => setPage(pickedService ? 2 : null)}
           className={`${
             currPage == 2 ? "bg-green1 text-white" : "text-black"
-          } rounded-[30px] font-extrabold text-[8px] lg:text-xs xl:text-sm 2xl:text-base px-4 md:px-6 py-2`}
+          } rounded-[30px] font-extrabold text-xs lg:text-xs xl:text-sm 2xl:text-base px-6 py-2`}
         >
-          Day & Time
+          Time
         </div>
         <p>&gt;</p>
         <div
           className={`${
             currPage == 3 ? "bg-green1 text-white" : "text-black"
-          } rounded-[30px] font-extrabold text-[8px] lg:text-xs xl:text-sm 2xl:text-base px-8 py-2`}
+          } rounded-[30px] font-extrabold text-xs lg:text-xs xl:text-sm 2xl:text-base px-6 py-2`}
         >
           Confirm
         </div>
