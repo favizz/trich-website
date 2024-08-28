@@ -220,7 +220,7 @@ const ChooseService = ({
                           <p className="font-bold text-xs xl:text-base 2xl:text-lg">
                             {s.name} -{" "}
                             <span className="text-orange1 font-semibold">
-                              {s.actual_price}
+                              {formatPrice(s.actual_price)}
                             </span>
                           </p>
                           <p className="text-gray-500 font-semibold text-sm lg:text-sm xl:text-base 2xl:text-lg">

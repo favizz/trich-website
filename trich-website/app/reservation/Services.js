@@ -42,10 +42,6 @@ export const Services = [
   {
     is_list: true,
     name: "Permification",
-    price: "100.000",
-    nominal: 100000,
-    actual_price: 250000,
-    duration: 1.5,
     is_promo: true,
     services: [
       {
@@ -70,6 +66,29 @@ export const Services = [
         nominal: 75000,
         actual_price: 150000,
         duration: 0.75,
+        is_promo: false,
+      },
+    ],
+  },
+  {
+    is_list: true,
+    name: "True Colors",
+    is_promo: true,
+    services: [
+      {
+        name: "Full Colors",
+        price: "100.000",
+        nominal: 100000,
+        actual_price: 250000,
+        duration: 3,
+        is_promo: false,
+      },
+      {
+        name: "Highlight Colors",
+        price: "100.000",
+        nominal: 100000,
+        actual_price: 250000,
+        duration: 3,
         is_promo: false,
       },
     ],

@@ -39,6 +39,14 @@ const services = [
     duration: "2 Hours",
     is_price_range: true,
   },
+  {
+    name: "TRUE COLORS",
+    desc: "Forge a fresh look with our Sharp-Edge Hair Coloring service. Our barbermen are certified colorists who use premium, scalp-friendly dyes to create your perfect shades, all while keeping your hair healthy and vibrant!",
+    services: "Full Colors / Highlight Colors",
+    price: "250.000 - 750.000*",
+    duration: "3 Hours",
+    is_price_range: true,
+  },
   // {
   //   name: "TRUE COLORS",
   //   desc: "Forge a fresh look with our Sharp-Edge Hair Coloring service. Our barbermen are certified colorists who use premium, scalp-friendly dyes to create your perfect shades, all while keeping your hair healthy and vibrant!",
