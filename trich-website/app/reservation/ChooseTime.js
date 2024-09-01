@@ -7,19 +7,37 @@ import LeftArrow from "@/public/reservationAssets/leftarrow.svg";
 import RightArrow from "@/public/reservationAssets/rightarrow.svg";
 
 const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
-  const allOperationalTimes = [
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
-    "18:00",
-    "19:00",
-    "20:00",  
-  ];
+  function generateOperationalTimes(date) {
+    const allOperationalTimes = [];
+    const startHour = 10;
+    const endHour = 20;
+
+    const currentTime = new Date();
+
+    if (date.getDate() == currentTime.getDate()) {
+      let currentHour = currentTime.getHours();
+
+      if (currentTime.getMinutes() > 0) {
+        currentHour += 1;
+      }
+
+      currentHour = Math.max(currentHour, startHour);
+
+      for (let hour = currentHour; hour <= endHour; hour++) {
+        const timeString = `${hour.toString().padStart(2, "0")}:00`;
+        allOperationalTimes.push(timeString);
+      }
+    } else {
+      for (let hour = startHour; hour <= endHour; hour++) {
+        const timeString = `${hour.toString().padStart(2, "0")}:00`;
+        allOperationalTimes.push(timeString);
+      }
+    }
+
+    return allOperationalTimes;
+  }
+
+  const allOperationalTimes = [];
 
   const [pickedDate, pickDate] = useState("");
   const [pickedTime, pickTime] = useState(0);
@@ -29,12 +47,12 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
   const getTodaysDate = () => {
     const date = new Date();
 
-    const year = String(date.getFullYear()).padStart(4, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-  
+    const year = String(date.getFullYear()).padStart(4, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
     return `${year}-${month}-${day}`;
-  }
+  };
 
   const handleTimePick = (input) => {
     if (input === -1) {
@@ -48,30 +66,9 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
     }
   };
 
-  const handleAvailableHours = () => {
-    const nowDate = new Date();
-    if (pickedDate != "") {
-      if (pickedDate == getTodaysDate()) {
-        const filteredTimes = operationalTimes.filter((timeString) => {
-          const [hours, minutes] = timeString.split(":").map(Number);
-          const operationalTime = new Date();
-          operationalTime.setHours(hours, minutes, 0, 0);
-          return operationalTime > nowDate;
-        });
-        setOperationalTimes(filteredTimes);
-      } else {
-        setOperationalTimes(allOperationalTimes);
-      }
-    }
-  };
-
-  useEffect(() => {
-    handleAvailableHours();
-  }, [pickedDate, operationalTimes]);
-  
   useEffect(() => {
     handleTime(operationalTimes[pickedTime] || null);
-  }, [pickedTime, operationalTimes]);
+  }, [pickedDate, pickedTime, operationalTimes]);
 
   const handleDateChange = async (event) => {
     const inputDate = new Date(event.target.value);
@@ -103,7 +100,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
 
     handleDate(formattedDate);
 
-    let availableTimes = operationalTimes;
+    let availableTimes = generateOperationalTimes(inputDate);
 
     if (inputDate.getDay() === 5) {
       availableTimes = availableTimes.filter((time) => time !== "12:00");
@@ -131,30 +128,23 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
       }, {});
 
       quotas.forEach((quota) => {
-        operationalTimes.forEach((time) => {
+        availableTimes.forEach((time) => {
           if (!fullyBookedTimes[time]) {
             fullyBookedTimes[time] = 0;
           }
           if (fullyBookedTimes[time] >= quota.quota) {
             fullyBookedTimes[time] = 2;
           }
-        })
-
-        // if (!fullyBookedTimes[quota.time]) {
-        //   fullyBookedTimes[quota.time] = 0; // Initialize if not present
-        // }
-        // if (fullyBookedTimes[quota.time] >= quota.quota) {
-        //   fullyBookedTimes[quota.time] = 2; // Mark the time slot as fully booked
-        // }
+        });
       });
 
       availableTimes = availableTimes.filter(
         (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2
       );
-
+      
       setOperationalTimes(availableTimes);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     pickTime(0);
