@@ -164,11 +164,7 @@ const ClientPage = () => {
             IDR{" "}
             {totalActualPrice >= 200000 ? "100.000" : formatPrice(totalPrice)}
           </p>
-          <Image src={Qris} alt="Trich-QRIS" width={250} />
-          <div className="text-center font-extrabold ">
-            <p>BCA 7772950848</p>
-            <p>an JOSE ARMANDO</p>
-          </div>
+          <Image src={Qris} alt="Trich-QRIS" width={250} />0
           <div className="flex flex-row space-x-1 md:space-x-4 py-4 text-xs lg:text-sm">
             <div
               onClick={(e) => handleBooking(e)}
