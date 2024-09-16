@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { auth, db } from "@/config/firebase";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
@@ -14,6 +15,7 @@ import ConfirmPay from "./ConfirmPay";
 
 import { ToastContainer } from "react-toastify";
 import ToastManager from "../components/toaster";
+import LoadingSpinner from "../components/animation/Spinner";
 
 import { formatPrice } from "./ChooseService";
 
@@ -72,6 +74,20 @@ const ClientPage = () => {
     }
   };
 
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const handlePayment = async (e) => {
+    toggleLoading(true);
+    try {
+      // await delay(2000);
+      await handleBooking(e);
+    } catch (error) {
+      console.error("Payment handling failed:", error);
+    } finally {
+      toggleLoading(false);
+    }
+  };
+
   const [currPage, setPage] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalActualPrice, setTotalActualPrice] = useState(0);
@@ -81,6 +97,7 @@ const ClientPage = () => {
   const [pickedTime, setTime] = useState(null);
   const [notes, setNotes] = useState(null);
   const [totalDuration, setDuration] = useState(null);
+  const [isLoading, toggleLoading] = useState(false);
 
   return (
     <section className="flex flex-col items-center bg-white rounded-lg py-8 my-28 shadow-xl tracking-wider">
@@ -164,21 +181,22 @@ const ClientPage = () => {
             IDR{" "}
             {totalActualPrice >= 200000 ? "100.000" : formatPrice(totalPrice)}
           </p>
-          <Image src={Qris} alt="Trich-QRIS" width={250} />0
-          <div className="flex flex-row space-x-1 md:space-x-4 py-4 text-xs lg:text-sm">
-            <div
-              onClick={(e) => handleBooking(e)}
+          <Image src={Qris} alt="Trich-QRIS" width={250} />
+          <div className={`${isLoading ? 'hidden': ''} flex flex-row space-x-1 md:space-x-4 py-4 text-xs lg:text-sm`}>
+            <button
+              onClick={(e) => handlePayment(e)}
               className="bg-green2 text-white font-bold px-4 md:px-6 py-2 rounded"
             >
               Confirm Payment
-            </div>
-            <div
+            </button>
+            <button
               onClick={() => setPage(3)}
               className="border border-1 border-orange1 text-orange1 font-bold px-4 md:px-6 py-2 rounded"
             >
               Cancel Payment
-            </div>
+            </button>
           </div>
+          <LoadingSpinner toggleShow={isLoading}/>
         </div>
       )}
       <div className="w-0 h-0">
