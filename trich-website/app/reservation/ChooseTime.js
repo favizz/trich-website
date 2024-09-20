@@ -133,13 +133,13 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
             fullyBookedTimes[time] = 0;
           }
           if (fullyBookedTimes[time] >= quota.quota) {
-            fullyBookedTimes[time] = 2;
+            fullyBookedTimes[time] = 1; // DEFAULT 2
           }
         });
       });
 
       availableTimes = availableTimes.filter(
-        (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2
+        (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 1 // DEFAULT 2
       );
       
       setOperationalTimes(availableTimes);

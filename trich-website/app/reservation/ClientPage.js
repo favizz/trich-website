@@ -74,17 +74,12 @@ const ClientPage = () => {
     }
   };
 
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
   const handlePayment = async (e) => {
     toggleLoading(true);
     try {
-      // await delay(2000);
       await handleBooking(e);
     } catch (error) {
       console.error("Payment handling failed:", error);
-    } finally {
-      toggleLoading(false);
     }
   };
 
