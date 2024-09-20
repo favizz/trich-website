@@ -8,10 +8,12 @@ import DescBg from "@/public/homeAssets/DescBg.png";
 import BaseBanner from "./bannerComponents/BaseBanner";
 
 import MorningEdgeBox from "./bannerComponents/MorningEdgeBox";
+import TiberaPromo from "./bannerComponents/TiberaPromo";
 // import { BannerImages } from "./bannerComponents/BannerImages";
 
 const Banner = () => {
   const BannerItems = [
+    { type: "component", component: <TiberaPromo /> },
     { type: "component", component: <MorningEdgeBox /> },
     { type: "component", component: <BaseBanner /> },
   ];
