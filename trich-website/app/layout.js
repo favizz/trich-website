@@ -8,7 +8,7 @@ const NunitoSans = Nunito_Sans({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Trich Barberspace",
-  description: "Trich Barberspace Website",
+  description: "Trich AI  sBarberspace Website",
 };
 
 export default function RootLayout({ children }) {
@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <Navbar />
           {children}
-          <Footer/>
+          <Footer />
         </AuthProvider>
       </body>
     </html>

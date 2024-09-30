@@ -27,7 +27,6 @@ const ClientPage = () => {
       );
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
-        // Assuming you want the first matching document
         const userInfo = querySnapshot.docs[0].data();
         setUserData(userInfo);
       } else {

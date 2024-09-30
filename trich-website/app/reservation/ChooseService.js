@@ -101,28 +101,64 @@ const ChooseService = ({
     setChosenServices(updatedServices);
 
     setTotalPrice(
-      updatedServices.reduce((total, service) => {
-        let serviceObj = Services.find((s) => s.name === service);
-        // serviceObj.nominal = promoPricing(serviceObj.name)
-        //   ? 37500
-        //   : serviceObj.nominal;
+      updatedServices.reduce((total, serviceName) => {
+        let serviceObj = Services.find((s) => s.name === serviceName);
+
+        if (!serviceObj) {
+          Services.forEach((parentService) => {
+            if (parentService.is_list && parentService.services.length > 0) {
+              const nestedService = parentService.services.find(
+                (nested) => nested.name === serviceName
+              );
+              if (nestedService) {
+                serviceObj = nestedService;
+              }
+            }
+          });
+        }
+
         return total + (serviceObj ? serviceObj.nominal : 0);
       }, 0)
     );
 
     setTotalActualPrice(
-      updatedServices.reduce((total, service) => {
-        let serviceObj = Services.find((s) => s.name === service);
-        // serviceObj.actual_price = promoPricing(serviceObj.name)
-        //   ? 65000
-        //   : serviceObj.actual_price;
+      updatedServices.reduce((total, serviceName) => {
+        let serviceObj = Services.find((s) => s.name === serviceName);
+
+        if (!serviceObj) {
+          Services.forEach((parentService) => {
+            if (parentService.is_list && parentService.services.length > 0) {
+              const nestedService = parentService.services.find(
+                (nested) => nested.name === serviceName
+              );
+              if (nestedService) {
+                serviceObj = nestedService;
+              }
+            }
+          });
+        }
+
         return total + (serviceObj ? serviceObj.actual_price : 0);
       }, 0)
     );
 
     setDuration(
-      updatedServices.reduce((total, service) => {
-        const serviceObj = Services.find((s) => s.name === service);
+      updatedServices.reduce((total, serviceName) => {
+        let serviceObj = Services.find((s) => s.name === serviceName);
+
+        if (!serviceObj) {
+          Services.forEach((parentService) => {
+            if (parentService.is_list && parentService.services.length > 0) {
+              const nestedService = parentService.services.find(
+                (nested) => nested.name === serviceName
+              );
+              if (nestedService) {
+                serviceObj = nestedService;
+              }
+            }
+          });
+        }
+
         return total + (serviceObj ? serviceObj.duration : 0);
       }, 0)
     );
@@ -209,7 +245,10 @@ const ChooseService = ({
                 <div className="pt-2 pl-4 lg:pl-6 xl:pl-10 space-y-2">
                   {service.services.map((s, id) => {
                     return (
-                      <div key={id} className="flex flex-row items-center space-x-4">
+                      <div
+                        key={id}
+                        className="flex flex-row items-center space-x-4"
+                      >
                         <input
                           type="checkbox"
                           className="md:w-6 md:h-6 rounded-xl accent-orange1"
@@ -225,9 +264,7 @@ const ChooseService = ({
                           </p>
                           <p className="text-gray-500 font-semibold text-sm lg:text-sm xl:text-base 2xl:text-lg">
                             duration:{" "}
-                            <span className="font-bold">
-                              {s.duration * 60}
-                            </span>{" "}
+                            <span className="font-bold">{s.duration * 60}</span>{" "}
                             minutes
                           </p>
                         </div>

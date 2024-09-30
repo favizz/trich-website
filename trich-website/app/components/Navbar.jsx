@@ -125,7 +125,7 @@ const Navbar = () => {
         {userLoggedIn ? (
           <div className="flex items-center space-x-4">
             <Link href="/reservation" className={`flex ${pathname?.split("/")[1] == "reservation" ? "hidden" : ""}`}>
-              <button className="bg-orange1 hover:bg-orange-300 text-white md:font-normal font-semibold text-[14px] lg:text-[12px] xl:text-base py-2 px-6 rounded">
+              <button className="transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 bg-orange1 font-bold text-white md:font-normal text-[14px] lg:text-[12px] xl:text-base py-2 px-6 rounded">
                 Book Now
               </button>
             </Link>

@@ -55,7 +55,7 @@ const ConfirmPay = ({ date, time, service, price, actualPrice, duration, notes, 
           onClick={() => (agreePolicy ? handlePage(4) : null)}
           className="w-full rounded text-white font-bold bg-green2 py-2 lg:text-lg text-center"
         >
-          Book Now
+          Checkout
         </div>
       </div>
     </div>

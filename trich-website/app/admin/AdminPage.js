@@ -31,6 +31,19 @@ const AdminDashboard = () => {
   const [lastFetched, setLastFetched] = useState(null);
   const refreshSpan = 30 * 60 * 1000;
 
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleProfileClick = (userId) => {
+    const user = users.find((u) => u.user_id === userId);
+    if (user) {
+      setSelectedUser(user);
+      setShowModal(true);
+    } else {
+      return "User not found";
+    }
+  };
+
   useEffect(() => {
     if (!bookings.length || Date.now() - lastFetched > refreshSpan) {
       fetchUser();
@@ -323,10 +336,16 @@ const AdminDashboard = () => {
                     Delete
                   </button>
                 </td>
-                <td className="border border-1 border-solid border-black">
+                <td className="space-x-2 border border-1 border-solid border-black">
                   {booking.name
                     ? booking.name
                     : getNameFromBooking(booking.user_id)}
+                  <button
+                    onClick={() => handleProfileClick(booking.user_id)}
+                    className="text-white bg-orange1"
+                  >
+                    Info
+                  </button>
                 </td>
                 <td className="border border-1 border-solid border-black">
                   {booking.service}
@@ -477,6 +496,44 @@ const AdminDashboard = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Modal */}
+      {showModal && selectedUser && (
+        <div
+          onClick={() => setShowModal(false)}
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        >
+          <div className="bg-white p-8 rounded shadow-lg max-w-md w-full">
+            <h2 className="text-2xl font-bold mb-4">Verify User</h2>
+            <p>
+              <strong>Nama: </strong>
+              {selectedUser.first_name ? selectedUser.first_name : ""}
+              {selectedUser.last_name ? selectedUser.last_name : ""}
+            </p>
+            <p>
+              <strong>Email:</strong> {selectedUser.email}
+            </p>
+            <p>
+              <strong>No Telepon:</strong> {selectedUser.phone_number}
+            </p>
+            <p>
+              <strong>Alamat:</strong>{" "}
+              {selectedUser.address ? selectedUser.address : "-"}
+            </p>
+
+            <div className="mt-6">
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Modal */}
       <ToastContainer />
     </div>
   );
