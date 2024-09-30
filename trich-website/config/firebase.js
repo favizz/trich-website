@@ -2,17 +2,7 @@
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth"
-import { getFirestore, initializeFirestore, persistentLocalCache } from "firebase/firestore"
-
-// const firebaseConfig = {
-//   apiKey: "REDACTED_FIREBASE_API_KEY",
-//   authDomain: "trich-temp.firebaseapp.com",
-//   projectId: "trich-temp",
-//   storageBucket: "trich-temp.appspot.com",
-//   messagingSenderId: "645526511626",
-//   appId: "1:645526511626:web:6e892d919f955064997ff3",
-//   measurementId: "G-3K8EL56M8B"
-// };
+import { getFirestore, initializeFirestore } from "firebase/firestore"
 
 const firebaseConfig = {
   apiKey: "REDACTED_FIREBASE_API_KEY",
@@ -28,6 +18,4 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-export const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({ synchronizeTabs: true })
-});
+export const db = getFirestore(app)
