@@ -84,7 +84,7 @@ const ClientPage = () => {
   };
 
   const [userData, setUserData] = useState(null);
-  const [currPage, setPage] = useState(4);
+  const [currPage, setPage] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalActualPrice, setTotalActualPrice] = useState(0);
   const [isConfirm, toggleConfirm] = useState(false);
@@ -202,7 +202,7 @@ const ClientPage = () => {
             handlePage={setPage}
           />
         )}
-        {/* {currPage == 4 && (
+        {currPage == 4 && (
           <div className="flex flex-col items-center justify-center pt-4 space-y-2">
             <p className="font-extrabold lg:text-xl">
               Scan To Complete Your Payment
@@ -233,13 +233,13 @@ const ClientPage = () => {
             </div>
             <LoadingSpinner toggleShow={isLoading} />
           </div>
-        )} */}
-        {currPage == 4 && (
+        )}
+        {/* {currPage == 4 && (
           <Checkout
             pickedService={pickedService}
             totalPrice={totalPrice}
           />
-        )}
+        )} */}
         <div className="w-0 h-0">
           <ToastContainer />
         </div>
