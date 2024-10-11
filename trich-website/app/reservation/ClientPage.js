@@ -21,29 +21,29 @@ import { formatPrice } from "./ChooseService";
 
 import Qris from "@/public/reservationAssets/qris.png";
 
+export const getUserNameById = async (userId) => {
+  try {
+    const usersRef = collection(db, "user");
+    const q = query(usersRef, where("user_id", "==", userId));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const userData = querySnapshot.docs[0].data();
+      const firstName = userData.first_name;
+      return firstName;
+    } else {
+      console.log("No such user!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user data: ", error);
+    return null;
+  }
+};
+
 const ClientPage = () => {
   const userBookingRef = collection(db, "active_booking");
   const router = useRouter();
-
-  const getUserNameById = async (userId) => {
-    try {
-      const usersRef = collection(db, "user");
-      const q = query(usersRef, where("user_id", "==", userId));
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        const userData = querySnapshot.docs[0].data();
-        const firstName = userData.first_name;
-        return firstName;
-      } else {
-        console.log("No such user!");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching user data: ", error);
-      return null;
-    }
-  };
 
   const handleBooking = async (e) => {
     try {
@@ -82,8 +82,7 @@ const ClientPage = () => {
       console.error("Payment handling failed:", error);
     }
   };
-
-  const [userData, setUserData] = useState(null);
+  
   const [currPage, setPage] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalActualPrice, setTotalActualPrice] = useState(0);
@@ -94,40 +93,6 @@ const ClientPage = () => {
   const [notes, setNotes] = useState(null);
   const [totalDuration, setDuration] = useState(null);
   const [isLoading, toggleLoading] = useState(false);
-
-
-  // useEffect(() => {
-  //   const getUserData = async () => {
-  //     const currentUserID = auth?.currentUser?.uid;
-  //     if (!currentUserID) {
-  //       console.error("Current user ID is undefined.");
-  //       return;
-  //     }
-
-  //     try {
-  //       const response = await fetch('/api/get-user-data', {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify({ currentUserID }),
-  //       });
-
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         setUserData(data.user);
-  //         console.log("User data found", data.user);
-  //       } else {
-  //         const errorData = await response.json();
-  //         console.log("Error:", errorData.error);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //     }
-  //   };
-
-  //   getUserData();
-  // }, []);
 
   return (
     <>
@@ -202,7 +167,7 @@ const ClientPage = () => {
             handlePage={setPage}
           />
         )}
-        {currPage == 4 && (
+        {/* {currPage == 4 && (
           <div className="flex flex-col items-center justify-center pt-4 space-y-2">
             <p className="font-extrabold lg:text-xl">
               Scan To Complete Your Payment
@@ -233,13 +198,16 @@ const ClientPage = () => {
             </div>
             <LoadingSpinner toggleShow={isLoading} />
           </div>
-        )}
-        {/* {currPage == 4 && (
+        )} */}
+        {currPage == 4 && (
           <Checkout
             pickedService={pickedService}
             totalPrice={totalPrice}
+            pickedDate={pickedDate}
+            pickedTime={pickedTime}
+            notes={notes}
           />
-        )} */}
+        )}
         <div className="w-0 h-0">
           <ToastContainer />
         </div>

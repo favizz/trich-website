@@ -5,12 +5,12 @@ import {
   collection,
   query,
   where,
+  addDoc,
   getDocs,
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { ToastContainer } from "react-toastify";
-import ToastManager from "../components/toaster";
+import { v4 as uuidv4 } from "uuid";
 
 import LoadingSpinner from "../components/animation/Spinner";
 import SuccessIcon from "@/public/signInAssets/success.svg";
@@ -81,39 +81,91 @@ async function fetchUserData() {
   }
 }
 
-const Checkout = ({ pickedService, totalPrice }) => {
+function getRandomNumber() {
+  return Math.floor(Math.random() * 1000) + 1;
+}
+
+const Checkout = ({
+  pickedService,
+  totalPrice,
+  pickedDate,
+  pickedTime,
+  notes,
+}) => {
   const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [bookingSent, setBookingSent] = useState(false)
 
   const [reqBody, setReqBody] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState(0);
 
+  const userBookingRef = collection(db, "active_booking");
+
+  const handleBooking = async (
+    order_id,
+    fullName,
+    pickedService,
+    pickedTime,
+    totalPrice,
+    notes
+  ) => {
+    try {
+      await addDoc(userBookingRef, {
+        create_booking_date: new Date(),
+        user_id: auth?.currentUser?.uid,
+        name: fullName,
+        service: pickedService,
+        amount: totalPrice,
+        date: pickedDate,
+        time: pickedTime,
+        notes: notes,
+        status: 1,
+        booking_id: uuidv4(),
+        order_id: order_id.toString(),
+      }).catch((e) => {
+        console.error(e);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const pickedService = "The Trich Experience, The Cutting Edge";
-        const totalPrice = 100000;
+      if (bookingSent) return;
 
-        const orderId = await fetchAndIncrementOrderId();
+      try {
         const userData = await fetchUserData();
+        const fullName = `${userData?.first_name} ${userData?.last_name}`;
+
+        const orderid = getRandomNumber();
+
+        // add doc to firebase
+        handleBooking(orderid, fullName, pickedService, pickedTime, totalPrice, notes);
+        setBookingSent(true);
+
+        pickedService = pickedService.toString().split(",");
+        console.log(pickedService)
 
         const body = {
           transaction_details: {
-            order_id: `TB-${orderId.order_id}`,
+            order_id: orderid,
             gross_amount: totalPrice,
           },
-          item_details: pickedService.split(",").map((service, idx) => ({
+          item_details: pickedService.map((service, idx) => ({
             name: service.trim(),
-            price: totalPrice / 2,
+            price: pickedService.length > 1 ? totalPrice / 2 : totalPrice,
             quantity: 1,
             id: `TS-${idx}`,
           })),
           customer_details: {
-            first_name: `${userData?.first_name} ${userData?.last_name}`,
+            first_name: fullName,
             email: userData?.email,
           },
+          enabled_payments: ["other_qris"],
         };
+
+        console.log(body);
 
         setReqBody(body);
         console.log(body);
@@ -124,22 +176,20 @@ const Checkout = ({ pickedService, totalPrice }) => {
     };
 
     fetchData();
-  }, []);
+  }, [bookingSent]);
+
   useEffect(() => {
     async function fetchToken() {
       setLoading(true);
+      if (!reqBody) return; 
+
       try {
         const response = await fetch("/api/dokuHandler", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            id: "order-123",
-            productName: "Test Product",
-            price: 100000,
-            quantity: 2,
-          }),
+          body: JSON.stringify(reqBody),
         });
 
         if (!response.ok) {
@@ -151,27 +201,26 @@ const Checkout = ({ pickedService, totalPrice }) => {
         window.snap.pay(data.token, {
           onSuccess: function (result) {
             setPaymentStatus(1);
-            console.log("berhasil")
+            console.log(result);
           },
-
           onError: function (result) {
             setPaymentStatus(2);
           },
         });
         setLoading(false);
       } catch (error) {
-        setError(error.message);
+        console.error(error);
       } finally {
         setLoading(false);
       }
     }
 
     fetchToken();
-  }, []);
+  }, [reqBody]);
 
   useEffect(() => {
-    const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js";
-    const clientKey = process.env.CLIENT_KEY;
+    const snapScript = "https://app.midtrans.com/snap/snap.js";
+    const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY;
     const script = document.createElement("script");
 
     script.src = snapScript;

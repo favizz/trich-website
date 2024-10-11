@@ -11,6 +11,8 @@ const ClientPage = () => {
   const statusCode = params.get("status_code");
   const transactionStatus = params.get("transaction_status");
 
+  console.log(orderId);
+
   useEffect(() => {
     const updateBookingStatus = async () => {
       // Only proceed if all query parameters are available
@@ -35,7 +37,7 @@ const ClientPage = () => {
 
             console.log('Booking status updated successfully.');
           } else {
-            console.log('No matching order found for order_id:', order_id);
+            console.log('No matching order found for order_id:', orderId);
           }
         } catch (error) {
           console.error('Error updating booking status:', error);
