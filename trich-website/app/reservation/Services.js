@@ -8,6 +8,7 @@ export const Services = [
     duration: 1,
     is_promo: true,
     services: [],
+    is_range:false,
   },
   {
     is_list: false,
@@ -18,6 +19,7 @@ export const Services = [
     duration: 2,
     is_promo: false,
     services: [],
+    is_range:false,
   },
   {
     is_list: false,
@@ -28,6 +30,7 @@ export const Services = [
     duration: 1,
     is_promo: false,
     services: [],
+    is_range:false,
   },
   {
     is_list: false,
@@ -38,17 +41,19 @@ export const Services = [
     duration: 1.5,
     is_promo: true,
     services: [],
+    is_range:false,
   },
   {
     is_list: true,
     name: "Permification",
     is_promo: true,
+    is_range:true,
     services: [
       {
         name: "Permification - Classic",
         price: "100.000",
         nominal: 100000,
-        actual_price: 250000,
+        actual_price: "250.000-750.000",
         duration: 2,
         is_promo: false,
       },
@@ -74,12 +79,13 @@ export const Services = [
     is_list: true,
     name: "True Colors",
     is_promo: true,
+    is_range:true,
     services: [
       {
         name: "Full Colors",
         price: "100.000",
         nominal: 100000,
-        actual_price: 250000,
+        actual_price: "250.000-750.000",
         duration: 3,
         is_promo: false,
       },
@@ -87,7 +93,7 @@ export const Services = [
         name: "Highlight Colors",
         price: "100.000",
         nominal: 100000,
-        actual_price: 250000,
+        actual_price: "250.000-750.000",
         duration: 3,
         is_promo: false,
       },
@@ -98,10 +104,11 @@ export const Services = [
     name: "Smooth Operator",
     price: "100.000",
     nominal: 100000,
-    actual_price: 250000,
+    actual_price: "250.000-750.000",
     duration: 2,
     is_promo: false,
     services: [],
+    is_range:true,
   },
   {
     is_list: false,
@@ -112,6 +119,7 @@ export const Services = [
     duration: 0.5,
     is_promo: false,
     services: [],
+    is_range:false,
   },
   {
     is_list: false,
@@ -122,6 +130,7 @@ export const Services = [
     duration: 0.5,
     is_promo: false,
     services: [],
+    is_range:false,
   },
   {
     is_list: false,
@@ -132,5 +141,6 @@ export const Services = [
     duration: 0.5,
     is_promo: false,
     services: [],
+    is_range:false,
   },
 ];

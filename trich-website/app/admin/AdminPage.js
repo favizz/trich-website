@@ -500,7 +500,6 @@ const AdminDashboard = () => {
       {/* Modal */}
       {showModal && selectedUser && (
         <div
-          onClick={() => setShowModal(false)}
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
         >
           <div className="bg-white p-8 rounded shadow-lg max-w-md w-full">

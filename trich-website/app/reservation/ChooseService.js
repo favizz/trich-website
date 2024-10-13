@@ -206,12 +206,14 @@ const ChooseService = ({
                         ""
                       )}
                       {"  "}
-                      {handleActualPromoPricing(
-                        service.name,
-                        service.actual_price
-                      )}
+                      {service.is_range ? service.actual_price : formatPrice(service.actual_price)}
                     </span>
                   </p>
+                  {service.is_range && (
+                    <p className="text-green2 font-semibold text-xs xl:text-sm 2xl:text-base w-3/4">
+                      *final price will be determined once the service is done
+                    </p>
+                  )}
                   <p className="text-gray-500 font-semibold text-sm lg:text-sm xl:text-base 2xl:text-lg">
                     duration:{" "}
                     <span className="font-bold">{service.duration * 60}</span>{" "}
@@ -242,6 +244,11 @@ const ChooseService = ({
                 <p className="font-bold text-base xl:text-lg 2xl:text-xl">
                   {service.name}
                 </p>
+                {service.is_range && (
+                    <p className="text-green2 font-semibold text-xs xl:text-sm 2xl:text-base w-3/4">
+                      *final price will be determined once the service is done
+                    </p>
+                  )}
                 <div className="pt-2 pl-4 lg:pl-6 xl:pl-10 space-y-2">
                   {service.services.map((s, id) => {
                     return (
@@ -259,7 +266,7 @@ const ChooseService = ({
                           <p className="font-bold text-xs xl:text-base 2xl:text-lg">
                             {s.name} -{" "}
                             <span className="text-orange1 font-semibold">
-                              {formatPrice(s.actual_price)}
+                            {service.is_range ? s.actual_price : formatPrice(s.actual_price)}
                             </span>
                           </p>
                           <p className="text-gray-500 font-semibold text-sm lg:text-sm xl:text-base 2xl:text-lg">
