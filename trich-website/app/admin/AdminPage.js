@@ -34,19 +34,19 @@ const AdminDashboard = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const handleProfileClick = (userId) => {
-    const user = users.find((u) => u.user_id === userId);
-    if (user) {
-      setSelectedUser(user);
-      setShowModal(true);
-    } else {
-      return "User not found";
-    }
-  };
+  // const handleProfileClick = (userId) => {
+  //   const user = users.find((u) => u.user_id === userId);
+  //   if (user) {
+  //     setSelectedUser(user);
+  //     setShowModal(true);
+  //   } else {
+  //     return "User not found";
+  //   }
+  // };
 
   useEffect(() => {
     if (!bookings.length || Date.now() - lastFetched > refreshSpan) {
-      fetchUser();
+      // fetchUser();
       fetchActiveBookings();
       fetchQuotas();
       setLastFetched(Date.now());
@@ -69,18 +69,18 @@ const AdminDashboard = () => {
     }
   };
 
-  const fetchUser = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "user"));
-      const userData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setUsers(userData);
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
-    }
-  };
+  // const fetchUser = async () => {
+  //   try {
+  //     const querySnapshot = await getDocs(collection(db, "user"));
+  //     const userData = querySnapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  //     setUsers(userData);
+  //   } catch (error) {
+  //     console.error("Failed to fetch users:", error);
+  //   }
+  // };
 
   const fetchActiveBookings = async () => {
     try {
@@ -194,14 +194,14 @@ const AdminDashboard = () => {
     }
   };
 
-  const getNameFromBooking = (userId) => {
-    const user = users.find((u) => u.user_id === userId);
-    if (user) {
-      return user.first_name;
-    } else {
-      return "User not found";
-    }
-  };
+  // const getNameFromBooking = (userId) => {
+  //   const user = users.find((u) => u.user_id === userId);
+  //   if (user) {
+  //     return user.first_name;
+  //   } else {
+  //     return "User not found";
+  //   }
+  // };
 
   const fetchQuotas = async () => {
     try {
@@ -305,7 +305,7 @@ const AdminDashboard = () => {
                 Date
               </th>
               <th className="border border-1 border-solid border-black">
-                First Name
+                First Name (email)
               </th>
               <th className="border border-1 border-solid border-black">
                 Service
@@ -337,15 +337,13 @@ const AdminDashboard = () => {
                   </button>
                 </td>
                 <td className="space-x-2 border border-1 border-solid border-black">
-                  {booking.name
-                    ? booking.name
-                    : getNameFromBooking(booking.user_id)}
-                  <button
+                  {booking.name} / {booking.email}
+                  {/* <button
                     onClick={() => handleProfileClick(booking.user_id)}
                     className="text-white bg-orange1"
                   >
                     Info
-                  </button>
+                  </button> */}
                 </td>
                 <td className="border border-1 border-solid border-black">
                   {booking.service}
@@ -497,7 +495,7 @@ const AdminDashboard = () => {
         </table>
       </div>
 
-      {/* Modal */}
+      {/* Modal
       {showModal && selectedUser && (
         <div
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
@@ -530,12 +528,12 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Toast Modal */}
       <ToastContainer />
     </div>
   );
 };
-
-export default withAuthAdmin(AdminDashboard, "igbQMReYImfAwDqwuqVWnylY0Kr1");
+export default withAuthAdmin(AdminDashboard, "cQjKKaD3iBcW4y0dyO8eIRhUHsQ2");
+// export default withAuthAdmin(AdminDashboard, "igbQMReYImfAwDqwuqVWnylY0Kr1");

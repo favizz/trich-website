@@ -7,8 +7,6 @@ import {
   where,
   addDoc,
   getDocs,
-  doc,
-  updateDoc,
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 
@@ -16,38 +14,6 @@ import LoadingSpinner from "../components/animation/Spinner";
 import SuccessIcon from "@/public/signInAssets/success.svg";
 import Image from "next/image";
 import Link from "next/link";
-
-/**
- * Function to fetch, increment, and return the current order_id.
- *
- * @returns {Promise<{order_id: number}>} - Returns the current order_id before it was incremented.
- */
-async function fetchAndIncrementOrderId() {
-  try {
-    const orderIdCollection = collection(db, "order_id");
-
-    const querySnapshot = await getDocs(orderIdCollection);
-
-    if (!querySnapshot.empty) {
-      const docSnapshot = querySnapshot.docs[0];
-      const data = docSnapshot.data();
-      const currentOrderId = data.order_id;
-
-      const newOrderId = currentOrderId + 1;
-
-      const documentRef = doc(db, "order_id", docSnapshot.id);
-
-      await updateDoc(documentRef, { order_id: newOrderId });
-
-      return currentOrderId;
-    } else {
-      throw new Error("No order_id found");
-    }
-  } catch (error) {
-    console.error("Error fetching and updating order_id:", error);
-    throw new Error("Error fetching and updating order_id");
-  }
-}
 
 /**
  * Async function to fetch user data based on currentUserID.

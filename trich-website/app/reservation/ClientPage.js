@@ -30,7 +30,8 @@ export const getUserNameById = async (userId) => {
     if (!querySnapshot.empty) {
       const userData = querySnapshot.docs[0].data();
       const firstName = userData.first_name;
-      return firstName;
+      const email = userData.email;
+      return {firstName, email};
     } else {
       console.log("No such user!");
       return null;
@@ -48,10 +49,11 @@ const ClientPage = () => {
   const handleBooking = async (e) => {
     try {
       e.preventDefault();
-      const fullName = await getUserNameById(auth?.currentUser?.uid);
+      const { firstName: fullName, email: userEmail } = await getUserNameById(auth?.currentUser?.uid);
       await addDoc(userBookingRef, {
         create_booking_date: new Date(),
         user_id: auth?.currentUser?.uid,
+        email: userEmail,
         name: fullName,
         service: pickedService,
         amount: totalPrice,
@@ -167,7 +169,7 @@ const ClientPage = () => {
             handlePage={setPage}
           />
         )}
-        {/* {currPage == 4 && (
+        {currPage == 4 && (
           <div className="flex flex-col items-center justify-center pt-4 space-y-2">
             <p className="font-extrabold lg:text-xl">
               Scan To Complete Your Payment
@@ -198,8 +200,8 @@ const ClientPage = () => {
             </div>
             <LoadingSpinner toggleShow={isLoading} />
           </div>
-        )} */}
-        {currPage == 4 && (
+        )}
+        {/* {currPage == 4 && (
           <Checkout
             pickedService={pickedService}
             totalPrice={totalPrice}
@@ -207,7 +209,7 @@ const ClientPage = () => {
             pickedTime={pickedTime}
             notes={notes}
           />
-        )}
+        )} */}
         <div className="w-0 h-0">
           <ToastContainer />
         </div>

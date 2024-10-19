@@ -38,7 +38,7 @@ const SignInForm = () => {
         })
         .catch((e) => {
           console.error(e.message);
-          ToastManager.notify('Email or Password is Invalid!', 'error');
+          ToastManager.notify('Please Sign Up Using the Same Email!', 'error');
         });
     } catch (err) {
       console.log(err);

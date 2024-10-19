@@ -21,7 +21,6 @@ const SignUpForm = () => {
 
   const [formData, setFormData] = useState({
     first_name: "",
-    last_name: "",
     email: "",
     phone_number: "",
   });
@@ -39,7 +38,6 @@ const SignUpForm = () => {
   const handleSignUp = async (e) => {
     if (
       formData.first_name == "" ||
-      formData.last_name == "" ||
       formData.email == "" ||
       formData.phone_number == ""
     ) {
@@ -57,7 +55,6 @@ const SignUpForm = () => {
       await addDoc(userCollectionRef, {
         user_id: auth?.currentUser?.uid,
         first_name: formData.first_name.toUpperCase(),
-        last_name: formData.last_name,
         email: formData.email,
         phone_number: formData.phone_number,
       })
@@ -83,32 +80,19 @@ const SignUpForm = () => {
       </p>
 
       {/* Name */}
-      <div className="flex flex-col md:flex-row md:space-x-2 pt-4 md:pt-0">
-        <label htmlFor="firstname" className=" md:w-1/2">
-          <p className="font-medium text-slate-700">First name</p>
-          <input
-            id="firstname"
-            name="first_name"
-            type="text"
-            className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-            placeholder="Enter first name"
-            value={formData.first_name}
-            onChange={handleChange}
-          />
-        </label>
-        <label htmlFor="lastname" className="md:w-1/2 mt-6 md:mt-0">
-          <p className="font-medium text-slate-700">Last name</p>
-          <input
-            id="lastname"
-            name="last_name"
-            type="text"
-            className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-            placeholder="Enter last name"
-            value={formData.last_name}
-            onChange={handleChange}
-          />
-        </label>
-      </div>
+      <label htmlFor="firstname">
+        <p className="font-medium text-slate-700">First name</p>
+        <input
+          id="firstname"
+          name="first_name"
+          type="text"
+          className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
+          placeholder="Enter first name"
+          value={formData.first_name}
+          onChange={handleChange}
+        />
+      </label>
+
       <div className="h-6"></div>
       <label htmlFor="email">
         <p className="font-medium text-slate-700">
@@ -189,7 +173,7 @@ const SignUpForm = () => {
         </button>
       </div>
       <div className="w-0 h-0">
-          <ToastContainer/>
+        <ToastContainer />
       </div>
     </div>
   );
