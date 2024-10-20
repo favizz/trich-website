@@ -5,15 +5,15 @@ import { getAuth } from "firebase/auth"
 import { getFirestore, initializeFirestore } from "firebase/firestore"
 
 // trich base
-// const firebaseConfig = {
-//   apiKey: "REDACTED_FIREBASE_API_KEY",
-//   authDomain: "trich-barberspace.firebaseapp.com",
-//   projectId: "trich-barberspace",
-//   storageBucket: "trich-barberspace.appspot.com",
-//   messagingSenderId: "637709484500",
-//   appId: "1:637709484500:web:42e559d33e8b9cad985641",
-//   measurementId: "G-6W5PG4BXTH"
-// };
+const firebaseConfig = {
+  apiKey: "REDACTED_FIREBASE_API_KEY",
+  authDomain: "trich-barberspace.firebaseapp.com",
+  projectId: "trich-barberspace",
+  storageBucket: "trich-barberspace.appspot.com",
+  messagingSenderId: "637709484500",
+  appId: "1:637709484500:web:42e559d33e8b9cad985641",
+  measurementId: "G-6W5PG4BXTH"
+};
 
 // trich temp
 // const firebaseConfig = {
@@ -27,15 +27,15 @@ import { getFirestore, initializeFirestore } from "firebase/firestore"
 // };
 
 // trich server
-const firebaseConfig = {
-  apiKey: "REDACTED_FIREBASE_API_KEY",
-  authDomain: "trich-barber.firebaseapp.com",
-  projectId: "trich-barber",
-  storageBucket: "trich-barber.appspot.com",
-  messagingSenderId: "966772996674",
-  appId: "1:966772996674:web:c53155dcbf1b7baeb58bdb",
-  measurementId: "G-4DSWPXYZKD"
-};
+// const firebaseConfig = {
+//   apiKey: "REDACTED_FIREBASE_API_KEY",
+//   authDomain: "trich-barber.firebaseapp.com",
+//   projectId: "trich-barber",
+//   storageBucket: "trich-barber.appspot.com",
+//   messagingSenderId: "966772996674",
+//   appId: "1:966772996674:web:c53155dcbf1b7baeb58bdb",
+//   measurementId: "G-4DSWPXYZKD"
+// };
 
 const app = initializeApp(firebaseConfig);
 
