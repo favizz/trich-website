@@ -112,6 +112,46 @@ const AdminDashboard = () => {
     }
   };
 
+  const checkAndMoveExpiredBookings = async () => {
+    const today = new Date();
+  
+    try {
+      const bookingUpdateDoc = await getDoc(doc(db, "booking_update_date", "lastUpdate"));
+  
+      if (bookingUpdateDoc.exists()) {
+        const lastUpdateDate = bookingUpdateDoc.data().last_update.toDate();
+  
+        if ( today.getDate() > lastUpdateDate.getDate()) {
+          bookings.forEach(async (tempBooking) => {
+            if (tempBooking.status === 3) {
+              try {
+                await addDoc(collection(db, "past_booking"), {
+                  create_booking_date: tempBooking.create_booking_date,
+                  user_id: tempBooking.user_id,
+                  service: tempBooking.service,
+                  date: tempBooking.date,
+                  time: tempBooking.time,
+                  notes: tempBooking.notes,
+                  status: 3,
+                  booking_id: tempBooking.booking_id,
+                });
+                await deleteBooking(tempBooking.booking_id);
+              } catch (error) {
+                console.log("Error moving booking:", error);
+                ToastManager.notify("Status gagal diupdate", "error");
+              }
+            }
+          });
+          await updateDoc(doc(db, "booking_update_date", "lastUpdate"), {
+            last_update: today,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error updating bookings:", error);
+    }
+  };
+
   const updateBookingStatusByBookingId = async (bookingId, newStatus) => {
     try {
       if (newStatus == 3) {
@@ -535,5 +575,6 @@ const AdminDashboard = () => {
     </div>
   );
 };
-export default withAuthAdmin(AdminDashboard, "cQjKKaD3iBcW4y0dyO8eIRhUHsQ2");
+export default withAuthAdmin(AdminDashboard, "7UWhegatZOhkq1H9TM5UUs7E1OS2");
+// export default withAuthAdmin(AdminDashboard, "cQjKKaD3iBcW4y0dyO8eIRhUHsQ2");
 // export default withAuthAdmin(AdminDashboard, "igbQMReYImfAwDqwuqVWnylY0Kr1");

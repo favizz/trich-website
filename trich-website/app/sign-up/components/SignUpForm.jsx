@@ -81,13 +81,13 @@ const SignUpForm = () => {
 
       {/* Name */}
       <label htmlFor="firstname">
-        <p className="font-medium text-slate-700">First name</p>
+        <p className="font-medium text-slate-700">Name</p>
         <input
           id="firstname"
           name="first_name"
           type="text"
           className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-          placeholder="Enter first name"
+          placeholder="Enter Name"
           value={formData.first_name}
           onChange={handleChange}
         />
