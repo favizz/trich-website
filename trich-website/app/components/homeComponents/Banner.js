@@ -1,8 +1,5 @@
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
+"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import DescBg from "@/public/homeAssets/DescBg.png";
 import BaseBanner from "./bannerComponents/BaseBanner";
@@ -18,15 +15,28 @@ const Banner = () => {
     { type: "component", component: <BaseBanner /> },
   ];
 
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % BannerItems.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section
       style={{ backgroundImage: `url(${DescBg.src})` }}
       className="min-h-screen"
     >
-      <Carousel className="w-full ">
-        <CarouselContent className="w-full h-full">
+      <div className="relative w-full overflow-hidden">
+        <div
+          className="flex transition-transform duration-700 ease-in-out"
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        >
           {BannerItems.map((slide, index) => (
-            <CarouselItem key={index} className="relative h-full">
+            <div key={index} className="w-full flex-shrink-0">
               {slide.type === "image" ? (
                 <Image
                   src={slide.src}
@@ -36,14 +46,12 @@ const Banner = () => {
               ) : (
                 <>{slide.component}</>
               )}
-            </CarouselItem>
+            </div>
           ))}
-        </CarouselContent>
-      </Carousel>
+        </div>
+      </div>
     </section>
   );
 };
 
 export default Banner;
-
-
