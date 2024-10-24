@@ -59,6 +59,7 @@ const SignInForm = () => {
       })
       .catch((error) => {
         console.error(error);
+        ToastManager.notify('Email is not found, Please Sign Up!', 'error');
       });
   };
 

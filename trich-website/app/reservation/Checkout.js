@@ -35,12 +35,16 @@ async function fetchUserData() {
 
     const querySnapshot = await getDocs(q);
 
-    if (!querySnapshot.empty) {
+    if (!querySnapshot.empty) 
+    {
       const userInfo = querySnapshot.docs[0].data();
       return userInfo;
-    } else {
+    } 
+    else 
+    {
       throw new Error("No user found with the provided user ID");
     }
+
   } catch (error) {
     console.error("Error fetching user data:", error);
     throw new Error("Error fetching user data");
@@ -59,7 +63,6 @@ const Checkout = ({
 }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [bookingSent, setBookingSent] = useState(false)
 
   const [reqBody, setReqBody] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState(0);
@@ -95,17 +98,15 @@ const Checkout = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      if (bookingSent) return;
 
       try {
         const userData = await fetchUserData();
-        const fullName = `${userData?.first_name} ${userData?.last_name}`;
+        const fullName = `${userData?.first_name}`;
 
         const orderid = getRandomNumber();
 
         // add doc to firebase
         handleBooking(orderid, fullName, pickedService, pickedTime, totalPrice );
-        setBookingSent(true);
 
         pickedService = pickedService.toString().split(",");
         console.log(pickedService)
@@ -139,7 +140,7 @@ const Checkout = ({
     };
 
     fetchData();
-  }, [bookingSent]);
+  }, []);
 
   useEffect(() => {
     async function fetchToken() {
@@ -182,7 +183,8 @@ const Checkout = ({
   }, [reqBody]);
 
   useEffect(() => {
-    const snapScript = "https://app.midtrans.com/snap/snap.js";
+    const snapScript = "https://app.midtrans.com/snap/snap.js"; // Production
+    // const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js" // Sandbox
     const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY;
     const script = document.createElement("script");
 
