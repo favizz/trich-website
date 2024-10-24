@@ -146,7 +146,6 @@ const ClientPage = () => {
             myService={pickedService}
             toggleConfirm={toggleConfirm}
             handlePage={setPage}
-            handleNotes={setNotes}
           />
         )}
         {currPage == 2 && (
@@ -165,7 +164,6 @@ const ClientPage = () => {
             price={totalPrice}
             actualPrice={totalActualPrice}
             duration={totalDuration}
-            notes={notes}
             handlePage={setPage}
           />
         )}
@@ -207,7 +205,6 @@ const ClientPage = () => {
             totalPrice={totalPrice}
             pickedDate={pickedDate}
             pickedTime={pickedTime}
-            notes={notes}
           />
         )} */}
         <div className="w-0 h-0">

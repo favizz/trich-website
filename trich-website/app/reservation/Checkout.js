@@ -56,7 +56,6 @@ const Checkout = ({
   totalPrice,
   pickedDate,
   pickedTime,
-  notes,
 }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -73,7 +72,6 @@ const Checkout = ({
     pickedService,
     pickedTime,
     totalPrice,
-    notes
   ) => {
     try {
       await addDoc(userBookingRef, {
@@ -84,7 +82,6 @@ const Checkout = ({
         amount: totalPrice,
         date: pickedDate,
         time: pickedTime,
-        notes: notes,
         status: 1,
         booking_id: uuidv4(),
         order_id: order_id.toString(),
@@ -107,7 +104,7 @@ const Checkout = ({
         const orderid = getRandomNumber();
 
         // add doc to firebase
-        handleBooking(orderid, fullName, pickedService, pickedTime, totalPrice, notes);
+        handleBooking(orderid, fullName, pickedService, pickedTime, totalPrice );
         setBookingSent(true);
 
         pickedService = pickedService.toString().split(",");

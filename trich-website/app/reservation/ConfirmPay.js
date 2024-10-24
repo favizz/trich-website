@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { formatPrice } from "./ChooseService";
 
-const ConfirmPay = ({ date, time, service, price, actualPrice, duration, notes, handlePage }) => {
+const ConfirmPay = ({ date, time, service, price, actualPrice, duration, handlePage }) => {
   const [agreePolicy, setAgreePolicy] = useState(false);
 
   return (
@@ -28,10 +28,6 @@ const ConfirmPay = ({ date, time, service, price, actualPrice, duration, notes, 
           <p className="font-extrabold text-orange1 lg:text-base">
             IDR {actualPrice >= 200000 ? "100.000" : formatPrice(price)}
           </p>
-        </div>
-        <div className="flex flex-row items-center justify-between">
-          <p className="text-[#545454] font-semibold">Notes</p>
-          <p className="font-light lg:text-sm">{notes ? notes : "---"}</p>
         </div>
       </div>
       <div className="w-full h-[0.5px] bg-gray-600"></div>

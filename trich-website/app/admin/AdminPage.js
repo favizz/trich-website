@@ -575,6 +575,14 @@ const AdminDashboard = () => {
     </div>
   );
 };
+//trich newest
+export default withAuthAdmin(AdminDashboard, "1SwH5R8BhLQB0mI5SNXg2LiQDj22");
+
+// trich-server
 // export default withAuthAdmin(AdminDashboard, "7UWhegatZOhkq1H9TM5UUs7E1OS2");
+
+// trich-temp
 // export default withAuthAdmin(AdminDashboard, "cQjKKaD3iBcW4y0dyO8eIRhUHsQ2");
-export default withAuthAdmin(AdminDashboard, "igbQMReYImfAwDqwuqVWnylY0Kr1");
+
+// trich-base
+// export default withAuthAdmin(AdminDashboard, "igbQMReYImfAwDqwuqVWnylY0Kr1");
