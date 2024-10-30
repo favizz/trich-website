@@ -1,13 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { auth, db } from "@/config/firebase";
-import {
-  collection,
-  query,
-  where,
-  addDoc,
-  getDocs,
-} from "firebase/firestore";
+import { collection, query, where, addDoc, getDocs } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 
 import LoadingSpinner from "../components/animation/Spinner";
@@ -35,16 +29,12 @@ async function fetchUserData() {
 
     const querySnapshot = await getDocs(q);
 
-    if (!querySnapshot.empty) 
-    {
+    if (!querySnapshot.empty) {
       const userInfo = querySnapshot.docs[0].data();
       return userInfo;
-    } 
-    else 
-    {
+    } else {
       throw new Error("No user found with the provided user ID");
     }
-
   } catch (error) {
     console.error("Error fetching user data:", error);
     throw new Error("Error fetching user data");
@@ -55,12 +45,7 @@ function getRandomNumber() {
   return Math.floor(Math.random() * 1000) + 1;
 }
 
-const Checkout = ({
-  pickedService,
-  totalPrice,
-  pickedDate,
-  pickedTime,
-}) => {
+const Checkout = ({ pickedService, totalPrice, pickedDate, pickedTime }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -72,15 +57,19 @@ const Checkout = ({
   const handleBooking = async (
     order_id,
     fullName,
+    userEmail,
+    userPhone,
     pickedService,
     pickedTime,
-    totalPrice,
+    totalPrice
   ) => {
     try {
       await addDoc(userBookingRef, {
         create_booking_date: new Date(),
         user_id: auth?.currentUser?.uid,
         name: fullName,
+        email: userEmail,
+        phone_number: userPhone,
         service: pickedService,
         amount: totalPrice,
         date: pickedDate,
@@ -98,18 +87,26 @@ const Checkout = ({
 
   useEffect(() => {
     const fetchData = async () => {
-
       try {
         const userData = await fetchUserData();
         const fullName = `${userData?.first_name}`;
+        const userEmail = userData.email;
+        const userPhone = userData.phone_number;
 
         const orderid = getRandomNumber();
 
         // add doc to firebase
-        handleBooking(orderid, fullName, pickedService, pickedTime, totalPrice );
+        handleBooking(
+          orderid,
+          fullName,
+          userEmail,
+          userPhone,
+          pickedService,
+          pickedTime,
+          totalPrice
+        );
 
         pickedService = pickedService.toString().split(",");
-        console.log(pickedService)
 
         const body = {
           transaction_details: {
@@ -129,10 +126,7 @@ const Checkout = ({
           enabled_payments: ["other_qris"],
         };
 
-        console.log(body);
-
         setReqBody(body);
-        console.log(body);
       } catch (error) {
         console.error(error);
         setPaymentStatus(2);
@@ -145,7 +139,7 @@ const Checkout = ({
   useEffect(() => {
     async function fetchToken() {
       setLoading(true);
-      if (!reqBody) return; 
+      if (!reqBody) return;
 
       try {
         const response = await fetch("/api/dokuHandler", {
@@ -165,7 +159,6 @@ const Checkout = ({
         window.snap.pay(data.token, {
           onSuccess: function (result) {
             setPaymentStatus(1);
-            console.log(result);
           },
           onError: function (result) {
             setPaymentStatus(2);

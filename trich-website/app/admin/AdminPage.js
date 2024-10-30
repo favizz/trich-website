@@ -56,16 +56,22 @@ const AdminDashboard = () => {
   const fetchUserByName = async (firstName) => {
     try {
       const usersRef = collection(db, "user");
-      const q = query(usersRef, where("first_name", "==", firstName));
+  
+      // Convert firstName to uppercase before querying
+      const upperCaseFirstName = firstName.toUpperCase();
+  
+      const q = query(usersRef, where("first_name", "==", upperCaseFirstName));
       const querySnapshot = await getDocs(q);
-
+  
       if (querySnapshot.empty) {
         throw new Error("User not found");
       } else {
-        setSearchedUser(querySnapshot.docs[0].data());
+        const userData = querySnapshot.docs[0].data();
+        console.log("User found:", userData);
+        setSearchedUser(userData); // Set the user data in state
       }
     } catch (error) {
-      console.error("Failed to fetch users:", error);
+      console.error("Failed to fetch user:", error);
     }
   };
 
@@ -233,15 +239,6 @@ const AdminDashboard = () => {
       console.error("Error deleting booking:", error);
     }
   };
-
-  // const getNameFromBooking = (userId) => {
-  //   const user = users.find((u) => u.user_id === userId);
-  //   if (user) {
-  //     return user.first_name;
-  //   } else {
-  //     return "User not found";
-  //   }
-  // };
 
   const fetchQuotas = async () => {
     try {
@@ -411,7 +408,7 @@ const AdminDashboard = () => {
                   </button>
                 </td>
                 <td className="border border-1 border-solid border-black">
-                  {booking.notes}
+                  {booking.phone_number}
                 </td>
               </tr>
             ))}
@@ -520,11 +517,7 @@ const AdminDashboard = () => {
               </td>
               <td className="border border-1 border-solid border-black">
                 {searchedUser
-                  ? searchedUser.first_name +
-                    " " +
-                    searchedUser.last_name +
-                    "-" +
-                    searchedUser.email
+                  ? searchedUser.first_name
                   : "-"}
               </td>
               <td className="border border-1 border-solid border-black">
