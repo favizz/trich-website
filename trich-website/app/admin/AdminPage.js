@@ -4,6 +4,7 @@ import { db } from "@/config/firebase";
 import {
   collection,
   query,
+  getDoc,
   getDocs,
   addDoc,
   where,
@@ -49,6 +50,7 @@ const AdminDashboard = () => {
       // fetchUser();
       fetchActiveBookings();
       fetchQuotas();
+      checkAndMoveExpiredBookings();
       setLastFetched(Date.now());
     }
   }, [bookings]);
@@ -56,13 +58,13 @@ const AdminDashboard = () => {
   const fetchUserByName = async (firstName) => {
     try {
       const usersRef = collection(db, "user");
-  
+
       // Convert firstName to uppercase before querying
       const upperCaseFirstName = firstName.toUpperCase();
-  
+
       const q = query(usersRef, where("first_name", "==", upperCaseFirstName));
       const querySnapshot = await getDocs(q);
-  
+
       if (querySnapshot.empty) {
         throw new Error("User not found");
       } else {
@@ -118,16 +120,18 @@ const AdminDashboard = () => {
     }
   };
 
-  const checkAndMoveExpiredBookings = async () => {
+  const checkAndMoveExpiredBookings = async (bookings) => {
     const today = new Date();
-  
+
     try {
-      const bookingUpdateDoc = await getDoc(doc(db, "booking_update_date", "lastUpdate"));
-  
+      const bookingUpdateDoc = await getDoc(
+        doc(db, "booking_update", "HM1JKd36hK6i3K8DEeGR")
+      );
+
       if (bookingUpdateDoc.exists()) {
         const lastUpdateDate = bookingUpdateDoc.data().last_update.toDate();
-  
-        if ( today.getDate() > lastUpdateDate.getDate()) {
+
+        if (today.getDate() > lastUpdateDate.getDate()) {
           bookings.forEach(async (tempBooking) => {
             if (tempBooking.status === 3) {
               try {
@@ -141,14 +145,15 @@ const AdminDashboard = () => {
                   status: 3,
                   booking_id: tempBooking.booking_id,
                 });
-                await deleteBooking(tempBooking.booking_id);
+                await deleteBooking(tempBooking.booking_id); // Assuming deleteBooking is defined elsewhere
               } catch (error) {
-                console.log("Error moving booking:", error);
+                console.error("Error moving booking:", error);
                 ToastManager.notify("Status gagal diupdate", "error");
               }
             }
           });
-          await updateDoc(doc(db, "booking_update_date", "lastUpdate"), {
+
+          await updateDoc(doc(db, "booking_update", "HM1JKd36hK6i3K8DEeGR"), {
             last_update: today,
           });
         }
@@ -357,7 +362,7 @@ const AdminDashboard = () => {
                 Status
               </th>
               <th className="border border-1 border-solid border-black">
-                Notes
+                Phone Number
               </th>
             </tr>
           </thead>
@@ -374,7 +379,7 @@ const AdminDashboard = () => {
                   </button>
                 </td>
                 <td className="space-x-2 border border-1 border-solid border-black">
-                  {booking.name} / {booking.email}
+                  {booking.name}  ({booking.email})
                   {/* <button
                     onClick={() => handleProfileClick(booking.user_id)}
                     className="text-white bg-orange1"
@@ -516,9 +521,7 @@ const AdminDashboard = () => {
                 {searchedUser ? searchedUser.phone_number : "No user found"}
               </td>
               <td className="border border-1 border-solid border-black">
-                {searchedUser
-                  ? searchedUser.first_name
-                  : "-"}
+                {searchedUser ? searchedUser.first_name : "-"}
               </td>
               <td className="border border-1 border-solid border-black">
                 {searchedUser ? searchedUser.email : "-"}
