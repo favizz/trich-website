@@ -6,6 +6,8 @@ import ViewServices from "./components/homeComponents/ViewServices";
 import ViewAppointment from "./components/homeComponents/ViewAppointment";
 import ViewContact from "./components/homeComponents/ViewContact";
 
+import { Analytics } from '@vercel/analytics/react';
+
 export default function Home() {
   return (
     <main className="relative">
@@ -16,6 +18,7 @@ export default function Home() {
       <ViewServices/>
       <ViewAppointment/>
       <ViewContact/>
+      <Analytics />
     </main>
   );
 }
