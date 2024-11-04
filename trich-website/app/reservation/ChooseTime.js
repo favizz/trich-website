@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { db } from "@/config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
+import { Calendar } from "@/components/ui/calendar";
+
 import LeftArrow from "@/public/reservationAssets/leftarrow.svg";
 import RightArrow from "@/public/reservationAssets/rightarrow.svg";
 
@@ -70,8 +72,9 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
     handleTime(operationalTimes[pickedTime] || null);
   }, [pickedDate, pickedTime, operationalTimes]);
 
-  const handleDateChange = async (event) => {
-    const inputDate = new Date(event.target.value);
+  const handleDateChange = async (dateInput) => {
+    pickDate(dateInput);
+    const inputDate = dateInput;
     const currentDate = new Date();
 
     inputDate.setHours(8, 0, 0, 0);
@@ -141,8 +144,9 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
       availableTimes = availableTimes.filter(
         (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 1 // DEFAULT 2
       );
-      
+
       setOperationalTimes(availableTimes);
+      console.log(pickedDate)
     } catch (error) {
       console.error(error);
     }
@@ -152,13 +156,19 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
 
   return (
     <div className="w-full flex flex-col items-center justify-center lg:text-sm xl:text-base 2xl:text-lg">
-      <input
+      {/* <input
         type="date"
         onChange={(e) => {
           handleDateChange(e);
           pickDate(e.target.value);
         }}
         className="my-4"
+      /> */}
+      <Calendar
+        mode="single"
+        selected={pickedDate}
+        onSelect={handleDateChange}
+        className="my-4 rounded-md border"
       />
       <div className="w-full h-[0.5px] bg-gray-600 mb-8"></div>
       <div className="space-y-4 flex flex-col items-center">
