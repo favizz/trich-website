@@ -19,7 +19,7 @@ import LoadingSpinner from "../components/animation/Spinner";
 
 import { formatPrice } from "./ChooseService";
 
-import Qris from "@/public/reservationAssets/qris.png";
+import Qris from "@/public/reservationAssets/new-qris.jpg";
 
 export const getUserNameById = async (userId) => {
   try {
@@ -167,7 +167,7 @@ const ClientPage = () => {
             handlePage={setPage}
           />
         )}
-        {/* {currPage == 4 && (
+        {currPage == 4 && (
           <div className="flex flex-col items-center justify-center pt-4 space-y-2">
             <p className="font-extrabold lg:text-xl">
               Scan To Complete Your Payment
@@ -198,15 +198,15 @@ const ClientPage = () => {
             </div>
             <LoadingSpinner toggleShow={isLoading} />
           </div>
-        )} */}
-        {currPage == 4 && (
+        )}
+        {/* {currPage == 4 && (
           <Checkout
             pickedService={pickedService}
             totalPrice={totalPrice}
             pickedDate={pickedDate}
             pickedTime={pickedTime}
           />
-        )}
+        )} */}
         <div className="w-0 h-0">
           <ToastContainer />
         </div>
