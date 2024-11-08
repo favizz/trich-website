@@ -136,13 +136,13 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
             fullyBookedTimes[time] = 0;
           }
           if (fullyBookedTimes[time] >= quota.quota) {
-            fullyBookedTimes[time] = 1; // DEFAULT 2
+            fullyBookedTimes[time] = 2; // DEFAULT 2
           }
         });
       });
 
       availableTimes = availableTimes.filter(
-        (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 1 // DEFAULT 2
+        (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2 // DEFAULT 2
       );
 
       setOperationalTimes(availableTimes);
@@ -156,14 +156,6 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
 
   return (
     <div className="w-full flex flex-col items-center justify-center lg:text-sm xl:text-base 2xl:text-lg">
-      {/* <input
-        type="date"
-        onChange={(e) => {
-          handleDateChange(e);
-          pickDate(e.target.value);
-        }}
-        className="my-4"
-      /> */}
       <Calendar
         mode="single"
         selected={pickedDate}
