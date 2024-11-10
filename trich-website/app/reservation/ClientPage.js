@@ -169,8 +169,8 @@ const ClientPage = () => {
         )}
         {currPage == 4 && (
           <div className="flex flex-col items-center justify-center pt-4 space-y-2">
-            <p className="font-extrabold lg:text-xl">
-              Scan To Complete Your Payment
+            <p className="font-extrabold lg:text-xl ">
+              Scan To Complete Your Payment 
             </p>
             <p className="font-semibold lg:text-sm">TRICH BARBERSPACE</p>
             <p className="font-extrabold text-orange1 lg:text-base xl:text-lg 2xl:text-xl">
