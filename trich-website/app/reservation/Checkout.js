@@ -9,42 +9,6 @@ import SuccessIcon from "@/public/signInAssets/success.svg";
 import Image from "next/image";
 import Link from "next/link";
 
-/**
- * Async function to fetch user data based on currentUserID.
- *
- * @param {string} currentUserID - The user ID to query the database with.
- * @returns {Promise<Object>} - Returns user data or an error message if not found.
- */
-async function fetchUserData() {
-  try {
-    const currentUserID = auth?.currentUser?.uid;
-    if (!currentUserID) {
-      throw new Error("User ID is required");
-    }
-
-    const q = query(
-      collection(db, "user"),
-      where("user_id", "==", currentUserID)
-    );
-
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      const userInfo = querySnapshot.docs[0].data();
-      return userInfo;
-    } else {
-      throw new Error("No user found with the provided user ID");
-    }
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    throw new Error("Error fetching user data");
-  }
-}
-
-function getRandomNumber() {
-  return Math.floor(Math.random() * 1000) + 1;
-}
-
 const Checkout = ({ pickedService, totalPrice, pickedDate, pickedTime }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -88,45 +52,55 @@ const Checkout = ({ pickedService, totalPrice, pickedDate, pickedTime }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = await fetchUserData();
-        const fullName = `${userData?.first_name}`;
-        const userEmail = userData.email;
-        const userPhone = userData.phone_number;
+        if (!auth?.currentUser?.uid) {
+          throw new Error("User ID is required");
+        }
 
-        const orderid = getRandomNumber();
-
-        // add doc to firebase
-        handleBooking(
-          orderid,
-          fullName,
-          userEmail,
-          userPhone,
-          pickedService,
-          pickedTime,
-          totalPrice
+        const q = query(
+          collection(db, "user"),
+          where("user_id", "==", auth.currentUser.uid)
         );
 
-        pickedService = pickedService.toString().split(",");
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const userInfo = querySnapshot.docs[0].data();
 
-        const body = {
-          transaction_details: {
-            order_id: orderid,
-            gross_amount: totalPrice,
-          },
-          item_details: pickedService.map((service, idx) => ({
-            name: service.trim(),
-            price: pickedService.length > 1 ? totalPrice / 2 : totalPrice,
-            quantity: 1,
-            id: `TS-${idx}`,
-          })),
-          customer_details: {
-            first_name: fullName,
-            email: userData?.email,
-          },
-          enabled_payments: ["other_qris"],
-        };
+          const orderid = Math.floor(Math.random() * 1000) + 1;
+          const fullName = `${userInfo.first_name}`;
 
-        setReqBody(body);
+          await handleBooking(
+            orderid,
+            fullName,
+            userInfo.email,
+            userInfo.phone_number,
+            pickedService,
+            pickedTime,
+            totalPrice
+          );
+
+          const services = pickedService.toString().split(",");
+          const body = {
+            transaction_details: {
+              order_id: orderid,
+              gross_amount: totalPrice,
+            },
+            item_details: services.map((service, idx) => ({
+              name: service.trim(),
+              price: services.length > 1 ? totalPrice / 2 : totalPrice,
+              quantity: 1,
+              id: `TS-${idx}`,
+            })),
+            customer_details: {
+              first_name: fullName,
+              email: userInfo.email,
+            },
+            enabled_payments: ["other_qris"],
+          };
+
+          setReqBody(body);
+        } else {
+          throw new Error("No user found with the provided user ID");
+        }
       } catch (error) {
         console.error(error);
         setPaymentStatus(2);
@@ -177,7 +151,7 @@ const Checkout = ({ pickedService, totalPrice, pickedDate, pickedTime }) => {
 
   useEffect(() => {
     const snapScript = "https://app.midtrans.com/snap/snap.js"; // Production
-    // const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js" // Sandbox
+    // const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js"; // Sandbox
     const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY;
     const script = document.createElement("script");
 
@@ -190,7 +164,7 @@ const Checkout = ({ pickedService, totalPrice, pickedDate, pickedTime }) => {
     return () => {
       document.body.removeChild(script);
     };
-  }, [token]);
+  }, []);
 
   return (
     <section className="pt-4 space-y-4 flex flex-col items-center justify-center">
