@@ -20,7 +20,6 @@ import { ToastContainer } from "react-toastify";
 
 const AdminDashboard = () => {
   const [searchedUser, setSearchedUser] = useState(null);
-  const [users, setUsers] = useState([]);
   const [searchEmail, setEmail] = useState("");
   const [bookings, setBookings] = useState([]);
   const [status, setStatus] = useState();
@@ -32,28 +31,16 @@ const AdminDashboard = () => {
   const [lastFetched, setLastFetched] = useState(null);
   const refreshSpan = 30 * 60 * 1000;
 
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-
-  // const handleProfileClick = (userId) => {
-  //   const user = users.find((u) => u.user_id === userId);
-  //   if (user) {
-  //     setSelectedUser(user);
-  //     setShowModal(true);
-  //   } else {
-  //     return "User not found";
-  //   }
-  // };
+  // const [selectedUser, setSelectedUser] = useState(null);
+  // const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (!bookings.length || Date.now() - lastFetched > refreshSpan) {
       // fetchUser();
       fetchActiveBookings();
       fetchQuotas();
-      checkAndMoveExpiredBookings();
-      setLastFetched(Date.now());
     }
-  }, [bookings]);
+  }, []);
 
   const fetchUserByName = async (firstName) => {
     try {
@@ -76,19 +63,6 @@ const AdminDashboard = () => {
       console.error("Failed to fetch user:", error);
     }
   };
-
-  // const fetchUser = async () => {
-  //   try {
-  //     const querySnapshot = await getDocs(collection(db, "user"));
-  //     const userData = querySnapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-  //     setUsers(userData);
-  //   } catch (error) {
-  //     console.error("Failed to fetch users:", error);
-  //   }
-  // };
 
   const fetchActiveBookings = async () => {
     try {
@@ -120,42 +94,41 @@ const AdminDashboard = () => {
     }
   };
 
-  const checkAndMoveExpiredBookings = async (bookings) => {
-    const today = new Date();
-
+  const MoveFinishedBookings = async () => {
+    const bookingRef = collection(db, "past_booking");
     try {
-      const bookingUpdateDoc = await getDoc(
-        doc(db, "booking_update", "HM1JKd36hK6i3K8DEeGR")
+      // Filter hanya bookings dengan status 3
+      const finishedBookings = bookings.filter(
+        (tempBooking) => tempBooking.status == "3"
       );
 
-      if (bookingUpdateDoc.exists()) {
-        const lastUpdateDate = bookingUpdateDoc.data().last_update.toDate();
-
-        if (today.getDate() > lastUpdateDate.getDate()) {
-          bookings.forEach(async (tempBooking) => {
-            if (tempBooking.status === 3) {
-              try {
-                await addDoc(collection(db, "past_booking"), {
-                  create_booking_date: tempBooking.create_booking_date,
-                  user_id: tempBooking.user_id,
-                  service: tempBooking.service,
-                  date: tempBooking.date,
-                  time: tempBooking.time,
-                  notes: tempBooking.notes,
-                  status: 3,
-                  booking_id: tempBooking.booking_id,
-                });
-                await deleteBooking(tempBooking.booking_id); // Assuming deleteBooking is defined elsewhere
-              } catch (error) {
-                console.error("Error moving booking:", error);
-                ToastManager.notify("Status gagal diupdate", "error");
-              }
-            }
+      for (const tempBooking of finishedBookings) {
+        try {
+          // Tambahkan ke koleksi 'past_booking'
+          await addDoc(bookingRef, {
+            create_booking_date: tempBooking.create_booking_date,
+            amount: tempBooking.amount,
+            name: tempBooking.name,
+            email: tempBooking.email,
+            phone_number: tempBooking.phone_number,
+            user_id: tempBooking.user_id,
+            service: tempBooking.service,
+            date: tempBooking.date,
+            time: tempBooking.time,
+            status: 3,
+            booking_id: tempBooking.booking_id,
           });
 
-          await updateDoc(doc(db, "booking_update", "HM1JKd36hK6i3K8DEeGR"), {
-            last_update: today,
-          });
+          // Hapus dari koleksi 'active_booking'
+          await deleteBooking(tempBooking.booking_id);
+
+          console.log(
+            "Booking successfully moved and deleted:",
+            tempBooking.booking_id
+          );
+        } catch (error) {
+          console.error("Error moving booking:", error);
+          ToastManager.notify("Status gagal diupdate", "error");
         }
       }
     } catch (error) {
@@ -339,6 +312,14 @@ const AdminDashboard = () => {
     <div className="pt-32 p-4 min-h-screen">
       <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
       <div className="w-full">
+        {/* button to clear finished bookigns */}
+        <button
+          onClick={MoveFinishedBookings}
+          className="bg-orange1 font-semibold px-4 py-1 rounded-md text-white hover:bg-orange-400"
+        >
+          Clear Finished Bookings
+        </button>
+
         <h2 className="text-lg font-semibold">Bookings</h2>
         <table className="border-collapse w-full">
           <thead>
@@ -379,7 +360,7 @@ const AdminDashboard = () => {
                   </button>
                 </td>
                 <td className="space-x-2 border border-1 border-solid border-black">
-                  {booking.name}  ({booking.email})
+                  {booking.name} ({booking.email})
                   {/* <button
                     onClick={() => handleProfileClick(booking.user_id)}
                     className="text-white bg-orange1"

@@ -11,8 +11,6 @@ const ClientPage = () => {
   const statusCode = params.get("status_code");
   const transactionStatus = params.get("transaction_status");
 
-  console.log(orderId);
-
   useEffect(() => {
     const updateBookingStatus = async () => {
       // Only proceed if all query parameters are available
@@ -47,7 +45,7 @@ const ClientPage = () => {
 
     updateBookingStatus();
 
-  }, [orderId, transactionStatus]);
+  }, []);
 
   return (
     <div className="py-8 px-16 space-y-4 flex flex-col items-center justify-center bg-white rounded-[10px]">
