@@ -38,7 +38,7 @@ const SignInForm = () => {
         })
         .catch((e) => {
           console.error(e.message);
-          ToastManager.notify('Please Reset Your Password!', 'error');
+          ToastManager.notify('Please create an account with the same e-mail!', 'error');
         });
     } catch (err) {
       console.log(err);
