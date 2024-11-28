@@ -131,7 +131,7 @@ const ClientPage = () => {
           </div>
         </div>
         <div className="w-full h-[0.5px] mb-2 bg-gray-600"></div>
-        {currPage == 1 && !isConfirm && (
+        {currPage == 1 && (
           <ChooseService
             handlePage={setPage}
             handleService={setService}
