@@ -150,6 +150,7 @@ const ClientPage = () => {
         )}
         {currPage == 2 && (
           <ChooseTime
+            pickedService={pickedService}
             date={pickedDate}
             handleDate={setDate}
             handleTime={setTime}

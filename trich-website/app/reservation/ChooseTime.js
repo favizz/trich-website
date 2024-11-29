@@ -8,7 +8,7 @@ import { Calendar } from "@/components/ui/calendar";
 import LeftArrow from "@/public/reservationAssets/leftarrow.svg";
 import RightArrow from "@/public/reservationAssets/rightarrow.svg";
 
-const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
+const ChooseTime = ({ pickedService, date, handleDate, handleTime, handlePage }) => {
   function generateOperationalTimes(date) {
     const allOperationalTimes = [];
     const startHour = 10;
@@ -45,16 +45,6 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
   const [pickedTime, pickTime] = useState(0);
   const [operationalTimes, setOperationalTimes] = useState(allOperationalTimes);
   const [isDateValid, toggleDateValid] = useState(true);
-
-  const getTodaysDate = () => {
-    const date = new Date();
-
-    const year = String(date.getFullYear()).padStart(4, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  };
 
   const handleTimePick = (input) => {
     if (input === -1) {
@@ -109,6 +99,10 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
       availableTimes = availableTimes.filter((time) => time !== "12:00");
     }
 
+    if (pickedService && pickedService.includes("Morning Edge")) {
+      availableTimes = availableTimes.filter((time) => time <= "12:00");
+    }
+
     try {
       const q = query(
         collection(db, "active_booking"),
@@ -146,7 +140,7 @@ const ChooseTime = ({ date, handleDate, handleTime, handlePage }) => {
       );
 
       setOperationalTimes(availableTimes);
-      console.log(pickedDate)
+      // console.log(pickedDate)
     } catch (error) {
       console.error(error);
     }
