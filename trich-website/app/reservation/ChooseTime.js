@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import { db } from "@/config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
+import ToastManager from "../components/toaster";
+import { ToastContainer } from "react-toastify";
+
 import { Calendar } from "@/components/ui/calendar";
 
 import LeftArrow from "@/public/reservationAssets/leftarrow.svg";
@@ -100,6 +103,10 @@ const ChooseTime = ({ pickedService, date, handleDate, handleTime, handlePage })
     }
 
     if (pickedService && pickedService.includes("Morning Edge")) {
+      if (inputDate.getDay() === 6 || inputDate.getDay() === 0) {
+        setOperationalTimes([]);
+        availableTimes = [];
+      }
       availableTimes = availableTimes.filter((time) => time <= "12:00");
     }
 
@@ -148,6 +155,31 @@ const ChooseTime = ({ pickedService, date, handleDate, handleTime, handlePage })
     pickTime(0);
   };
 
+  const handleContinue = () => {
+    if (!date) {
+      ToastManager.notify(
+        "Please Pick a Date!",
+        "error"
+      );
+      return;
+    }
+    if (!isDateValid) {
+      ToastManager.notify(
+        "Please Pick a Valid Date!",
+        "error"
+      );
+      return;
+    }
+    if (operationalTimes.length === 0) {
+      ToastManager.notify(
+        "Please Pick Another Date!",
+        "error"
+      );
+      return;
+    }
+    handlePage(3)
+  }
+
   return (
     <div className="w-full flex flex-col items-center justify-center lg:text-sm xl:text-base 2xl:text-lg">
       <Calendar
@@ -184,11 +216,15 @@ const ChooseTime = ({ pickedService, date, handleDate, handleTime, handlePage })
           />
         </div>
         <button
-          onClick={() => (date !== null && isDateValid && operationalTimes.length !== 0 ? handlePage(3) : null)}
+          onClick={() => handleContinue()}
           className="border border-1 border-orange1 text-orange1 font-bold px-12 py-2 rounded"
         >
           Pay
         </button>
+      </div>
+
+      <div className="w-0 h-0">
+        <ToastContainer />
       </div>
     </div>
   );
