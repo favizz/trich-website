@@ -1,38 +1,81 @@
 import { db } from "@/config/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import {
+    collection,
+    addDoc,
+    query,
+    where,
+    getDocs,
+    updateDoc,
+} from "firebase/firestore";
 
 export default async function handler(req, res) {
-  if (req.method === "POST") {
-    try {
-      const data = req.body;
+    if (req.method === "POST") {
+        try {
+            const data = req.body;
 
-      const notificationRef = collection(db, "notification");
+            const notificationRef = collection(db, "notification");
 
-      await addDoc(notificationRef, {
-        time: Date.now(),
-        transaction_time: data.transaction_time,
-        transaction_status: data.transaction_status,
-        transaction_id: data.transaction_id,
-        status_message: data.status_message,
-        status_code: data.status_code,
-        signature_key: data.signature_key,
-        settlement_time: data.settlement_time,
-        payment_type: data.payment_type,
-        order_id: data.order_id,
-        merchant_id: data.merchant_id,
-        issuer: data.issuer,
-        gross_amount: data.gross_amount,
-        fraud_status: data.fraud_status,
-        currency: data.currency,
-        acquirer: data.acquirer,
-      });
+            await addDoc(notificationRef, {
+                date: Date.now().toString(),
+                transaction_time: data.transaction_time,
+                transaction_status: data.transaction_status,
+                transaction_id: data.transaction_id,
+                status_message: data.status_message,
+                status_code: data.status_code,
+                signature_key: data.signature_key,
+                settlement_time: data.settlement_time,
+                payment_type: data.payment_type,
+                order_id: data.order_id,
+                merchant_id: data.merchant_id,
+                issuer: data.issuer,
+                gross_amount: data.gross_amount,
+                fraud_status: data.fraud_status,
+                currency: data.currency,
+                acquirer: data.acquirer,
+            });
 
-      res.status(200).json({ message: "Notification saved successfully" });
-    } catch (error) {
-      console.error("Error saving notification:", error);
-      res.status(500).json({ error: "Failed to save notification" });
+            const orderId = data.order_id;
+            const statusCode = data.status_code;
+            const transactionStatus = data.transaction_status;
+
+            if (orderId && statusCode == 200) {
+                if (transactionStatus !== "settlement") return;
+
+                try {
+                    const q = query(
+                        collection(db, "active_booking"),
+                        where("order_id", "==", orderId)
+                    );
+
+                    const querySnapshot = await getDocs(q);
+
+                    if (!querySnapshot.empty) {
+                        const docRef = querySnapshot.docs[0].ref;
+
+                        await updateDoc(docRef, {
+                            status: 2,
+                        });
+
+                        console.log("Booking status updated successfully.");
+                    } else {
+                        console.log(
+                            "No matching order found for order_id:",
+                            orderId
+                        );
+                    }
+                } catch (error) {
+                    console.error("Error updating booking status:", error);
+                }
+            }
+
+            res.status(200).json({
+                message: "Notification saved successfully",
+            });
+        } catch (error) {
+            console.error("Error saving notification:", error);
+            res.status(500).json({ error: "Failed to save notification" });
+        }
+    } else {
+        res.status(405).json({ error: "Method not allowed" });
     }
-  } else {
-    res.status(405).json({ error: "Method not allowed" });
-  }
 }
