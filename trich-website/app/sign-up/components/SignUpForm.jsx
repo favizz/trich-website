@@ -8,6 +8,7 @@ import { checkIfEmailExists } from "@/hooks/CheckEmailExist";
 import { useRouter } from "next/navigation";
 import ToastManager from "@/app/components/toaster";
 import { ToastContainer } from "react-toastify";
+import { useSearchParams } from 'next/navigation';
 
 const SignUpForm = () => {
   const userCollectionRef = collection(db, "user");
@@ -18,6 +19,9 @@ const SignUpForm = () => {
   const [acceptTerm, setTerm] = useState(false);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const redirected = searchParams.get("redirected");
 
   const [formData, setFormData] = useState({
     first_name: "",
@@ -71,12 +75,17 @@ const SignUpForm = () => {
 
   return (
     <div className="flex flex-col bg-white rounded-lg mx-6 px-4 py-8 mt-16 mb-16 md:mb-0 shadow-xl tracking-wider ">
-      <h2 className="font-bold lg:text-3xl">WELCOME TO TRICH BARBERSPACE</h2>
+      { redirected ? 
+        <h2 className="font-bold lg:text-3xl">CREATE AN ACCOUNT WITH THE SAME EMAIL</h2>
+        : 
+        <h2 className="font-bold lg:text-3xl">WELCOME TO TRICH BARBERSPACE</h2>}
       <p className="text-[#545454] text-sm md:text-base lg:pt-2 lg:pb-6">
-        Create an account below or{" "}
+        { redirected ? "Insert your registered email" : "Create an account below or " }
+        { redirected ? "" :
         <Link href="/sign-in">
           <span className="text-orange1">Sign in.</span>
         </Link>
+        }
       </p>
 
       {/* Name */}
@@ -132,7 +141,7 @@ const SignUpForm = () => {
           id="password"
           name="password"
           type="password"
-          class="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
+          className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
           placeholder="Enter password"
           onChange={(e) => setPassword(e.target.value)}
         />

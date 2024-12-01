@@ -37,8 +37,10 @@ const SignInForm = () => {
           router.push("/");
         })
         .catch((e) => {
-          console.error(e.message);
-          ToastManager.notify('Please create an account with the same e-mail!', 'error');
+          if (e.code === "auth/invalid-email") {
+            router.push("/sign-up?redirected=true");
+          }
+          ToastManager.notify('Please check your login information', 'error');
         });
     } catch (err) {
       console.log(err);

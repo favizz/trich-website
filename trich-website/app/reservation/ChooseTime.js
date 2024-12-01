@@ -103,11 +103,14 @@ const ChooseTime = ({ pickedService, date, handleDate, handleTime, handlePage })
     }
 
     if (pickedService && pickedService.includes("Morning Edge")) {
-      if (inputDate.getDay() === 6 || inputDate.getDay() === 0) {
+      if (inputDate.getDay() === 6 || inputDate.getDay() === 0 || inputDate.getDay() === 5) {
         setOperationalTimes([]);
         availableTimes = [];
+        toggleDateValid(false);
+        
       }
       availableTimes = availableTimes.filter((time) => time <= "12:00");
+
     }
 
     try {
@@ -197,7 +200,7 @@ const ChooseTime = ({ pickedService, date, handleDate, handleTime, handlePage })
           {isDateValid ? (
             "Select Available Time"
           ) : (
-            <span className="text-orange1">Please select a valid date</span>
+            <span className="text-orange1">Please select another date!</span>
           )}
         </p>
         <div className="flex flex-row space-x-8">
