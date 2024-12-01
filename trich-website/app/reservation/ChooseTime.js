@@ -48,6 +48,7 @@ const ChooseTime = ({ pickedService, date, handleDate, handleTime, handlePage })
   const [pickedTime, pickTime] = useState(0);
   const [operationalTimes, setOperationalTimes] = useState(allOperationalTimes);
   const [isDateValid, toggleDateValid] = useState(true);
+  const [isMorningEdge, setMorningEdge] = useState(false);
 
   const handleTimePick = (input) => {
     if (input === -1) {
@@ -106,12 +107,12 @@ const ChooseTime = ({ pickedService, date, handleDate, handleTime, handlePage })
       if (inputDate.getDay() === 6 || inputDate.getDay() === 0 || inputDate.getDay() === 5) {
         setOperationalTimes([]);
         availableTimes = [];
-        toggleDateValid(false);
+        setMorningEdge(true);
         
       }
       availableTimes = availableTimes.filter((time) => time <= "12:00");
-
     }
+    else setMorningEdge(false);
 
     try {
       const q = query(
@@ -203,6 +204,11 @@ const ChooseTime = ({ pickedService, date, handleDate, handleTime, handlePage })
             <span className="text-orange1">Please select another date!</span>
           )}
         </p>
+        {isMorningEdge ? (
+          <p> Morning Edge is not available on <strong>Friday, Saturday, and Monday</strong></p>
+        ) : (
+          ""
+        )}
         <div className="flex flex-row space-x-8">
           <Image
             onClick={() => handleTimePick(-1)}
