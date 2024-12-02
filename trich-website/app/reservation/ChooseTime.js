@@ -152,14 +152,26 @@ const ChooseTime = ({
                         fullyBookedTimes[time] = 0;
                     }
                     if (fullyBookedTimes[time] >= quota.quota) {
-                        fullyBookedTimes[time] = 2; // DEFAULT 2
+                        if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
+                            fullyBookedTimes[time] = 2;
+                        }
+                        else {
+                            fullyBookedTimes[time] = 2; // DEFAULT 2
+                        }
                     }
                 });
             });
 
-            availableTimes = availableTimes.filter(
-                (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2 // DEFAULT 2
-            );
+            if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
+                availableTimes = availableTimes.filter(
+                    (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 1
+                );
+            }
+            else {
+                availableTimes = availableTimes.filter(
+                    (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2 // DEFAULT 2
+                );
+            }
 
             setOperationalTimes(availableTimes);
             // console.log(pickedDate)
