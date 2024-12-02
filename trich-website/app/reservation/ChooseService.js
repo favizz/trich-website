@@ -296,7 +296,7 @@ const ChooseService = ({
             handleTotalActualPrice(totalActualPrice);
             handleDuration(totalDuration);
             handleSubmit();
-            handlePage(2);
+            {chosenServices.length !== 0 && handlePage(2)};
           }}
           className="text-center border hover:border-orange1 hover:bg-white bg-orange1 hover:text-orange1 text-white font-bold  px-12 py-2 rounded"
         >
