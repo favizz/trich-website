@@ -181,6 +181,7 @@ const ChooseService = ({
       return;
     }
     toggleConfirm(true);
+    handlePage(2);
   };
 
   return (
@@ -296,7 +297,6 @@ const ChooseService = ({
             handleTotalActualPrice(totalActualPrice);
             handleDuration(totalDuration);
             handleSubmit();
-            {chosenServices.length !== 0 && handlePage(2)};
           }}
           className="text-center border hover:border-orange1 hover:bg-white bg-orange1 hover:text-orange1 text-white font-bold  px-12 py-2 rounded"
         >
