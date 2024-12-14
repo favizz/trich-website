@@ -5,10 +5,8 @@ import {
     collection,
     query,
     where,
-    addDoc,
     getDocs,
 } from "firebase/firestore";
-import { v4 as uuidv4 } from "uuid";
 
 import LoadingSpinner from "../components/animation/Spinner";
 import SuccessIcon from "@/public/signInAssets/success.svg";
@@ -20,39 +18,6 @@ const Checkout = ({ pickedService, totalPrice, pickedDate, pickedTime }) => {
 
     const [reqBody, setReqBody] = useState(null);
     const [paymentStatus, setPaymentStatus] = useState(0);
-
-    const userBookingRef = collection(db, "active_booking");
-
-    const handleBooking = async (
-        order_id,
-        fullName,
-        userEmail,
-        userPhone,
-        pickedService,
-        pickedTime,
-        totalPrice
-    ) => {
-        try {
-            await addDoc(userBookingRef, {
-                create_booking_date: new Date(),
-                user_id: auth?.currentUser?.uid,
-                name: fullName,
-                email: userEmail,
-                phone_number: userPhone,
-                service: pickedService,
-                amount: totalPrice,
-                date: pickedDate,
-                time: pickedTime,
-                status: 1,
-                booking_id: uuidv4(),
-                order_id: order_id.toString(),
-            }).catch((e) => {
-                console.error(e);
-            });
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -72,18 +37,8 @@ const Checkout = ({ pickedService, totalPrice, pickedDate, pickedTime }) => {
 
                     const orderid = Math.floor(Math.random() * 1000) + 1;
                     const fullName = `${userInfo.first_name}`;
-
-                    await handleBooking(
-                        orderid,
-                        fullName,
-                        userInfo.email,
-                        userInfo.phone_number,
-                        pickedService,
-                        pickedTime,
-                        totalPrice
-                    );
-
                     const services = pickedService.toString().split(",");
+
                     const body = {
                         transaction_details: {
                             order_id: orderid,
