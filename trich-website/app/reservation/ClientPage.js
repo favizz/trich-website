@@ -96,6 +96,8 @@ const ClientPage = () => {
   const [totalDuration, setDuration] = useState(null);
   const [isLoading, toggleLoading] = useState(false);
 
+  const [orderid, setOrderId] = useState(0);
+
   return (
     <>
       <section className="flex flex-col items-center bg-white rounded-lg py-8 my-28 shadow-xl tracking-wider">
@@ -165,6 +167,7 @@ const ClientPage = () => {
             price={totalPrice}
             actualPrice={totalActualPrice}
             duration={totalDuration}
+            setOrderId={setOrderId}
             handlePage={setPage}
           />
         )}
@@ -206,6 +209,7 @@ const ClientPage = () => {
             totalPrice={totalPrice}
             pickedDate={pickedDate}
             pickedTime={pickedTime}
+            orderId={orderid}
           />
         )}
         <div className="w-0 h-0">

@@ -13,7 +13,7 @@ import SuccessIcon from "@/public/signInAssets/success.svg";
 import Image from "next/image";
 import Link from "next/link";
 
-const Checkout = ({ pickedService, totalPrice, pickedDate, pickedTime }) => {
+const Checkout = ({ pickedService, totalPrice, orderId }) => {
     const [loading, setLoading] = useState(false);
 
     const [reqBody, setReqBody] = useState(null);
@@ -35,13 +35,12 @@ const Checkout = ({ pickedService, totalPrice, pickedDate, pickedTime }) => {
                 if (!querySnapshot.empty) {
                     const userInfo = querySnapshot.docs[0].data();
 
-                    const orderid = Math.floor(Math.random() * 1000) + 1;
                     const fullName = `${userInfo.first_name}`;
                     const services = pickedService.toString().split(",");
 
                     const body = {
                         transaction_details: {
-                            order_id: orderid,
+                            order_id: orderId,
                             gross_amount: totalPrice,
                         },
                         item_details: services.map((service, idx) => ({

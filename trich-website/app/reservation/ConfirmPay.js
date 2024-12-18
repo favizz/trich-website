@@ -13,6 +13,7 @@ const ConfirmPay = ({
     price,
     actualPrice,
     duration,
+    setOrderId,
     handlePage,
 }) => {
     const [agreePolicy, setAgreePolicy] = useState(false);
@@ -67,6 +68,7 @@ const ConfirmPay = ({
                 const userInfo = querySnapshot.docs[0].data();
 
                 const orderid = Math.floor(Math.random() * 2000) + 1;
+                setOrderId(orderid);
                 const fullName = `${userInfo.first_name}`;
 
                 await handleBooking(
