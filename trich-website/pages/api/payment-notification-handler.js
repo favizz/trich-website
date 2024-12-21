@@ -13,26 +13,26 @@ export default async function handler(req, res) {
         try {
             const data = req.body;
 
-            const notificationRef = collection(db, "notification");
+            // const notificationRef = collection(db, "notification");
 
-            await addDoc(notificationRef, {
-                date: Date.now().toString(),
-                transaction_time: data.transaction_time,
-                transaction_status: data.transaction_status,
-                transaction_id: data.transaction_id,
-                status_message: data.status_message,
-                status_code: data.status_code,
-                signature_key: data.signature_key,
-                settlement_time: data.settlement_time,
-                payment_type: data.payment_type,
-                order_id: data.order_id,
-                merchant_id: data.merchant_id,
-                issuer: data.issuer,
-                gross_amount: data.gross_amount,
-                fraud_status: data.fraud_status,
-                currency: data.currency,
-                acquirer: data.acquirer,
-            });
+            // await addDoc(notificationRef, {
+            //     date: Date.now().toString(),
+            //     transaction_time: data.transaction_time,
+            //     transaction_status: data.transaction_status,
+            //     transaction_id: data.transaction_id,
+            //     status_message: data.status_message,
+            //     status_code: data.status_code,
+            //     signature_key: data.signature_key,
+            //     settlement_time: data.settlement_time,
+            //     payment_type: data.payment_type,
+            //     order_id: data.order_id,
+            //     merchant_id: data.merchant_id,
+            //     issuer: data.issuer,
+            //     gross_amount: data.gross_amount,
+            //     fraud_status: data.fraud_status,
+            //     currency: data.currency,
+            //     acquirer: data.acquirer,
+            // });
 
             const orderId = data.order_id;
             const statusCode = data.status_code;
