@@ -67,7 +67,7 @@ const ConfirmPay = ({
             if (!querySnapshot.empty) {
                 const userInfo = querySnapshot.docs[0].data();
 
-                const orderid = Math.floor(Math.random() * 2000) + 1;
+                const orderid = Math.floor(Math.random() * (5000 - 2001 + 1)) + 2001;
                 setOrderId(orderid);
                 const fullName = `${userInfo.first_name}`;
 
