@@ -164,7 +164,7 @@ const ChooseTime = ({
 
             if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
                 availableTimes = availableTimes.filter(
-                    (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 1
+                    (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2 // UBAH JADI 1 LAGI
                 );
             }
             else {
