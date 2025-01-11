@@ -64,6 +64,7 @@ const Navbar = () => {
       pathname?.split("/")[1] === "dashboard" ||
       pathname?.split("/")[1] === "reservation" ||
       pathname?.split("/")[1] === "barbers" ||
+      pathname?.split("/")[1] === "products" ||
       pathname?.split("/")[1] === "admin"
     );
   };
