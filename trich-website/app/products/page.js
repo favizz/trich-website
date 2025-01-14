@@ -45,7 +45,7 @@ const Products = () => {
         {
             id: 2,
             name: "Flux Powder",
-            price: "Rp80.500",
+            price: "Rp80.000",
             rating: 5,
             amountSold: 10,
             description:
