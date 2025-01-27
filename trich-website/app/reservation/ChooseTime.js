@@ -114,7 +114,9 @@ const ChooseTime = ({
             if (
                 inputDate.getDay() === 6 ||
                 inputDate.getDay() === 0 ||
-                inputDate.getDay() === 5
+                inputDate.getDay() === 5 ||
+                inputDate.getDate() === 28 ||
+                inputDate.getDate() === 29
             ) {
                 setOperationalTimes([]);
                 availableTimes = [];
@@ -223,9 +225,7 @@ const ChooseTime = ({
                 </p>
                 {isMorningEdge ? (
                     <p>
-                        {" "}
-                        Morning Edge is not available on{" "}
-                        <strong>Friday, Saturday, and Monday</strong>
+                        Morning Edge is not available!
                     </p>
                 ) : (
                     ""
