@@ -156,8 +156,7 @@ const ChooseTime = ({
                     if (fullyBookedTimes[time] >= quota.quota) {
                         if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
                             fullyBookedTimes[time] = 2;
-                        }
-                        else {
+                        } else {
                             fullyBookedTimes[time] = 2; // DEFAULT 2
                         }
                     }
@@ -166,12 +165,13 @@ const ChooseTime = ({
 
             if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
                 availableTimes = availableTimes.filter(
-                    (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2 // UBAH JADI 1 LAGI
+                    (time) =>
+                        !fullyBookedTimes[time] || fullyBookedTimes[time] < 2 // UBAH JADI 1 LAGI
                 );
-            }
-            else {
+            } else {
                 availableTimes = availableTimes.filter(
-                    (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2 // DEFAULT 2
+                    (time) =>
+                        !fullyBookedTimes[time] || fullyBookedTimes[time] < 2 // DEFAULT 2
                 );
             }
 
@@ -223,34 +223,33 @@ const ChooseTime = ({
                         </span>
                     )}
                 </p>
-                {isMorningEdge ? (
-                    <p>
-                        Morning Edge is not available!
-                    </p>
-                ) : (
-                    ""
+                {isMorningEdge ? <p>Morning Edge is not available!</p> : ""}
+
+                {operationalTimes.length !== 0 && (
+                    <>
+                        <div className="flex flex-row space-x-8">
+                            <Image
+                                onClick={() => handleTimePick(-1)}
+                                src={LeftArrow}
+                                alt="left-arrow"
+                            />
+                            <div className="text-black font-bold bg-white border border-1 border-black rounded px-6 py-2">
+                                {operationalTimes[pickedTime]}
+                            </div>
+                            <Image
+                                onClick={() => handleTimePick(1)}
+                                src={RightArrow}
+                                alt="right-arrow"
+                            />
+                        </div>
+                        <button
+                            onClick={() => handleContinue()}
+                            className="border border-1 border-orange1 text-orange1 font-bold px-12 py-2 rounded"
+                        >
+                            Pay
+                        </button>
+                    </>
                 )}
-                <div className="flex flex-row space-x-8">
-                    <Image
-                        onClick={() => handleTimePick(-1)}
-                        src={LeftArrow}
-                        alt="left-arrow"
-                    />
-                    <div className="text-black font-bold bg-white border border-1 border-black rounded px-6 py-2">
-                        {operationalTimes[pickedTime]}
-                    </div>
-                    <Image
-                        onClick={() => handleTimePick(1)}
-                        src={RightArrow}
-                        alt="right-arrow"
-                    />
-                </div>
-                <button
-                    onClick={() => handleContinue()}
-                    className="border border-1 border-orange1 text-orange1 font-bold px-12 py-2 rounded"
-                >
-                    Pay
-                </button>
             </div>
 
             <div className="w-0 h-0">
