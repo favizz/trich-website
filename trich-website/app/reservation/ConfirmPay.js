@@ -67,7 +67,7 @@ const ConfirmPay = ({
             if (!querySnapshot.empty) {
                 const userInfo = querySnapshot.docs[0].data();
 
-                const orderid = Math.floor(Math.random() * (5000 - 2001 + 1)) + 2001;
+                const orderid = Math.floor(Math.random() * (7500 - 5000 + 1)) + 5000;
                 setOrderId(orderid);
                 const fullName = `${userInfo.first_name}`;
 
@@ -93,7 +93,12 @@ const ConfirmPay = ({
         e.preventDefault();
         if (agreePolicy) {
             await fetchData();
-            handlePage(4);
+            if (actualPrice > 0) {
+                handlePage(4);
+            }
+            else {
+                return;
+            };
         } else {
             return;
         }
