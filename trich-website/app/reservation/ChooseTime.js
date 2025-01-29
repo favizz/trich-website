@@ -89,7 +89,7 @@ const ChooseTime = ({
         toggleDateValid(true);
 
         inputDate.setMinutes(
-            inputDate.getMinutes() + inputDate.getTimezoneOffset()
+            inputDate.getMinutes() + inputDate.getTimezoneOffset(),
         );
 
         const options = {
@@ -99,7 +99,7 @@ const ChooseTime = ({
             day: "numeric",
         };
         const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
-            inputDate
+            inputDate,
         );
 
         handleDate(formattedDate);
@@ -114,9 +114,7 @@ const ChooseTime = ({
             if (
                 inputDate.getDay() === 6 ||
                 inputDate.getDay() === 0 ||
-                inputDate.getDay() === 5 ||
-                inputDate.getDate() === 28 ||
-                inputDate.getDate() === 29
+                inputDate.getDay() === 5
             ) {
                 setOperationalTimes([]);
                 availableTimes = [];
@@ -128,19 +126,19 @@ const ChooseTime = ({
         try {
             const q = query(
                 collection(db, "active_booking"),
-                where("date", "==", formattedDate)
+                where("date", "==", formattedDate),
             );
 
             const rq = query(
                 collection(db, "reservation_quota"),
-                where("date", "==", formattedDate)
+                where("date", "==", formattedDate),
             );
 
             const querySnapshot = await getDocs(q);
             const reservationQuerySnapshot = await getDocs(rq);
             const bookings = querySnapshot.docs.map((doc) => doc.data());
             const quotas = reservationQuerySnapshot.docs.map((doc) =>
-                doc.data()
+                doc.data(),
             );
 
             let fullyBookedTimes = bookings.reduce((acc, booking) => {
@@ -166,12 +164,12 @@ const ChooseTime = ({
             if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
                 availableTimes = availableTimes.filter(
                     (time) =>
-                        !fullyBookedTimes[time] || fullyBookedTimes[time] < 2 // UBAH JADI 1 LAGI
+                        !fullyBookedTimes[time] || fullyBookedTimes[time] < 2, // UBAH JADI 1 LAGI
                 );
             } else {
                 availableTimes = availableTimes.filter(
                     (time) =>
-                        !fullyBookedTimes[time] || fullyBookedTimes[time] < 2 // DEFAULT 2
+                        !fullyBookedTimes[time] || fullyBookedTimes[time] < 2, // DEFAULT 2
                 );
             }
 
