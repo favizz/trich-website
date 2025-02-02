@@ -14,6 +14,11 @@ import {
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 
+import { getBooking, deleteBooking } from "@/utils/booking";
+import { getQuota, addQuota, deleteQuota } from "@/utils/quota";
+
+import { formatDate } from "@/hooks/time";
+
 import withAuthAdmin from "./withAuthAdmin";
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
@@ -36,7 +41,6 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (!bookings.length || Date.now() - lastFetched > refreshSpan) {
-      // fetchUser();
       fetchActiveBookings();
       fetchQuotas();
     }
@@ -66,32 +70,16 @@ const AdminDashboard = () => {
 
   const fetchActiveBookings = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "active_booking"));
-      let bookingData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const response = await getBooking();
 
-      bookingData = bookingData.sort((a, b) => {
-        const dateA = parseDateString(a.date);
-        const dateB = parseDateString(b.date);
-
-        if (dateA > dateB) return -1;
-        if (dateA < dateB) return 1;
-
-        const timeA = parseTimeString(a.time);
-        const timeB = parseTimeString(b.time);
-
-        if (timeA > timeB) return -1;
-        if (timeA < timeB) return 1;
-
-        return a.status - b.status;
-      });
-
-      setBookings(bookingData);
+      if (response.success) {
+        setBookings(response.data);
+      }
+      
     } catch (error) {
-      console.error("Failed to fetch bookings:", error);
+      console.error("Failed to fetch bookings on client:", error);
     }
+    return;
   };
 
   const MoveFinishedBookings = async () => {
@@ -120,7 +108,7 @@ const AdminDashboard = () => {
           });
 
           // Hapus dari koleksi 'active_booking'
-          await deleteBooking(tempBooking.booking_id);
+          await deleteActiveBooking(tempBooking.booking_id);
 
           console.log(
             "Booking successfully moved and deleted:",
@@ -155,7 +143,7 @@ const AdminDashboard = () => {
             booking_id: tempBooking.booking_id,
           });
 
-          await deleteBooking(bookingId);
+          await deleteActiveBooking(bookingId);
         } catch (error) {
           console.log(error);
           ToastManager.notify("Status gagal diupdate", "error");
@@ -187,31 +175,26 @@ const AdminDashboard = () => {
     }
   };
 
-  const deleteBooking = async (booking_id) => {
+  const deleteActiveBooking = async (booking_id) => {
     try {
-      const bookingCollectionRef = collection(db, "active_booking");
-      const q = query(
-        bookingCollectionRef,
-        where("booking_id", "==", booking_id)
-      );
-      const querySnapshot = await getDocs(q);
+      const response = await deleteBooking(booking_id);
 
-      if (querySnapshot.empty) {
-        throw new Error(`No booking found with booking_id: ${booking_id}`);
+      if (response.success) {
+        setBookings(
+          bookings.filter((booking) => booking.booking_id !== booking_id)
+        );
+  
+        ToastManager.notify(
+          "Booking ID: " + booking_id + " berhasil dihapus!",
+          "success"
+        );
+      } else {
+        ToastManager.notify(
+          "Booking ID: " + booking_id + " gagal dihapus!",
+          "error"
+        );
       }
 
-      const bookingDoc = querySnapshot.docs[0];
-      const bookingRef = doc(db, "active_booking", bookingDoc.id);
-
-      await deleteDoc(bookingRef);
-      setBookings(
-        bookings.filter((booking) => booking.booking_id !== booking_id)
-      );
-
-      ToastManager.notify(
-        "Booking ID: " + booking_id + " berhasil dihapus!",
-        "success"
-      );
     } catch (error) {
       ToastManager.notify("Booking gagal dihapus!", "error");
       console.error("Error deleting booking:", error);
@@ -220,18 +203,17 @@ const AdminDashboard = () => {
 
   const fetchQuotas = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "reservation_quota"));
-      const quotaData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setQuotas(quotaData);
+      const response = await getQuota();
+
+      if (response.success) {
+        setQuotas(quotaData);
+      }
     } catch (error) {
       console.error("Failed to fetch quotas: ", error);
     }
   };
 
-  const addQuota = async () => {
+  const handleAddQuota = async () => {
     try {
       const reservationQuotaRef = collection(db, "reservation_quota");
 
@@ -251,7 +233,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const deleteQuota = async (quotaId) => {
+  const handleDeleteQuota = async (quotaId) => {
     try {
       const quotaCollectionRef = collection(db, "reservation_quota");
       const q = query(quotaCollectionRef, where("quota_id", "==", quotaId));
@@ -274,38 +256,6 @@ const AdminDashboard = () => {
       ToastManager.notify("Quota gagal dihapus!", "error");
       console.error("Failed to delete quota: ", error);
     }
-  };
-
-  const formatDate = (inputDate) => {
-    const date = new Date(inputDate);
-
-    const options = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    const formattedDate = date.toLocaleDateString("en-US", options);
-
-    return formattedDate;
-  };
-
-  const parseDateString = (dateString) => {
-    if (dateString) {
-      const [dayOfWeek, monthDay, year] = dateString.split(", ");
-      return new Date(`${monthDay}, ${year}`);
-    }
-    return;
-  };
-
-  const parseTimeString = (timeString) => {
-    if (timeString) {
-      const [hours, minutes] = timeString.split(":").map(Number);
-      const date = new Date();
-      date.setHours(hours, minutes, 0, 0);
-      return date;
-    }
-    return;
   };
 
   return (
@@ -353,7 +303,7 @@ const AdminDashboard = () => {
                 <td className="flex flex-row justify-between border border-1 border-solid border-black">
                   <p>{booking.date}</p>
                   <button
-                    onClick={() => deleteBooking(booking.booking_id)}
+                    onClick={() => deleteActiveBooking(booking.booking_id)}
                     className="text-white bg-orange1"
                   >
                     Delete
@@ -419,7 +369,7 @@ const AdminDashboard = () => {
             }}
           />
           <button
-            onClick={() => addQuota()}
+            onClick={() => handleAddQuota()}
             className="px-4 bg-orange1 text-white"
           >
             Set Quota
@@ -443,7 +393,7 @@ const AdminDashboard = () => {
                     <td className="border border-1 border-solid border-black flex flex-row justify-between">
                       {quota.date ? quota.date : "-"}
                       <button
-                        onClick={() => deleteQuota(quota.quota_id)}
+                        onClick={() => handleDeleteQuota(quota.quota_id)}
                         className="text-white bg-orange1"
                       >
                         Delete
@@ -547,19 +497,10 @@ const AdminDashboard = () => {
         </div>
       )} */}
 
-      {/* Toast Modal */}
       <ToastContainer />
     </div>
   );
 };
-//trich newest
+
 export default withAuthAdmin(AdminDashboard, "1SwH5R8BhLQB0mI5SNXg2LiQDj22");
 
-// trich-server
-// export default withAuthAdmin(AdminDashboard, "7UWhegatZOhkq1H9TM5UUs7E1OS2");
-
-// trich-temp
-// export default withAuthAdmin(AdminDashboard, "cQjKKaD3iBcW4y0dyO8eIRhUHsQ2");
-
-// trich-base
-// export default withAuthAdmin(AdminDashboard, "igbQMReYImfAwDqwuqVWnylY0Kr1");
