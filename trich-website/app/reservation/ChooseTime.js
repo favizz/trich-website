@@ -169,7 +169,7 @@ const ChooseTime = ({
             } else {
                 availableTimes = availableTimes.filter(
                     (time) =>
-                        !fullyBookedTimes[time] || fullyBookedTimes[time] < 1, // DEFAULT 2
+                        !fullyBookedTimes[time] || fullyBookedTimes[time] < 2, // DEFAULT 2
                 );
             }
 
