@@ -42,11 +42,18 @@ const SignInForm = () => {
                     }
                     ToastManager.notify(
                         "Please check your login information",
-                        "error"
+                        "error",
                     );
                 });
         } catch (err) {
             console.log(err);
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            handleSignIn();
         }
     };
 
@@ -66,7 +73,7 @@ const SignInForm = () => {
                 console.error(error);
                 ToastManager.notify(
                     "Email is not found, Please Sign Up!",
-                    "error"
+                    "error",
                 );
             });
     };
@@ -74,7 +81,7 @@ const SignInForm = () => {
     return (
         <>
             <div
-                className={`${isSignIn ? "" : "hidden"} 
+                className={`${isSignIn ? "" : "hidden"}
         flex flex-col bg-white rounded-lg mx-4 md:mx-0 px-4 py-8 shadow-xl mt-32 tracking-wider mb-64`}
             >
                 <h2 className="font-bold text-sm md:text-lg lg:text-3xl">
@@ -121,6 +128,7 @@ const SignInForm = () => {
                         class="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
                         placeholder="Enter password"
                         onChange={(e) => setPassword(e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(e)}
                     />
                 </label>
                 <div className="h-6"></div>

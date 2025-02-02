@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { auth, db } from "@/config/firebase";
 import { collection, query, where, addDoc, getDocs } from "firebase/firestore";
@@ -16,6 +17,8 @@ const ConfirmPay = ({
     setOrderId,
     handlePage,
 }) => {
+    const router = useRouter();
+
     const [agreePolicy, setAgreePolicy] = useState(false);
 
     const userBookingRef = collection(db, "active_booking");
@@ -28,7 +31,7 @@ const ConfirmPay = ({
         pickedService,
         pickedTime,
         pickedDate,
-        totalPrice
+        totalPrice,
     ) => {
         try {
             await addDoc(userBookingRef, {
@@ -60,14 +63,15 @@ const ConfirmPay = ({
 
             const q = query(
                 collection(db, "user"),
-                where("user_id", "==", auth.currentUser.uid)
+                where("user_id", "==", auth.currentUser.uid),
             );
 
             const querySnapshot = await getDocs(q);
             if (!querySnapshot.empty) {
                 const userInfo = querySnapshot.docs[0].data();
 
-                const orderid = Math.floor(Math.random() * (7500 - 5000 + 1)) + 5000;
+                const orderid =
+                    Math.floor(Math.random() * (7500 - 5000 + 1)) + 5000;
                 setOrderId(orderid);
                 const fullName = `${userInfo.first_name}`;
 
@@ -79,7 +83,7 @@ const ConfirmPay = ({
                     service,
                     time,
                     date,
-                    price
+                    price,
                 );
             } else {
                 throw new Error("No user found with the provided user ID");
@@ -95,10 +99,9 @@ const ConfirmPay = ({
             await fetchData();
             if (actualPrice > 0) {
                 handlePage(4);
+            } else {
+                router.replace("payment-status");
             }
-            else {
-                return;
-            };
         } else {
             return;
         }
