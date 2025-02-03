@@ -5,8 +5,8 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
-
 import { Calendar } from "@/components/ui/calendar";
+import Spinner from "../components/Spinner";
 
 import LeftArrow from "@/public/reservationAssets/leftarrow.svg";
 import RightArrow from "@/public/reservationAssets/rightarrow.svg";
@@ -57,6 +57,8 @@ const ChooseTime = ({
     const [isDateValid, toggleDateValid] = useState(true);
     const [isMorningEdge, setMorningEdge] = useState(false);
 
+    const [isLoading, toggleLoading] = useState(false);
+
     const handleTimePick = (input) => {
         if (input === -1) {
             if (pickedTime > 0) {
@@ -71,7 +73,7 @@ const ChooseTime = ({
 
     useEffect(() => {
         handleTime(operationalTimes[pickedTime] || null);
-    }, [pickedDate, pickedTime, operationalTimes]);
+    }, [pickedDate, pickedTime, operationalTimes, isMorningEdge]);
 
     const handleDateChange = async (dateInput) => {
         pickDate(dateInput);
@@ -134,6 +136,8 @@ const ChooseTime = ({
                 where("date", "==", formattedDate),
             );
 
+            toggleLoading(true);
+
             const querySnapshot = await getDocs(q);
             const reservationQuerySnapshot = await getDocs(rq);
             const bookings = querySnapshot.docs.map((doc) => doc.data());
@@ -174,7 +178,8 @@ const ChooseTime = ({
             }
 
             setOperationalTimes(availableTimes);
-            // console.log(pickedDate)
+
+            toggleLoading(false);
         } catch (error) {
             console.error(error);
         }
@@ -208,8 +213,11 @@ const ChooseTime = ({
             />
             <div className="w-full h-[0.5px] bg-gray-600 mb-8"></div>
             <div className="space-y-4 flex flex-col items-center">
-                <p className="font-bold">
-                    <span className="text-[#545454]">Selected Date:</span>{" "}
+                <p className="font-bold text-center">
+                    <span className="text-[#545454]">
+                        Selected Date:
+                        <br className="block sm:hidden" />
+                    </span>{" "}
                     {date}
                 </p>
                 <p className="font-extrabold">
@@ -221,32 +229,41 @@ const ChooseTime = ({
                         </span>
                     )}
                 </p>
-                {isMorningEdge ? <p>Morning Edge is not available!</p> : ""}
 
-                {operationalTimes.length !== 0 && (
-                    <>
-                        <div className="flex flex-row space-x-8">
-                            <Image
-                                onClick={() => handleTimePick(-1)}
-                                src={LeftArrow}
-                                alt="left-arrow"
-                            />
-                            <div className="text-black font-bold bg-white border border-1 border-black rounded px-6 py-2">
-                                {operationalTimes[pickedTime]}
+                {isMorningEdge && operationalTimes.length === 0 ? (
+                    <p>Morning Edge is not available!</p>
+                ) : (
+                    ""
+                )}
+
+                {isLoading ? (
+                    <Spinner isLoading={isLoading} />
+                ) : (
+                    operationalTimes.length !== 0 && (
+                        <>
+                            <div className="flex flex-row space-x-8">
+                                <Image
+                                    onClick={() => handleTimePick(-1)}
+                                    src={LeftArrow}
+                                    alt="left-arrow"
+                                />
+                                <div className="text-black font-bold bg-white border border-1 border-black rounded px-6 py-2">
+                                    {operationalTimes[pickedTime]}
+                                </div>
+                                <Image
+                                    onClick={() => handleTimePick(1)}
+                                    src={RightArrow}
+                                    alt="right-arrow"
+                                />
                             </div>
-                            <Image
-                                onClick={() => handleTimePick(1)}
-                                src={RightArrow}
-                                alt="right-arrow"
-                            />
-                        </div>
-                        <button
-                            onClick={() => handleContinue()}
-                            className="border border-1 border-orange1 text-orange1 font-bold px-12 py-2 rounded"
-                        >
-                            Pay
-                        </button>
-                    </>
+                            <button
+                                onClick={() => handleContinue()}
+                                className="border border-1 border-orange1 text-orange1 font-bold px-12 py-2 rounded"
+                            >
+                                Pay
+                            </button>
+                        </>
+                    )
                 )}
             </div>
 
