@@ -1,10 +1,11 @@
-"use client"
+"use client";
 import Image from "next/image";
 import React, { useContext, useState, useEffect } from "react";
 import { auth } from "@/config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
-import LoadingLogo from "@/public/homeAssets/gifLogo.gif";
+import LoadingLogo from "@/public/homeAssets/TLogo.png";
+import LoadingBg from "@/public/homeAssets/LoadingBg.png"; 
 
 const AuthContext = React.createContext();
 
@@ -51,8 +52,30 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {loading && (<div className="min-h-screen bg-green2 flex w-full justify-center items-center"><Image src={LoadingLogo} alt="logo"/></div>)}
-      {!loading && children}
+      {loading ? (
+        <div
+          className="min-h-screen flex flex-col justify-center items-center bg-cover bg-center relative"
+          style={{ backgroundImage: `url(${LoadingBg.src})` }}
+        >
+          <Image
+            src={LoadingLogo}
+            alt="logo"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24"
+          />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 mt-32">
+            <div className="h-8 md:h-12 lg:h-16" /> 
+            <h2
+              className="text-3xl font-bold tracking-wider text-center"
+              style={{ color: "rgba(255, 255, 255, 0.5)" }}
+            >
+              LOADING
+            </h2>
+          </div>
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
+  
 };
