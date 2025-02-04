@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { db } from "@/config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { getConfigQuotas } from "@/utils/quota";
 
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
