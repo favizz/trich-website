@@ -77,8 +77,7 @@ export const deleteQuota = async (quota_id) => {
 };
 
 /**
- * Fetches quota_base and quota_wd from the Firestore document in the 'config' collection.
- * @returns {Promise<{ quota_base: number, quota_wd: number } | null>} The quota values or null if not found.
+ * @returns {Promise<{ quota_base: number, quota_wd: number } | null>}
  */
 export const getConfigQuotas = async () => {
     try {
@@ -103,9 +102,8 @@ export const getConfigQuotas = async () => {
 };
 
 /**
- * Updates a single field (quota_base or quota_wd) in the Firestore document.
- * @param {Object} updates - An object containing the field to update, e.g., { quota_base: 50 } or { quota_wd: 100 }.
- * @returns {Promise<boolean>} True if the update is successful, false otherwise.
+ * @param {Object}
+ * @returns {Promise<boolean>}
  */
 export const updateConfigQuota = async (updates) => {
     try {

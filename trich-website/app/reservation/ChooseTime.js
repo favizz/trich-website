@@ -139,6 +139,8 @@ const ChooseTime = ({
 
             toggleLoading(true);
 
+            const { quota_base, quota_wd } = (await getConfigQuotas()) || {};
+            console.log(quota_wd, quota_base);
             const querySnapshot = await getDocs(q);
             const reservationQuerySnapshot = await getDocs(rq);
             const bookings = querySnapshot.docs.map((doc) => doc.data());
@@ -169,12 +171,14 @@ const ChooseTime = ({
             if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
                 availableTimes = availableTimes.filter(
                     (time) =>
-                        !fullyBookedTimes[time] || fullyBookedTimes[time] < 1, // UBAH JADI 2 LAGI
+                        !fullyBookedTimes[time] ||
+                        fullyBookedTimes[time] < quota_wd, // UBAH JADI 2 LAGI
                 );
             } else {
                 availableTimes = availableTimes.filter(
                     (time) =>
-                        !fullyBookedTimes[time] || fullyBookedTimes[time] < 2, // DEFAULT 2
+                        !fullyBookedTimes[time] ||
+                        fullyBookedTimes[time] < quota_base, // DEFAULT 2
                 );
             }
 
