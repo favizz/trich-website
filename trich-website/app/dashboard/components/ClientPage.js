@@ -10,7 +10,7 @@ import ClientBookings from "./ClientBookings";
 import ClientInfo from "./ClientInfo";
 import Membership from "./Membership";
 
-import BannerBG from "@/public/dashboardAssets/bannerBg.png";
+import BannerBG from "@/public/dashboardAssets/bannerBg.jpg";
 
 const ClientPage = () => {
     const [userData, setUserData] = useState(null);
