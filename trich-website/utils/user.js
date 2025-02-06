@@ -8,7 +8,7 @@ export const getUserData = async () => {
     }
     const q = query(
         collection(db, "user"),
-        where("user_id", "==", currentUserID)
+        where("user_id", "==", currentUserID),
     );
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
@@ -28,7 +28,7 @@ export const getMembership = async () => {
 
     const q = query(
         collection(db, "membership"),
-        where("user_id", "==", currentUserID)
+        where("user_id", "==", currentUserID),
     );
 
     const querySnapshot = await getDocs(q);
@@ -40,7 +40,7 @@ export const getMembership = async () => {
     }
 };
 
-export const getBookingData = async () => {
+export const getUserBookings = async () => {
     const currentUserID = auth?.currentUser?.uid;
     if (!currentUserID) {
         console.error("Current user ID is undefined.");
@@ -49,7 +49,7 @@ export const getBookingData = async () => {
 
     const q = query(
         collection(db, "active_booking"),
-        where("user_id", "==", currentUserID)
+        where("user_id", "==", currentUserID),
     );
 
     const querySnapshot = await getDocs(q);
