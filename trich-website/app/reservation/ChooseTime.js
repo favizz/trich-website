@@ -221,7 +221,12 @@ const ChooseTime = ({
                         </span>
                     )}
                 </p>
-                {isMorningEdge ? <p>Morning Edge is not available!</p> : ""}
+
+                {isMorningEdge && operationalTimes.length === 0 ? (
+                    <p>Morning Edge is not available!</p>
+                ) : (
+                    ""
+                )}
 
                 {operationalTimes.length !== 0 && (
                     <>
