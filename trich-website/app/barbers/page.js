@@ -179,41 +179,6 @@ export default function Barbers() {
                             style={{ opacity: 0.5 }}
                         ></div>
 
-                        {/* Left Chevron */}
-                        <button
-                            className="absolute left-[5%] top-1/2 -translate-y-1/2 z-20 p-2 opacity-70"
-                            style={{ transform: "scale(3)" }}
-                            onClick={() => {
-                                const container =
-                                    document.getElementById("barber-carousel");
-                                if (container) {
-                                    container.scrollBy({
-                                        left: -container.offsetWidth,
-                                        behavior: "smooth",
-                                    });
-                                }
-                            }}
-                        >
-                            <ChevronLeft className="w-[120%] h-[120%] text-[#646464]" />
-                        </button>
-
-                        {/* Right Chevron */}
-                        <button
-                            className="absolute right-[5%] top-1/2 -translate-y-1/2 z-20 p-2 opacity-70"
-                            style={{ transform: "scale(3)" }}
-                            onClick={() => {
-                                const container =
-                                    document.getElementById("barber-carousel");
-                                if (container) {
-                                    container.scrollBy({
-                                        left: container.offsetWidth,
-                                        behavior: "smooth",
-                                    });
-                                }
-                            }}
-                        >
-                            <ChevronRight className="w-[120%] h-[120%] text-[#646464]" />
-                        </button>
                     </div>
                 </div>
             </section>
