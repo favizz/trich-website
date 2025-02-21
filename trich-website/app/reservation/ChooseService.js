@@ -82,7 +82,15 @@ const ChooseService = ({
                         (s) =>
                             s !== "The Cutting Edge" &&
                             s !== "Trim & Treat" &&
-                            s !== "Mask Off"
+                            s !== "Mask Off",
+                    ),
+                ];
+            } else if (service === "Korean Perm") {
+                // When adding "Korean Perm", remove "Root Lift" and "Down Perm"
+                updatedServices = [
+                    "Korean Perm",
+                    ...chosenServices.filter(
+                        (s) => s !== "Root Lift" && s !== "Down Perm",
                     ),
                 ];
             } else if (
@@ -93,7 +101,17 @@ const ChooseService = ({
                 if (chosenServices.includes("The Trich Experience")) {
                     ToastManager.notify(
                         "Trich Experience already includes these services",
-                        "error"
+                        "error",
+                    );
+                    return;
+                }
+                updatedServices = [...chosenServices, service];
+            } else if (service === "Root Lift" || service === "Down Perm") {
+                // Check if "Korean Perm" is already selected
+                if (chosenServices.includes("Korean Perm")) {
+                    ToastManager.notify(
+                        "Korean Perm already includes these services",
+                        "error",
                     );
                     return;
                 }
@@ -116,7 +134,7 @@ const ChooseService = ({
                             parentService.services.length > 0
                         ) {
                             const nestedService = parentService.services.find(
-                                (nested) => nested.name === serviceName
+                                (nested) => nested.name === serviceName,
                             );
                             if (nestedService) {
                                 serviceObj = nestedService;
@@ -124,13 +142,12 @@ const ChooseService = ({
                         }
                     });
                 }
-
                 if (isMember && serviceName === "The Cutting Edge") {
                     serviceObj.nominal = 0;
                 }
 
                 return total + (serviceObj ? serviceObj.nominal : 0);
-            }, 0)
+            }, 0),
         );
 
         setTotalActualPrice(
@@ -144,7 +161,7 @@ const ChooseService = ({
                             parentService.services.length > 0
                         ) {
                             const nestedService = parentService.services.find(
-                                (nested) => nested.name === serviceName
+                                (nested) => nested.name === serviceName,
                             );
                             if (nestedService) {
                                 serviceObj = nestedService;
@@ -152,13 +169,12 @@ const ChooseService = ({
                         }
                     });
                 }
-
                 if (isMember && serviceName === "The Cutting Edge") {
                     serviceObj.actual_price = 0;
                 }
 
                 return total + (serviceObj ? serviceObj.actual_price : 0);
-            }, 0)
+            }, 0),
         );
 
         setDuration(
@@ -172,7 +188,7 @@ const ChooseService = ({
                             parentService.services.length > 0
                         ) {
                             const nestedService = parentService.services.find(
-                                (nested) => nested.name === serviceName
+                                (nested) => nested.name === serviceName,
                             );
                             if (nestedService) {
                                 serviceObj = nestedService;
@@ -182,7 +198,7 @@ const ChooseService = ({
                 }
 
                 return total + (serviceObj ? serviceObj.duration : 0);
-            }, 0)
+            }, 0),
         );
     };
 
@@ -254,12 +270,12 @@ const ChooseService = ({
                                             {service.is_range
                                                 ? service.actual_price
                                                 : isMember &&
-                                                  service.name ===
-                                                      "The Cutting Edge"
-                                                ? "Free"
-                                                : formatPrice(
-                                                      service.actual_price
-                                                  )}
+                                                    service.name ===
+                                                        "The Cutting Edge"
+                                                  ? "Free"
+                                                  : formatPrice(
+                                                        service.actual_price,
+                                                    )}
                                         </span>
                                     </p>
                                     {service.is_range && (
@@ -283,6 +299,9 @@ const ChooseService = ({
                                         isMember
                                             ? "Enjoy your membership deal!"
                                             : ""}
+                                        {service.name == "Korean Perm"
+                                            ? "*  Korean Perm includes Root Lift & Down Perm"
+                                            : ""}
                                         {service.name ==
                                             "Back To School Promo!" ||
                                         service.name == "Morning Edge"
@@ -294,7 +313,7 @@ const ChooseService = ({
                                     type="checkbox"
                                     className="md:w-6 md:h-6 rounded-xl accent-orange1"
                                     checked={chosenServices.includes(
-                                        service.name
+                                        service.name,
                                     )}
                                     onChange={() =>
                                         handleServiceChange(service.name)
@@ -326,11 +345,11 @@ const ChooseService = ({
                                                     type="checkbox"
                                                     className="md:w-6 md:h-6 rounded-xl accent-orange1"
                                                     checked={chosenServices.includes(
-                                                        s.name
+                                                        s.name,
                                                     )}
                                                     onChange={() =>
                                                         handleServiceChange(
-                                                            s.name
+                                                            s.name,
                                                         )
                                                     }
                                                 />
@@ -341,7 +360,7 @@ const ChooseService = ({
                                                             {service.is_range
                                                                 ? s.actual_price
                                                                 : formatPrice(
-                                                                      s.actual_price
+                                                                      s.actual_price,
                                                                   )}
                                                         </span>
                                                     </p>
