@@ -43,14 +43,16 @@ const TiberaPromo = () => {
                     from <span className="text-orange1">85k</span> to{" "}
                     <span className="text-orange1">65k</span>
                 </p>
-                <ul class="list-disc pl-8 space-y-1 font-bold">
+                <ul className="list-disc pl-8 space-y-1 font-bold">
                     <li>
                         Exclusively for{" "}
-                        <span class="text-orange-500">Tibera Hotel Guests</span>
+                        <span className="text-orange-500">
+                            Tibera Hotel Guests
+                        </span>
                     </li>
                     <li>
                         Available for{" "}
-                        <span class="font-semibold italic">
+                        <span className="font-semibold italic">
                             "The Cutting Edge"
                         </span>{" "}
                         service only
@@ -58,7 +60,7 @@ const TiberaPromo = () => {
                     <li>Show your room card to our cashier</li>
                     <li>
                         Follow our Instagram at{" "}
-                        <span class="text-orange-500">@trichbarber</span>
+                        <span className="text-orange-500">@trichbarber</span>
                     </li>
                     <li>Mention us in your Instastory</li>
                 </ul>

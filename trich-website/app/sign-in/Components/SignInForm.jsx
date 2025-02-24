@@ -125,7 +125,7 @@ const SignInForm = () => {
                         id="password"
                         name="password"
                         type="password"
-                        class="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
+                        className="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
                         placeholder="Enter password"
                         onChange={(e) => setPassword(e.target.value)}
                         onKeyDown={(e) => handleKeyDown(e)}

@@ -2,8 +2,7 @@
 import { useState } from "react";
 import PhoneForm from "@/app/components/forms/PhoneForm";
 
-const ClientForm = ({ getPhoneNumber, setPage }) => {
-    const [phoneNumber, setPhoneNumber] = useState("");
+const ClientForm = ({ phoneNumber, setPhoneNumber, handleVerification }) => {
     const [isValid, setValid] = useState(true);
 
     const handleSubmit = (e) => {
@@ -11,9 +10,8 @@ const ClientForm = ({ getPhoneNumber, setPage }) => {
         if (!isValid) {
             return;
         }
-        console.log("Phone number is valid: ", phoneNumber);
-        getPhoneNumber(`0${phoneNumber.replace(/-/g, "")}`);
-        setPage(2);
+
+        handleVerification();
     };
 
     return (

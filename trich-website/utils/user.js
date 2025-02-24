@@ -4,18 +4,18 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 export const getUserData = async () => {
     const currentUserID = auth?.currentUser?.uid;
     if (!currentUserID) {
-        return;
+        return { success: false, error: "Not logged in!" };
     }
     const q = query(
-        collection(db, "user"),
+        collection(db, "non_auth_user"),
         where("user_id", "==", currentUserID),
     );
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
         const userInfo = querySnapshot.docs[0].data();
-        return userInfo;
+        return { success: true, user: userInfo };
     } else {
-        console.log("No user found with the provided user ID.");
+        return { success: false, error: "no user found!" };
     }
     return;
 };

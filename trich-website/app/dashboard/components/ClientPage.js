@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from "react";
 import withAuth from "@/authContext/withAuth";
 
-import { getUserData } from "@/utils/user";
+import { useAuth } from "@/authContext/AuthProvider";
+
+// import { getUserData } from "@/utils/user";
 
 import ClientCard from "./ClientCard";
 // import ClientStats from "./ClientStats";
@@ -13,20 +15,24 @@ import Membership from "./Membership";
 import BannerBG from "@/public/dashboardAssets/bannerBg.png";
 
 const ClientPage = () => {
-    const [userData, setUserData] = useState(null);
+    const { user } = useAuth();
+    console.log(user);
+    // const [userData, setUserData] = useState(user);
     const [currPage, setPage] = useState(2);
     const [bookingData, setBookingData] = useState([]);
 
-    useEffect(() => {
-        (async () => {
-            try {
-                const userInfo = await getUserData();
-                setUserData(userInfo);
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            }
-        })();
-    }, []);
+    // useEffect(() => {
+    //     (async () => {
+    //         try {
+    //             const response = await getUserData();
+    //             if (response.success) {
+    //                 setUserData(response.user);
+    //             }
+    //         } catch (error) {
+    //             console.error("Error fetching user data:", error);
+    //         }
+    //     })();
+    // }, []);
 
     return (
         <section className="relative max-w-screen-2xl my-16 lg:my-36 pt-16 lg:pt-0 lg:px-16 lg:py-36">
@@ -44,8 +50,8 @@ const ClientPage = () => {
             </div>
             <section className="relative z-10 pt-36 flex flex-col lg:flex-row items-center lg:items-start justify-center space-y-8 lg:space-y-0 lg:space-x-8">
                 <ClientCard
-                    name={userData?.first_name}
-                    email={userData?.email}
+                    name={user?.first_name}
+                    email={user?.email}
                     handlePaging={setPage}
                     currPage={currPage}
                 />
@@ -58,9 +64,9 @@ const ClientPage = () => {
                 )}
                 {currPage == 3 && (
                     <ClientInfo
-                        first_name={userData?.first_name}
-                        email={userData?.email}
-                        phone_number={userData?.phone_number}
+                        first_name={user?.first_name}
+                        email={user?.email}
+                        phone_number={user?.phone_number}
                     />
                 )}
             </section>

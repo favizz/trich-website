@@ -1,10 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { auth, db } from "@/config/firebase";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { v4 as uuidv4 } from "uuid";
 import withAuth from "@/authContext/withAuth";
 
 import ClientForm from "./ClientForm";
@@ -16,36 +11,11 @@ import Checkout from "./Checkout";
 
 import { ToastContainer } from "react-toastify";
 
-import { formatPrice } from "./ChooseService";
-
-import Qris from "@/public/reservationAssets/new-qris.jpg";
-
-export const getUserNameById = async (userId) => {
-    try {
-        const usersRef = collection(db, "user");
-        const q = query(usersRef, where("user_id", "==", userId));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-            const userData = querySnapshot.docs[0].data();
-            const firstName = userData.first_name;
-            const email = userData.email;
-            return { firstName, email };
-        } else {
-            console.log("No such user!");
-            return null;
-        }
-    } catch (error) {
-        console.error("Error fetching user data: ", error);
-        return null;
-    }
-};
-
 const ClientPage = () => {
     const [fullName, setFullName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
 
-    const [currPage, setPage] = useState(0);
+    const [currPage, setPage] = useState(1);
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalActualPrice, setTotalActualPrice] = useState(0);
     const [isConfirm, toggleConfirm] = useState(false);
@@ -146,38 +116,6 @@ const ClientPage = () => {
                         handlePage={setPage}
                     />
                 )}
-                {/* {currPage == 4 && (
-          <div className="flex flex-col items-center justify-center pt-4 space-y-2">
-            <p className="font-extrabold lg:text-xl ">
-              Scan To Complete Your Payment
-            </p>
-            <p className="font-semibold lg:text-sm">TRICH BARBERSPACE</p>
-            <p className="font-extrabold text-orange1 lg:text-base xl:text-lg 2xl:text-xl">
-              IDR{" "}
-              {totalActualPrice >= 200000 ? "100.000" : formatPrice(totalPrice)}
-            </p>
-            <Image src={Qris} alt="Trich-QRIS" width={250} />
-            <div
-              className={`${
-                isLoading ? "hidden" : ""
-              } flex flex-row space-x-1 md:space-x-4 py-4 text-xs lg:text-sm`}
-            >
-              <button
-                onClick={(e) => handlePayment(e)}
-                className="bg-green2 text-white font-bold px-4 md:px-6 py-2 rounded"
-              >
-                Confirm Payment
-              </button>
-              <button
-                onClick={() => setPage(3)}
-                className="border border-1 border-orange1 text-orange1 font-bold px-4 md:px-6 py-2 rounded"
-              >
-                Cancel Payment
-              </button>
-            </div>
-            <LoadingSpinner toggleShow={isLoading} />
-          </div>
-        )} */}
                 {currPage == 4 && (
                     <Checkout
                         pickedService={pickedService}
