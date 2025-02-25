@@ -43,7 +43,7 @@ export default async function handler(req, res) {
 
                 try {
                     const q = query(
-                        collection(db, "active_booking"),
+                        collection(db, "non_auth_booking"),
                         where("order_id", "==", orderId)
                     );
 
