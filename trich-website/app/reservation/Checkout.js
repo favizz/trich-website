@@ -1,12 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { auth, db } from "@/config/firebase";
-import {
-    collection,
-    query,
-    where,
-    getDocs,
-} from "firebase/firestore";
+import { useAuth } from '@/authContext/AuthProvider';
 
 import LoadingSpinner from "../components/animation/Spinner";
 import SuccessIcon from "@/public/signInAssets/success.svg";
@@ -15,6 +9,7 @@ import Link from "next/link";
 
 const Checkout = ({ pickedService, totalPrice, orderId }) => {
     const [loading, setLoading] = useState(false);
+    const { user } = useAuth();
 
     const [reqBody, setReqBody] = useState(null);
     const [paymentStatus, setPaymentStatus] = useState(0);
@@ -22,47 +17,30 @@ const Checkout = ({ pickedService, totalPrice, orderId }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (!auth?.currentUser?.uid) {
-                    throw new Error("User ID is required");
-                }
+                const services = pickedService.toString().split(",");
 
-                const q = query(
-                    collection(db, "user"),
-                    where("user_id", "==", auth.currentUser.uid)
-                );
+                const body = {
+                    transaction_details: {
+                        order_id: orderId,
+                        gross_amount: totalPrice,
+                    },
+                    item_details: services.map((service, idx) => ({
+                        name: service.trim(),
+                        price:
+                            services.length > 1
+                                ? totalPrice / 2
+                                : totalPrice,
+                        quantity: 1,
+                        id: `TS-${idx}`,
+                    })),
+                    customer_details: {
+                        first_name: user.first_name,
+                        phone_number: user.phone_number,
+                    },
+                    enabled_payments: ["other_qris"],
+                };
 
-                const querySnapshot = await getDocs(q);
-                if (!querySnapshot.empty) {
-                    const userInfo = querySnapshot.docs[0].data();
-
-                    const fullName = `${userInfo.first_name}`;
-                    const services = pickedService.toString().split(",");
-
-                    const body = {
-                        transaction_details: {
-                            order_id: orderId,
-                            gross_amount: totalPrice,
-                        },
-                        item_details: services.map((service, idx) => ({
-                            name: service.trim(),
-                            price:
-                                services.length > 1
-                                    ? totalPrice / 2
-                                    : totalPrice,
-                            quantity: 1,
-                            id: `TS-${idx}`,
-                        })),
-                        customer_details: {
-                            first_name: fullName,
-                            email: userInfo.email,
-                        },
-                        enabled_payments: ["other_qris"],
-                    };
-
-                    setReqBody(body);
-                } else {
-                    throw new Error("No user found with the provided user ID");
-                }
+                setReqBody(body);
             } catch (error) {
                 console.error(error);
                 setPaymentStatus(2);
@@ -87,7 +65,7 @@ const Checkout = ({ pickedService, totalPrice, orderId }) => {
                 });
 
                 if (!response.ok) {
-                    throw new Error("Failed to fetch token");
+                    console.error("Failed to fetch token");
                 }
 
                 const data = await response.json();
@@ -115,8 +93,11 @@ const Checkout = ({ pickedService, totalPrice, orderId }) => {
     }, [reqBody]);
 
     useEffect(() => {
-        const snapScript = "https://app.midtrans.com/snap/snap.js"; // Production
-        // const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js"; // Sandbox
+        const snapScript =
+            process.env.VERCEL_ENV === "production"
+                ? "https://app.midtrans.com/snap/snap.js" // Production
+                : "https://app.sandbox.midtrans.com/snap/snap.js"; // Sandbox
+
         const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY;
         const script = document.createElement("script");
 

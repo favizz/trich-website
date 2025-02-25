@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { auth, db } from "@/config/firebase";
 import { collection, query, where, addDoc, getDocs } from "firebase/firestore";
+import { useAuth } from "@/authContext/AuthProvider";
 import { v4 as uuidv4 } from "uuid";
 
 import { formatPrice } from "./ChooseService";
@@ -17,16 +18,16 @@ const ConfirmPay = ({
     setOrderId,
     handlePage,
 }) => {
+    const { user } = useAuth();
     const router = useRouter();
 
     const [agreePolicy, setAgreePolicy] = useState(false);
 
-    const userBookingRef = collection(db, "active_booking");
+    const userBookingRef = collection(db, "non_auth_booking");
 
-    const handleBooking = async (
+    const createBooking = async (
         order_id,
         fullName,
-        userEmail,
         userPhone,
         pickedService,
         pickedTime,
@@ -38,7 +39,6 @@ const ConfirmPay = ({
                 create_booking_date: new Date(),
                 user_id: auth?.currentUser?.uid,
                 name: fullName,
-                email: userEmail,
                 phone_number: userPhone,
                 service: pickedService,
                 amount: totalPrice,
@@ -55,48 +55,26 @@ const ConfirmPay = ({
         }
     };
 
-    const fetchData = async () => {
-        try {
-            if (!auth?.currentUser?.uid) {
-                throw new Error("User ID is required");
-            }
+    const handleBooking = async () => {
+        const orderid = Math.floor(Math.random() * (7500 - 5000 + 1)) + 5000;
+        setOrderId(orderid);
 
-            const q = query(
-                collection(db, "user"),
-                where("user_id", "==", auth.currentUser.uid),
-            );
+        await createBooking(
+            orderid,
+            user.first_name,
+            user.phone_number,
+            service,
+            time,
+            date,
+            price,
+        );
 
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-                const userInfo = querySnapshot.docs[0].data();
-
-                const orderid =
-                    Math.floor(Math.random() * (7500 - 5000 + 1)) + 5000;
-                setOrderId(orderid);
-                const fullName = `${userInfo.first_name}`;
-
-                await handleBooking(
-                    orderid,
-                    fullName,
-                    userInfo.email,
-                    userInfo.phone_number,
-                    service,
-                    time,
-                    date,
-                    price,
-                );
-            } else {
-                throw new Error("No user found with the provided user ID");
-            }
-        } catch (error) {
-            console.error(error);
-        }
     };
 
     const handleCheckout = async (e) => {
         e.preventDefault();
         if (agreePolicy) {
-            await fetchData();
+            await handleBooking();
             if (actualPrice > 0) {
                 handlePage(4);
             } else {

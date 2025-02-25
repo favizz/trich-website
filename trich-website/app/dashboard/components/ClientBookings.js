@@ -16,7 +16,7 @@ const ClientBookings = ({ handleBookingData }) => {
                 return;
             }
             const q = query(
-                collection(db, "active_booking"),
+                collection(db, "non_auth_booking"),
                 where("user_id", "==", currentUserID),
             );
             const querySnapshot = await getDocs(q);
