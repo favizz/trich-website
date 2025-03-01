@@ -41,3 +41,43 @@ export const getBookingData = async () => {
     }
     return;
 };
+
+export const handleUser = async (name, phone_number) => {
+    if (!name || !phone_number) {
+        console.error("Missing required fields: name or phone_number");
+        return;
+    }
+
+    try {
+        const userQuery = query(collection(db, "non_auth_user"), where("phone_number", "==", phone_number));
+        const querySnapshot = await getDocs(userQuery);
+
+        if (!querySnapshot.empty) {
+            const docRef = querySnapshot.docs[0].ref;
+            const existingData = querySnapshot.docs[0].data();
+            const newPoints = existingData.point + 1;
+
+            await updateDoc(docRef, { point: newPoints });
+            
+            return {
+                success: true,
+                message: "User exists, point incremented.",
+                data: {
+                    name: existingData.name,
+                    phone_number: existingData.phone_number,
+                    points: newPoints,
+                }
+            };
+        } else {
+            const newUserRef = await addDoc(collection(db, "non_auth_user"), { name, phone_number, point: 0 });
+            
+            return {
+                success: true,
+                message: "New user added with 0 points.",
+                data: { name, phone_number, points: 0, id: newUserRef.id }
+            };
+        }
+    } catch (error) {
+        console.error("Error processing user:", error);
+    }
+}
