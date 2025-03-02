@@ -45,7 +45,7 @@ export default async function handler(req, res) {
             return sendResponse(res, 400, "Missing required fields: order_id or transaction_status");
         }
 
-        if (statusCode !== 200) {
+        if (statusCode !== "200") {
             return sendResponse(res, statusCode, statusMessages[statusCode]);
         }
 
