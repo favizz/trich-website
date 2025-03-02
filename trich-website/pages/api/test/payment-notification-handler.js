@@ -6,7 +6,7 @@ import {
     getDocs,
     updateDoc,
 } from "firebase/firestore";
-import { handleUser } from "@/utils/user";
+import { handleUser, removeExpiredBooking } from "@/utils/user";
 
 const statusMessages = {
     200: "Success: Transaction successful.",
@@ -47,6 +47,10 @@ export default async function handler(req, res) {
 
         if (statusCode !== 200) {
             return sendResponse(res, statusCode, statusMessages[statusCode]);
+        }
+
+        if (transactionStatus === "expire") {
+            removeExpiredBooking(orderId);
         }
 
         if (transactionStatus !== "settlement") {

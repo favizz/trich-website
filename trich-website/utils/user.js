@@ -81,3 +81,21 @@ export const handleUser = async (name, phone_number) => {
         console.error("Error processing user:", error);
     }
 }
+
+export async function removeExpiredBooking(orderId) {
+    try {
+        const orderQuery = query(collection(db, "non_auth_booking"), where("order_id", "==", orderId));
+        const querySnapshot = await getDocs(orderQuery);
+
+        if (!querySnapshot.empty) {
+            const docRef = querySnapshot.docs[0].ref;
+            await deleteDoc(docRef);
+            return { success: true, message: "Expired booking removed successfully." };
+        } else {
+            return { success: false, message: "No matching booking found." };
+        }
+    } catch (error) {
+        console.error("Error removing expired booking:", error);
+        throw new Error("Internal Server Error");
+    }
+}
