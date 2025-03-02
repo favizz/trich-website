@@ -1,5 +1,5 @@
 import { auth, db } from "@/config/firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { addDoc, updateDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
 
 export const getUserData = async () => {
     const currentUserID = auth?.currentUser?.uid;
@@ -48,6 +48,10 @@ export const handleUser = async (name, phone_number) => {
         return;
     }
 
+    if (!phone_number.startsWith("+62")) {
+        phone_number = `+62${phone_number.replace(/\D/g, "")}`;
+    }
+
     try {
         const userQuery = query(collection(db, "non_auth_user"), where("phone_number", "==", phone_number));
         const querySnapshot = await getDocs(userQuery);
@@ -57,8 +61,12 @@ export const handleUser = async (name, phone_number) => {
             const existingData = querySnapshot.docs[0].data();
             const newPoints = existingData.point + 1;
 
+            console.log("User found!");
+
             await updateDoc(docRef, { point: newPoints });
-            
+
+            console.log("Finish adding new points")
+            ;
             return {
                 success: true,
                 message: "User exists, point incremented.",
@@ -69,8 +77,10 @@ export const handleUser = async (name, phone_number) => {
                 }
             };
         } else {
+            console.log("No user!");
             const newUserRef = await addDoc(collection(db, "non_auth_user"), { name, phone_number, point: 0 });
             
+            console.log("Success adding user!");
             return {
                 success: true,
                 message: "New user added with 0 points.",
