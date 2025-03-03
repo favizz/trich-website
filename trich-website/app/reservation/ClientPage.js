@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
-import withAuth from "@/authContext/withAuth";
+import { useState } from "react";
 
 import ClientForm from "./ClientForm";
+import ClientPendings from "./ClientPendings";
 import ChooseService from "./ChooseService";
 import ConfirmService from "./ConfirmService";
 import ChooseTime from "./ChooseTime";
@@ -12,10 +12,10 @@ import Checkout from "./Checkout";
 import { ToastContainer } from "react-toastify";
 
 const ClientPage = () => {
-    const [fullName, setFullName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
+    const [fullName, setFullName] = useState("Raizan Iqbal Resi");
+    const [phoneNumber, setPhoneNumber] = useState("857-1091-5241");
 
-    const [currPage, setPage] = useState(1);
+    const [currPage, setPage] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalActualPrice, setTotalActualPrice] = useState(0);
     const [isConfirm, toggleConfirm] = useState(false);
@@ -23,8 +23,12 @@ const ClientPage = () => {
     const [pickedDate, setDate] = useState(null);
     const [pickedTime, setTime] = useState(null);
     const [totalDuration, setDuration] = useState(null);
-
     const [orderid, setOrderId] = useState(0);
+
+    const [pendingBooking, setPendingBooking] = useState({
+        booking_ref: null,
+        booking_data: null
+    });
 
     return (
         <>
@@ -72,14 +76,23 @@ const ClientPage = () => {
                 {currPage === 0 && (
                     <ClientForm
                         fullName={fullName}
-                        getFullName={setFullName}
+                        setFullName={setFullName}
                         phoneNumber={phoneNumber}
-                        getPhoneNumber={setPhoneNumber}
+                        setPhoneNumber={setPhoneNumber}
+                        setPage={setPage}
+                        setPendingBooking={setPendingBooking}
+                    />
+                )}
+                {currPage === 5 && (
+                    <ClientPendings 
+                        pendingBooking={pendingBooking}
+                        setPendingBooking={setPendingBooking}
                         setPage={setPage}
                     />
                 )}
                 {currPage === 1 && (
                     <ChooseService
+                        phoneNumber={`+62${phoneNumber.replace(/-/g, "")}`}
                         handlePage={setPage}
                         handleService={setService}
                         handleTotalPrice={setTotalPrice}
@@ -88,14 +101,14 @@ const ClientPage = () => {
                         toggleConfirm={toggleConfirm}
                     />
                 )}
-                {currPage == 1 && isConfirm && (
+                {currPage === 1 && isConfirm && (
                     <ConfirmService
                         myService={pickedService}
                         toggleConfirm={toggleConfirm}
                         handlePage={setPage}
                     />
                 )}
-                {currPage == 2 && (
+                {currPage === 2 && (
                     <ChooseTime
                         pickedService={pickedService}
                         date={pickedDate}
@@ -104,8 +117,9 @@ const ClientPage = () => {
                         handlePage={setPage}
                     />
                 )}
-                {currPage == 3 && (
+                {currPage === 3 && (
                     <ConfirmPay
+                        user={{first_name: fullName, phone_number: `+62${phoneNumber.replace(/-/g, "")}`}}
                         date={pickedDate}
                         time={pickedTime}
                         service={pickedService}
@@ -116,13 +130,13 @@ const ClientPage = () => {
                         handlePage={setPage}
                     />
                 )}
-                {currPage == 4 && (
+                {currPage === 4 && (
                     <Checkout
-                        pickedService={pickedService}
-                        totalPrice={totalPrice}
-                        pickedDate={pickedDate}
-                        pickedTime={pickedTime}
-                        orderId={orderid}
+                        first_name={fullName}
+                        phone_number={`+62${phoneNumber.replace(/-/g, "")}`}
+                        pickedService={pickedService || pendingBooking.booking_data.service}
+                        totalPrice={totalPrice || pendingBooking.booking_data.amount}
+                        orderId={orderid ||  pendingBooking.booking_data.order_id}
                     />
                 )}
                 <div className="w-0 h-0">
@@ -133,4 +147,4 @@ const ClientPage = () => {
     );
 };
 
-export default withAuth(ClientPage);
+export default ClientPage;

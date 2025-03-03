@@ -1,14 +1,23 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { auth, db } from "@/config/firebase";
-import { collection, query, where, addDoc, getDocs } from "firebase/firestore";
-import { useAuth } from "@/authContext/AuthProvider";
-import { v4 as uuidv4 } from "uuid";
+import { createBooking } from "@/utils/user";
 
 import { formatPrice } from "./ChooseService";
 
+export function generateCode() {
+    const number = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+
+    const letters = String.fromCharCode(
+        Math.floor(Math.random() * 26) + 65,
+        Math.floor(Math.random() * 26) + 65
+    );
+
+    return `TB-${number}${letters}`;
+}
+
 const ConfirmPay = ({
+    user,
     date,
     time,
     service,
@@ -18,55 +27,22 @@ const ConfirmPay = ({
     setOrderId,
     handlePage,
 }) => {
-    const { user } = useAuth();
     const router = useRouter();
 
     const [agreePolicy, setAgreePolicy] = useState(false);
 
-    const userBookingRef = collection(db, "non_auth_booking");
-
-    const createBooking = async (
-        order_id,
-        fullName,
-        userPhone,
-        pickedService,
-        pickedTime,
-        pickedDate,
-        totalPrice,
-    ) => {
-        try {
-            await addDoc(userBookingRef, {
-                create_booking_date: new Date(),
-                user_id: auth?.currentUser?.uid,
-                name: fullName,
-                phone_number: userPhone,
-                service: pickedService,
-                amount: totalPrice,
-                date: pickedDate,
-                time: pickedTime,
-                status: 1,
-                booking_id: uuidv4(),
-                order_id: order_id.toString(),
-            }).catch((e) => {
-                console.error(e);
-            });
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
     const handleBooking = async () => {
-        const orderid = Math.floor(Math.random() * (7500 - 5000 + 1)) + 5000;
+        const orderid = generateCode();
         setOrderId(orderid);
 
         await createBooking(
-            orderid,
             user.first_name,
             user.phone_number,
             service,
             time,
             date,
             price,
+            orderid,
         );
 
     };
@@ -88,31 +64,26 @@ const ConfirmPay = ({
     return (
         <div className="w-full text-sm xl:text-base 2xl:text-lg">
             <div className="px-4 lg:px-6 space-y-2 py-4">
-                <div className="flex flex-row items-center justify-between">
-                    <p className="text-[#545454] font-semibold">
-                        Reserved Date
-                    </p>
-                    <p className="font-bold">{date}</p>
-                </div>
-                <div className="flex flex-row items-center justify-between">
-                    <p className="text-[#545454] font-semibold">Time</p>
-                    <p className="font-bold">{time}</p>
-                </div>
-                <div className="flex flex-row items-center justify-between">
-                    <p className="text-[#545454] font-semibold">Services</p>
-                    <p className="font-bold">{service}</p>
-                </div>
-                <div className="flex flex-row items-center justify-between">
-                    <p className="text-[#545454] font-semibold">Duration</p>
-                    <p className="font-bold">{duration * 60} Minutes</p>
-                </div>
-                <div className="flex flex-row items-center justify-between">
-                    <p className="text-[#545454] font-semibold">Down Payment</p>
-                    <p className="font-extrabold text-orange1 lg:text-base">
-                        IDR{" "}
-                        {actualPrice >= 200000 ? "100.000" : formatPrice(price)}
-                    </p>
-                </div>
+                <ReceiptList
+                    title={"Reserved Date"}
+                    value={date}
+                />
+                <ReceiptList
+                    title={"Time"}
+                    value={time}
+                />
+                <ReceiptList
+                    title={"Services"}
+                    value={service}
+                />
+                <ReceiptList
+                    title={"Duration"}
+                    value={`${duration * 60} Minutes`}
+                />
+                <ReceiptList
+                    title={"Down Payment"}
+                    value={`IDR ${actualPrice >= 200000 ? "100.000" : formatPrice(price)}`}
+                />                
             </div>
             <div className="w-full h-[0.5px] bg-gray-600"></div>
             <div className="px-4 lg:px-6 space-y-2 mt-4">
@@ -128,15 +99,16 @@ const ConfirmPay = ({
                 <div className="flex flex-row items-center space-x-2">
                     <input
                         type="checkbox"
+                        className="w-6 h-6"
                         onChange={(e) => setAgreePolicy(e.target.checked)}
                     />
-                    <label className="text-[10px]">
+                    <label className="text-sm">
                         I agree to the policy above
                     </label>
                 </div>
                 <div
                     onClick={(e) => handleCheckout(e)}
-                    className="w-full rounded text-white font-bold bg-green2 py-2 lg:text-lg text-center"
+                    className={`w-full rounded text-white font-bold ${agreePolicy ? 'bg-green2' : 'bg-gray-400'} py-2 lg:text-lg text-center`}
                 >
                     Checkout
                 </div>
@@ -146,3 +118,14 @@ const ConfirmPay = ({
 };
 
 export default ConfirmPay;
+
+const ReceiptList = ({title, value}) => {
+    return (
+        <div className="flex flex-row items-center justify-between">
+            <p className="text-[#545454] font-semibold">
+                {title}
+            </p>
+            <p className="font-bold">{value}</p>
+        </div>
+    )
+}

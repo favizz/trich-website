@@ -1,18 +1,18 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useAuth } from '@/authContext/AuthProvider';
 
 import LoadingSpinner from "../components/animation/Spinner";
 import SuccessIcon from "@/public/signInAssets/success.svg";
 import Image from "next/image";
 import Link from "next/link";
 
-const Checkout = ({ pickedService, totalPrice, orderId }) => {
-    const [loading, setLoading] = useState(false);
-    const { user } = useAuth();
+const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId }) => {
+    const [loading, setLoading] = useState(false);;
 
     const [reqBody, setReqBody] = useState(null);
     const [paymentStatus, setPaymentStatus] = useState(0);
+
+    console.log(first_name, phone_number, pickedService, totalPrice, orderId);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -34,8 +34,8 @@ const Checkout = ({ pickedService, totalPrice, orderId }) => {
                         id: `TS-${idx}`,
                     })),
                     customer_details: {
-                        first_name: user.first_name,
-                        phone_number: user.phone_number,
+                        first_name: first_name,
+                        phone_number: phone_number,
                     },
                     enabled_payments: ["other_qris"],
                 };

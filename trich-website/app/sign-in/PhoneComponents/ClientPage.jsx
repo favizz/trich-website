@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { auth } from "@/config/firebase";
 import { useRouter } from "next/navigation";
+import { getCookie, setCookie } from "cookies-next";
 import {
     initRecaptchaVerifier,
     sendVerificationCode,
@@ -62,8 +63,20 @@ const ClientPage = () => {
 
         if (response.success) {
             console.log("Sign in successful:", response.user);
+
+            const phoneNumberString = `+62${phoneNumber.replace(/-/g, "")}`;
+
+            const existingUserId = getCookie(phoneNumberString);
+            console.log(existingUserId);
+            if (existingUserId) {
+                console.log("Cookie already exists for phone number:", phoneNumberString);
+            } else {
+                const userId = response.user.uid;
+                setCookie(phoneNumberString, userId, { maxAge: 60 * 60 * 24 * 30, path: "/" });
+                console.log("Cookie created for phone number:", phoneNumberString, "with user ID:", userId);
+            }
+
             if (!user) {
-                const phoneNumberString = `+62${phoneNumber.replace(/-/g, "")}`;
                 const userResponse = await addNonAuthUser(
                     fullName,
                     phoneNumberString,
@@ -117,7 +130,7 @@ const ClientPage = () => {
                 />
             )}
 
-            <div id="recaptcha-container"></div>
+            <div id="recaptcha-container"/>
         </>
     );
 };

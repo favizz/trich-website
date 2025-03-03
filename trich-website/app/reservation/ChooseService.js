@@ -55,6 +55,7 @@ export const handleActualPromoPricing = (service, actualPrice) => {
 };
 
 const ChooseService = ({
+    phoneNumber,
     handlePage,
     handleService,
     handleTotalPrice,
@@ -225,7 +226,12 @@ const ChooseService = ({
         toggleLoading(true);
 
         const handleMembershipPricing = async () => {
-            const response = await getMembership();
+            const response = await getMembership(phoneNumber);
+
+            if (response.error) {
+                console.error(response.error);
+                return;
+            }
 
             if (response.membership) {
                 setMember(true);

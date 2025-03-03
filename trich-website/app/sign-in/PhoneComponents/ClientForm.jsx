@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { getUser } from "@/utils/non-auth-user";
 import PhoneForm from "@/app/components/forms/PhoneForm";
+import { getCookie } from "cookies-next";
 
 const ClientForm = ({
     phoneNumber,
@@ -18,13 +19,21 @@ const ClientForm = ({
 
     const handleCheck = async () => {
         const phoneNumberString = `+62${phoneNumber.replace(/-/g, "")}`;
-        const response = await getUser(phoneNumberString);
 
+        const existingUserId = getCookie(phoneNumberString);
+        if (existingUserId) {
+            console.log("Cookie found for phone number:", phoneNumberString, "User ID:", existingUserId);
+            setUser({ uid: existingUserId });
+            return;
+        } else {
+            console.log("No Cookie!");
+        }
+
+        const response = await getUser(phoneNumberString);
         if (response.error) {
             setError("Error! please refresh!");
             return;
         }
-
         if (response.success && response.user) {
             setUser(response.user);
         } else if (response.success && !response.user) {
