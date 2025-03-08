@@ -32,47 +32,52 @@ const ClientPage = () => {
 
     return (
         <>
-            <section className="flex flex-col items-center bg-white rounded-lg py-8 my-28 shadow-xl tracking-wider">
-                <h2 className="font-extrabold mb-6 lg:text-xl xl:text-2xl">
+            <section className="flex flex-col bg-white rounded-lg py-8 my-32 shadow-xl tracking-wider">
+
+
+                <h2 className="font-extrabold mb-6 lg:text-xl xl:text-2xl text-center">
                     RESERVATION
                 </h2>
-                <div className="w-full h-[1px] bg-gray-600"></div>
+                <div className="w-full h-[1px] bg-gray-600 "></div>
                 <div
-                    className={`${currPage === 0 ? "hidden" : "flex"} flex-row items-center justify-center space-x-3 md:space-x-8 px-3 lg:px-6 py-4`}
+                    className="flex flex-row items-center justify-center space-x-3 md:space-x-8 px-3 lg:px-6 py-4 "
                 >
                     <div
-                        onClick={() => setPage(1)}
+                        onClick={() => setPage(0)}
+                        className={`${
+                            currPage == 0
+                                ? "bg-green1 text-white"
+                                : "text-black"
+                        } rounded-[30px] font-extrabold text-xs lg:text-xs xl:text-sm 2xl:text-base px-6 py-2 `}
+                    >
+                        Info
+                    </div>
+                    <p>&gt;</p>
+                    <div
+                        onClick={() => phoneNumber != "" && setPage(1)}
                         className={`${
                             currPage == 1
                                 ? "bg-green1 text-white"
                                 : "text-black"
-                        } rounded-[30px] font-extrabold text-xs lg:text-xs xl:text-sm 2xl:text-base px-6 py-2`}
+                        } ${phoneNumber === ""? "opacity-50 cursor-not-allowed" : ""} rounded-[30px] font-extrabold text-xs lg:text-xs xl:text-sm 2xl:text-base px-6 py-2`}
                     >
                         Service
                     </div>
                     <p>&gt;</p>
                     <div
-                        onClick={() => setPage(pickedService ? 2 : null)}
+                        onClick={() => pickedService ? setPage(2) : null}
                         className={`${
                             currPage == 2
                                 ? "bg-green1 text-white"
                                 : "text-black"
-                        } rounded-[30px] font-extrabold text-xs lg:text-xs xl:text-sm 2xl:text-base px-6 py-2`}
+                        } ${!pickedService ? "opacity-50 cursor-not-allowed" : ""} 
+                        rounded-[30px] font-extrabold text-xs lg:text-xs xl:text-sm 2xl:text-base px-6 py-2`}
                     >
                         Time
                     </div>
-                    <p>&gt;</p>
-                    <div
-                        className={`${
-                            currPage == 3
-                                ? "bg-green1 text-white"
-                                : "text-black"
-                        } rounded-[30px] font-extrabold text-xs lg:text-xs xl:text-sm 2xl:text-base px-6 py-2`}
-                    >
-                        Confirm
-                    </div>
+
                 </div>
-                <div className="w-full h-[0.5px] mb-2 bg-gray-600"></div>
+                <div className="w-full h-[0.5px] mb-2 bg-gray-600 "></div>
                 {currPage === 0 && (
                     <ClientForm
                         fullName={fullName}
