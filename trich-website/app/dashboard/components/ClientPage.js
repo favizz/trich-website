@@ -45,7 +45,7 @@ const ClientPage = () => {
                 </h3>
                 <p className="text-white leading-7 tracking-wider opacity-50 lg:text-xl">
                     Unlock exclusive benefits with every visit to TRICH
-                    Barbershop.
+                    Barberspace.
                 </p>
             </div>
             <section className="relative z-10 pt-36 flex flex-col lg:flex-row items-center lg:items-start justify-center space-y-8 lg:space-y-0 lg:space-x-8">

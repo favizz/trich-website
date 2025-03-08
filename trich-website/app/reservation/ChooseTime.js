@@ -101,16 +101,20 @@ const ChooseTime = ({
             month: "long",
             day: "numeric",
         };
+
         const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
             inputDate,
         );
-
         handleDate(formattedDate);
 
         let availableTimes = generateOperationalTimes(inputDate);
 
         if (inputDate.getDay() === 5) {
             availableTimes = availableTimes.filter((time) => time !== "12:00");
+        }
+
+        if (inputDate.getMonth() === 2) {
+            availableTimes = availableTimes.filter((time) => time !== "18:00");
         }
 
         if (pickedService && pickedService.includes("Morning Edge")) {
