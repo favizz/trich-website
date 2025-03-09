@@ -93,10 +93,12 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
     }, [reqBody]);
 
     useEffect(() => {
-        const snapScript =
-            process.env.VERCEL_ENV === "production"
-                ? "https://app.midtrans.com/snap/snap.js" // Production
-                : "https://app.sandbox.midtrans.com/snap/snap.js"; // Sandbox
+        // const snapScript =
+        //     process.env.VERCEL_ENV === "development"
+        //         ? "https://app.sandbox.midtrans.com/snap/snap.js"   // Sandbox
+        //         : "https://app.midtrans.com/snap/snap.js";          // Production
+
+        const snapScript = "https://app.midtrans.com/snap/snap.js";
 
         const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY;
         const script = document.createElement("script");
