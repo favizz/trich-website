@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { db } from "@/config/firebase";
 import {
     collection,
     query,
-    getDoc,
     getDocs,
     addDoc,
     where,
@@ -19,7 +19,6 @@ import { getQuota, addQuota, deleteQuota } from "@/utils/quota";
 
 import { formatDate } from "@/hooks/time";
 
-import withAuthAdmin from "./withAuthAdmin";
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
 import TableHead from "./components/TableHead";
@@ -28,6 +27,11 @@ import QuotaConfig from "./components/QuotaConfig";
 import UserTable from "./components/UserTable";
 
 const AdminDashboard = () => {
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const router = useRouter();
+    const queryParam = searchParams.get("query");
+    
     const [searchedUser, setSearchedUser] = useState(null);
     const [searchEmail, setEmail] = useState("");
     const [bookings, setBookings] = useState([]);
@@ -37,14 +41,16 @@ const AdminDashboard = () => {
     const [quotaDate, setQuotaDate] = useState(null);
     const [quotaQuota, setQuotaQuota] = useState(0);
 
-    const [lastFetched, setLastFetched] = useState(null);
-    const refreshSpan = 30 * 60 * 1000;
+    useEffect(() => {
+        if (pathname === "/admin" && queryParam !== "123456") {
+            router.replace("https://trich.id");
+            // router.replace("http://localhost:3000");
+        }
+      }, [pathname, queryParam, router]);
 
     useEffect(() => {
-        if (!bookings.length || Date.now() - lastFetched > refreshSpan) {
-            fetchActiveBookings();
-            fetchQuotas();
-        }
+        fetchActiveBookings();
+        fetchQuotas();
     }, []);
 
     const fetchUserByName = async (firstName) => {
@@ -397,5 +403,5 @@ const AdminDashboard = () => {
 };
 
 // Email
-// export default withAuthAdmin(AdminDashboard, "1SwH5R8BhLQB0mI5SNXg2LiQDj22");
-export default withAuthAdmin(AdminDashboard, "CLi6HLdICCdmFUpLsXIjfZICNam2");
+// export default withAuthAdmin(AdminDashboard, "CLi6HLdICCdmFUpLsXIjfZICNam2");
+export default AdminDashboard;
