@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { getUser } from "@/utils/non-auth-user";
 import PhoneForm from "@/app/components/forms/PhoneForm";
 import { getCookie } from "cookies-next";
@@ -7,37 +8,40 @@ import { getCookie } from "cookies-next";
 const ClientForm = ({
     phoneNumber,
     setPhoneNumber,
-    fullName,
-    setFullName,
-    user,
     setUser,
     handleVerification,
 }) => {
+    const router = useRouter();
     const [isValid, setValid] = useState(true);
     const [isVerify, toggleVerify] = useState(false);
     const [error, setError] = useState(null);
 
     const handleCheck = async () => {
         const phoneNumberString = `+62${phoneNumber.replace(/-/g, "")}`;
-
-        const existingUserId = getCookie(phoneNumberString);
-        if (existingUserId) {
-            console.log("Cookie found for phone number:", phoneNumberString, "User ID:", existingUserId);
-            setUser({ uid: existingUserId });
-            return;
-        } else {
-            console.log("No Cookie!");
-        }
+        console.log(phoneNumberString)
 
         const response = await getUser(phoneNumberString);
+        const existingUserId = getCookie(phoneNumberString);
+
         if (response.error) {
             setError("Error! please refresh!");
             return;
         }
+
         if (response.success && response.user) {
             setUser(response.user);
+            if (existingUserId) {
+                console.log("Cookie found for phone number:", phoneNumberString, "User ID:", existingUserId);
+                router.push('/dashboard');
+                return;
+            } else {
+                console.log("No Cookie!");
+            }
+            console.log(response.user);
         } else if (response.success && !response.user) {
+            setError("No User found!");
             console.log("No user found!");
+            return;
         }
         toggleVerify(true);
     };
@@ -52,12 +56,6 @@ const ClientForm = ({
         } else {
             handleCheck();
         }
-    };
-
-    const getRoute = () => {
-        const hash = window.location.hash;
-        if (hash === "" || hash === "#reservation") return 1;
-        if (hash === "#profile") return 2;
     };
 
     return (
@@ -76,37 +74,7 @@ const ClientForm = ({
                         getPhoneNumber={setPhoneNumber}
                         toggleValid={setValid}
                     />
-
-                    {/* Reservation route */}
-                    {getRoute() === 1 && isVerify && !user && (
-                        <div className="mb-4">
-                            <label
-                                htmlFor="fullName"
-                                className="block text-gray-700 font-medium mb-2"
-                            >
-                                Full Name
-                            </label>
-                            <input
-                                id="fullName"
-                                type="text"
-                                placeholder="Enter your full name"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
-                                value={fullName}
-                                onChange={(e) => setFullName(e.target.value)}
-                            />
-                        </div>
-                    )}
-                    {getRoute() === 1 && isVerify && user && (
-                        <p className="font-semibold">
-                            Welcome {user?.first_name}!
-                        </p>
-                    )}
-
-                    {/* Profile Route */}
-                    {getRoute() === 2 && isVerify && !user && (
-                        <p className="text-red-500">No user found!</p>
-                    )}
-
+                    {error ? (<p className="text-red-500">{error}</p>) : ''}
                     <button
                         type="submit"
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md"

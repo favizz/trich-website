@@ -54,7 +54,7 @@ const ClientProfile = ({ page }) => {
 
                                 <p className="text-lg font-medium">Points:</p>
                                 <p className="text-gray-700 mb-4">
-                                    {user?.points}
+                                    {user?.points || 0}
                                 </p>
                             </div>
                         )}

@@ -74,7 +74,7 @@ const ClientPendings = ({ pendingBooking, setPendingBooking, setPage }) => {
         <button
           className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 px-4 rounded-full"
           onClick={() => {
-            /* Handle PDF download */
+            setModalType("pay");
           }}
         >
           Pay
@@ -83,7 +83,7 @@ const ClientPendings = ({ pendingBooking, setPendingBooking, setPage }) => {
         <button
           className="w-full flex items-center justify-center gap-2 border border-gray-300 text-gray-600 py-3 px-4 rounded-full"
           onClick={() => {
-            /* Handle back to home */
+            setModalType("delete");
           }}
         >
           Delete
@@ -109,7 +109,7 @@ const ClientPendings = ({ pendingBooking, setPendingBooking, setPage }) => {
                 Cancel
               </button>
               <button
-                className={`${modalType === "delete" ? "bg-red-500 hover:bg-red-600" : "bg-blue-600 hover:bg-blue-700"} text-white py-1 px-4 rounded-md`}
+                className={`${modalType === "delete" ? "bg-orange1 hover:bg-red-600" : "bg-green2 hover:bg-green-800"} text-white py-1 px-4 rounded-md`}
                 onClick={handleConfirm}
               >
                 {modalType === "delete" ? "Delete" : "Continue"}

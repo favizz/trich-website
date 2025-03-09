@@ -46,7 +46,14 @@ export const addNonAuthUser = async (first_name, phone_number) => {
             points: 0,
         });
 
-        return { success: true };
+        const newUser = {
+            first_name,
+            user_id,
+            phone_number,
+            points: 0,
+        };
+
+        return { success: true, user: newUser };
     } catch (error) {
         console.error("Error adding user:", error);
         return { success: false, error: error.message };

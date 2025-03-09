@@ -250,7 +250,9 @@ const ChooseService = ({
                     <div key={idx} className="pt-1">
                         {/* non-drop down services */}
                         {!service.is_list && (
-                            <div className="flex flex-row items-center justify-between font-bold px-4 lg:px-6 xl:px-10">
+                            <div 
+                                onClick={() => handleServiceChange(service.name)}
+                                className="flex flex-row items-center justify-between font-bold px-4 lg:px-6 xl:px-10">
                                 <div className="flex flex-col space-y-0">
                                     <p className="font-bold text-sm lg:text-sm xl:text-base 2xl:text-lg">
                                         {service.name} -{" "}

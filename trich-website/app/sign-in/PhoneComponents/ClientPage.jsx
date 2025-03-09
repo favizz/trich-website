@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { auth } from "@/config/firebase";
+import { useAuth } from "@/authContext/AuthProvider";
 import { useRouter } from "next/navigation";
 import { getCookie, setCookie } from "cookies-next";
 import {
@@ -16,20 +17,21 @@ import ClientVerification from "./ClientVerification";
 
 const ClientPage = () => {
     const router = useRouter();
+    const { user, setUser } = useAuth();
+
     const [page, setPage] = useState(1);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [fullName, setFullName] = useState("");
-    const [user, setUser] = useState(null);
 
     const [confirmationResult, setConfirmationResult] = useState(null);
     const [code, setCode] = useState(["", "", "", "", "", ""]);
     const [error, setError] = useState();
 
-    useEffect(() => {
-        if (auth.currentUser) {
-            setPage(3);
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (auth.currentUser) {
+    //         router.push(`/dashboard?uid=${existingUserId}`);
+    //     }
+    // }, []);
 
     useEffect(() => {
         initRecaptchaVerifier("recaptcha-container");
@@ -83,6 +85,7 @@ const ClientPage = () => {
                 );
 
                 if (userResponse.success) {
+                    setUser(userResponse.user);
                     console.log("User berhasil ditambahkan!");
                 } else {
                     console.error(userResponse.error);
@@ -99,9 +102,9 @@ const ClientPage = () => {
     const handleRoute = () => {
         const hash = window.location.hash;
 
-        let targetRoute = "/reservation";
-        if (hash === "#profile") {
-            targetRoute = "/profile";
+        let targetRoute = "/dashboard";
+        if (hash === "#reservation") {
+            targetRoute = "/reservation";
         }
         router.push(targetRoute);
     };
@@ -114,7 +117,6 @@ const ClientPage = () => {
                     setPhoneNumber={setPhoneNumber}
                     fullName={fullName}
                     setFullName={setFullName}
-                    user={user}
                     setUser={setUser}
                     handleVerification={handleVerification}
                 />

@@ -184,7 +184,7 @@ const Navbar = () => {
                         </div>
                     </div>
                 ) : (
-                    <Link href="/sign-in#reservation">
+                    <Link href="/reservation">
                         <button className="bg-orange1 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded">
                             Book
                         </button>

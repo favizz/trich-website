@@ -35,7 +35,7 @@ const ClientVerification = ({
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
-            <div className="bg-white p-6 rounded-2xl shadow-lg max-w-sm w-full text-center">
+            <div className="p-6 rounded-2xl shadow-lg max-w-sm w-full text-center">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">
                     Enter Verification Code
                 </h2>

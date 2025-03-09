@@ -1,18 +1,22 @@
+"use client";
+
 import Image from "next/image";
 import { useState } from "react";
 import Icon1 from "@/public/dashboardAssets/membership/membership-1.svg";
 import Icon2 from "@/public/dashboardAssets/membership/membership-2.svg";
 import Icon3 from "@/public/dashboardAssets/membership/membership-3.svg";
 import Icon4 from "@/public/dashboardAssets/membership/membership-4.svg";
+import WhatsAppIcon from "@/public/productAssets/WhatsApp.png";
 
 const Membership = () => {
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isUpgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
     const openModal = () => setModalOpen(true);
     const closeModal = () => setModalOpen(false);
 
     return (
-        <div className="lg:max-w-[579px] xl:max-w-[759px] bg-white w-full lg:p-6 rounded-xl">
+        <div className="lg:max-w-[579px] xl:max-w-[759px] bg-white w-full px-2 sm:px-4 md:px-6 lg:p-6 rounded-xl">
             <p className="font-bold lg:text-xl leading-8">
                 Upgrade to TRICH Membership for exclusive benefits
             </p>
@@ -143,12 +147,70 @@ const Membership = () => {
                     <div className="w-4/5 flex flex-col text-center justify-center lg:py-6 bg-[#D5D9E7]">
                         <p className="font-semibold lg:text-xl text-[#231D4F]">IDR 799.000 <a className="font-normal lg:text-base text-[#3B3C4E]">/12 month</a></p>
                     </div>
-                    <div className="w-4/5 flex flex-col text-center justify-center lg:py-4 bg-orange1 rounded-md">
+                    {/* Upgrade Now Button */}
+                    <div
+                        className="w-4/5 flex flex-col text-center justify-center lg:py-4 bg-orange1 rounded-md cursor-pointer hover:bg-orange-600 transition"
+                        onClick={() => setUpgradeModalOpen(true)}
+                    >
                         <p className="font-semibold lg:text-xl text-white">Upgrade Now</p>
                     </div>
                 </div>
             </div>
+
+            {/* Upgrade Now Modal (Same as WhatsApp Popup) */}
+            {isUpgradeModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-[500px] text-center relative mx-auto">
+                        {/* Close Button */}
+                        <button
+                            onClick={() => setUpgradeModalOpen(false)}
+                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl font-bold bg-gray-200 hover:bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center"
+                        >
+                            ×
+                        </button>
+
+                        {/* Logo or Icon */}
+                        <div className="flex justify-center mb-4">
+                            <Image
+                                src={WhatsAppIcon}
+                                alt="WhatsApp Logo"
+                                className="w-20 h-20"
+                            />
+                        </div>
+
+                        {/* Title */}
+                        <h2
+                            className="font-extrabold mb-6"
+                            style={{
+                                fontSize: "clamp(1.5rem, 5vw, 2.5rem)", // Responsive font size
+                                textAlign: "center", // Ensures proper alignment
+                                lineHeight: "1.2", // Adjusts spacing between lines for better readability
+                            }}
+                        >
+                            Upgrade Your <br /> Membership!
+                        </h2>
+
+                        {/* Clickable WhatsApp Number */}
+                        <div className="flex items-center justify-center mb-6">
+                            <a
+                                href="https://wa.me/08992310069"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-green-600 hover:text-green-700 font-bold"
+                                style={{
+                                    fontSize: "clamp(1rem, 4vw, 2rem)", // Responsive font size
+                                    wordWrap: "break-word", // Ensure it wraps if needed
+                                    overflowWrap: "break-word",
+                                }}
+                            >
+                                +62 899-2310-069
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
+
     );
 };
 

@@ -46,24 +46,16 @@ const ClientForm = ({
     return (
         <form onSubmit={handleContinue} className="w-full px-4 lg:px-6 xl:px-10 space-y-4 mt-14 mb-14">
             {/* Phone Number Field */}
-            <div className="flex flex-col space-y-1">
-                <label className="text-gray-700 font-medium">Phone Number</label>
-                <div className="relative">
-                    <input
-                        type="text"
-                        placeholder="+62"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                </div>
-            </div>
+            <PhoneForm 
+                phoneNumber={phoneNumber}
+                getPhoneNumber={setPhoneNumber}
+                toggleValid={toggleValid}
+            />
 
             {/* Full Name (Nickname) Field */}
             <div className="flex flex-col space-y-1">
                 <div className="flex justify-between items-center">
-                    <label className="text-gray-700 font-medium">Nickname</label>
-                    {/*<a href="#" className="text-gray-500 text-sm">Forgot password?</a>*/}
+                    <label className="text-gray-700 font-medium">Full Name</label>
                 </div>
                 <div className="relative">
                     <input
@@ -73,23 +65,6 @@ const ClientForm = ({
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                     />
-                    <div className="absolute inset-y-0 right-3 flex items-center">
-                        {/* Eye Icon
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-gray-400"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        >
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                        */}
-                    </div>
                 </div>
             </div>
 

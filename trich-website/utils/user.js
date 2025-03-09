@@ -29,7 +29,7 @@ export const createBooking = async (
         totalPrice,
         order_id,
     ) => {
-        const userBookingRef = collection(db, "non_auth_booking");
+        const userBookingRef = collection(db, "active_booking");
         try {
             await addDoc(userBookingRef, {
                 create_booking_date: new Date(),
@@ -53,7 +53,7 @@ export const createBooking = async (
 export const getPendingBookings = async (phoneNumber) => {
     try {
         const bookingsQuery = query(
-            collection(db, "non_auth_booking"),
+            collection(db, "active_booking"),
             where("phone_number", "==", phoneNumber),
             where("status", "==", 1)
         );
@@ -155,20 +155,23 @@ export const handleUser = async (name, phone_number) => {
 
             await updateDoc(docRef, { point: newPoints });
 
-            console.log("Finish adding new points")
-            ;
+            console.log("Finish adding new points");
             return {
                 success: true,
                 message: "User exists, point incremented.",
                 data: {
-                    name: existingData.name,
+                    first_name: existingData.name,
                     phone_number: existingData.phone_number,
                     points: newPoints,
                 }
             };
         } else {
             console.log("No user!");
-            const newUserRef = await addDoc(collection(db, "non_auth_user"), { name, phone_number, point: 0 });
+            const newUserRef = await addDoc(collection(db, "non_auth_user"), { 
+                first_name: name, 
+                phone_number: phone_number,
+                point: 1 
+            });
             
             console.log("Success adding user!");
             return {
@@ -184,7 +187,7 @@ export const handleUser = async (name, phone_number) => {
 
 export async function removeExpiredBooking(orderId) {
     try {
-        const orderQuery = query(collection(db, "non_auth_booking"), where("order_id", "==", orderId));
+        const orderQuery = query(collection(db, "active_booking"), where("order_id", "==", orderId));
         const querySnapshot = await getDocs(orderQuery);
 
         if (!querySnapshot.empty) {

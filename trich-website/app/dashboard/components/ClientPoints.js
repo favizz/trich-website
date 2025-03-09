@@ -2,17 +2,17 @@
 
 import { useState } from "react"
 
-const ClientPoints = () => {
-  const [points, setPoints] = useState(35) // Updated to match image
-  const milestones = [0, 10, 25, 35, 50, 75, 100, 150, 200]
-  const milestoneLabels = [0, 25, 50, 100, 200]
-  const totalSegments = milestones.length - 1
+const ClientPoints = ({ point }) => {
+  const [points, setPoints] = useState(point ? point : 0);
+  const milestones = [0, 10, 25, 35, 50, 75, 100, 150, 200];
+  const milestoneLabels = [0, 25, 50, 100, 200];
+  const totalSegments = milestones.length - 1;
 
   // Helper function to get segment intensity
   const getSegmentOpacity = (start, end) => {
-    if (points < start) return 0.2
-    if (points >= end) return 1
-    const progress = (points - start) / (end - start)
+    if (points < start) return 0.2;
+    if (points >= end) return 1;
+    const progress = (points - start) / (end - start);
     return 0.6 + progress * 0.6
   }
 

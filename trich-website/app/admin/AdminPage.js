@@ -396,4 +396,6 @@ const AdminDashboard = () => {
     );
 };
 
-export default withAuthAdmin(AdminDashboard, "1SwH5R8BhLQB0mI5SNXg2LiQDj22");
+// Email
+// export default withAuthAdmin(AdminDashboard, "1SwH5R8BhLQB0mI5SNXg2LiQDj22");
+export default withAuthAdmin(AdminDashboard, "CLi6HLdICCdmFUpLsXIjfZICNam2");

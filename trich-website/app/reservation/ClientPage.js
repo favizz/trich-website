@@ -12,8 +12,8 @@ import Checkout from "./Checkout";
 import { ToastContainer } from "react-toastify";
 
 const ClientPage = () => {
-    const [fullName, setFullName] = useState("Raizan Iqbal Resi");
-    const [phoneNumber, setPhoneNumber] = useState("857-1091-5241");
+    const [fullName, setFullName] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
 
     const [currPage, setPage] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -54,7 +54,7 @@ const ClientPage = () => {
                     </div>
                     <p>&gt;</p>
                     <div
-                        onClick={() => phoneNumber != "" && setPage(1)}
+                        onClick={() => phoneNumber !== "" && fullName !== "" && setPage(1)}
                         className={`${
                             currPage == 1
                                 ? "bg-green1 text-white"

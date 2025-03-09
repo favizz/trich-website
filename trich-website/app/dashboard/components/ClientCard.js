@@ -37,7 +37,7 @@ const ClientCard = ({ name, email, handlePaging, currPage }) => {
       {/* SERVICES */}
       <div className="w-full items-start pt-4 lg:pt-0">
         <p className="font-extrabold pb-2 lg:text-base">SERVICES</p>
-        {/* <div
+        <div
           onClick={() => handlePaging(1)}
           className={`flex flex-row items-center ${
             currPage == 1 ? "border-l-4 border-green2 pl-2 bg-[#53887B4D]" : ""
@@ -50,7 +50,7 @@ const ClientCard = ({ name, email, handlePaging, currPage }) => {
             alt="stats-icon"
           />
           <p className="font-semibold lg:text-sm">Stats</p>
-        </div> */}
+        </div>
         <div
           onClick={() => handlePaging(2)}
           className={`flex flex-row items-center ${

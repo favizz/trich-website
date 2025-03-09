@@ -15,6 +15,7 @@ const AuthContext = createContext({
     },
     session: null,
     user: null,
+    setUser: () => {},
 });
 
 export const useAuth = () => {
@@ -49,6 +50,7 @@ export const AuthProvider = ({ children }) => {
         signOut: signOut,
         session: session ? session : null,
         user: user,
+        setUser: setUser,
     };
 
     return (
