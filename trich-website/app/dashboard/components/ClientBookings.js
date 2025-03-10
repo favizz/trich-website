@@ -5,75 +5,26 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 
 import BookingCard from "./BookingCard";
 
-const ClientBookings = ({ handleBookingData }) => {
+const ClientBookings = ({ phoneNumber }) => {
   const [bookingData, setBookingData] = useState([]);
 
-  // useEffect(() => {
-  //   const getBookingData = async () => {
-  //     const currentUserID = auth?.currentUser?.uid;
-  //     if (!currentUserID) {
-  //       console.error("Current user ID is undefined.");
-  //       return;
-  //     }
-  //     const q = query(
-  //       collection(db, "active_booking"),
-  //       where("user_id", "==", currentUserID)
-  //     );
-  //     const querySnapshot = await getDocs(q);
-  //     if (!querySnapshot.empty) {
-  //       let bookings = querySnapshot.docs.map((doc) => doc.data());
-  //       bookings = bookings.sort((a,b) => a.status - b.status);
-  //       setBookingData(bookings);
-  //     }
-  //   };
-
-  //   getBookingData();
-  //   handleBookingData(bookingData);
-  // }, []);
-
   useEffect(() => {
-    setBookingData([{
-      date: "Tuesday, February 25, 2025",
-      time: "10:00",
-      status: 1,
-      isPaid: true,
-      amount: 100000,
-      notes: "The Trich Experience, Morning Edge",
-    },
-    {
-      date: "Tuesday, February 25, 2025",
-      time: "10:00",
-      status: 1,
-      isPaid: true,
-      amount: 100000,
-      notes: "The Trich Experience, Morning Edge",
-    },
-    {
-      date: "Tuesday, February 25, 2025",
-      time: "10:00",
-      status: 1,
-      isPaid: true,
-      amount: 100000,
-      notes: "The Trich Experience, Morning Edge",
-    },
-    {
-      date: "Tuesday, February 25, 2025",
-      time: "10:00",
-      status: 1,
-      isPaid: true,
-      amount: 100000,
-      notes: "The Trich Experience, Morning Edge",
-    },
-    {
-      date: "Tuesday, February 25, 2025",
-      time: "10:00",
-      status: 1,
-      isPaid: true,
-      amount: 100000,
-      notes: "The Trich Experience, Morning Edge",
-    }
-  ])
-  }, [])
+    const getBookingData = async () => {
+
+      const q = query(
+        collection(db, "active_booking"),
+        where("phone_number", "==", phoneNumber)
+      );
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        let bookings = querySnapshot.docs.map((doc) => doc.data());
+        bookings = bookings.sort((a,b) => a.status - b.status);
+        setBookingData(bookings);
+      }
+    };
+
+    getBookingData();
+  }, []);
 
   return (
     <section className="lg:w-[579px] xl:w-[759px] rounded-lg bg-[#FAFAFA] tracking-wider p-4 mb-10 lg:mb-0 lg:p-6 xl:p-10">

@@ -62,7 +62,7 @@ const ClientPage = () => {
                 {currPage == 2 && (
                     <div className="space-y-5">
                         <ClientPoints />
-                        <ClientBookings handleBookingData={setBookingData} />
+                        <ClientBookings phoneNumber={user?.phone_number} />
                     </div>
                 )}
                 {currPage == 3 && (
