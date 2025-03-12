@@ -110,16 +110,13 @@ export const getMembership = async (phoneNumber) => {
     }
 };
 
-export const getUserBookings = async () => {
-    const currentUserID = auth?.currentUser?.uid;
-    if (!currentUserID) {
-        console.error("Current user ID is undefined.");
-        return;
+export const getUserBookings = async (phoneNumber) => {
+    if (!phoneNumber) {
+        return { success: false, error: "No Phone Number!" };
     }
-
     const q = query(
         collection(db, "active_booking"),
-        where("user_id", "==", currentUserID),
+        where("phone_number", "==", phoneNumber),
     );
 
     const querySnapshot = await getDocs(q);
@@ -127,9 +124,9 @@ export const getUserBookings = async () => {
         let bookings = querySnapshot.docs.map((doc) => doc.data());
         bookings = bookings.sort((a, b) => a.status - b.status);
 
-        return bookings;
+        return { success: true, bookings: bookings };
     }
-    return;
+    return { success: true, error: "No bookings with the provided phone number." };
 };
 
 export const handleUser = async (name, phone_number) => {

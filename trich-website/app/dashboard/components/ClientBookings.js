@@ -5,26 +5,26 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 
 import BookingCard from "./BookingCard";
 
-const ClientBookings = ({ phoneNumber }) => {
-  const [bookingData, setBookingData] = useState([]);
+const ClientBookings = ({ phoneNumber, bookingData }) => {
+  // const [bookingData, setBookingData] = useState([]);
 
-  useEffect(() => {
-    const getBookingData = async () => {
+  // useEffect(() => {
+  //   const getBookingData = async () => {
 
-      const q = query(
-        collection(db, "active_booking"),
-        where("phone_number", "==", phoneNumber)
-      );
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        let bookings = querySnapshot.docs.map((doc) => doc.data());
-        bookings = bookings.sort((a,b) => a.status - b.status);
-        setBookingData(bookings);
-      }
-    };
+  //     const q = query(
+  //       collection(db, "active_booking"),
+  //       where("phone_number", "==", phoneNumber)
+  //     );
+  //     const querySnapshot = await getDocs(q);
+  //     if (!querySnapshot.empty) {
+  //       let bookings = querySnapshot.docs.map((doc) => doc.data());
+  //       bookings = bookings.sort((a,b) => a.status - b.status);
+  //       setBookingData(bookings);
+  //     }
+  //   };
 
-    getBookingData();
-  }, []);
+  //   getBookingData();
+  // }, []);
 
   return (
     <section className="lg:w-[579px] xl:w-[759px] rounded-lg bg-[#FAFAFA] tracking-wider p-4 mb-10 lg:mb-0 lg:p-6 xl:p-10">
