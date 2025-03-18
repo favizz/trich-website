@@ -1,8 +1,7 @@
-
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth"
-import { getFirestore, initializeFirestore } from "firebase/firestore"
+import { getAuth } from "firebase/auth";
+import { getFirestore, initializeFirestore } from "firebase/firestore";
 
 // trich base
 // const firebaseConfig = {
@@ -39,16 +38,18 @@ import { getFirestore, initializeFirestore } from "firebase/firestore"
 
 // trich newest
 const firebaseConfig = {
-  apiKey: "REDACTED_FIREBASE_API_KEY",
-  authDomain: "trich-new-server.firebaseapp.com",
-  projectId: "trich-new-server",
-  storageBucket: "trich-new-server.appspot.com",
-  messagingSenderId: "666749190814",
-  appId: "1:666749190814:web:dddf0a195500c61b4a718f",
-  measurementId: "G-YR29PK3HG5"
+    apiKey: "REDACTED_FIREBASE_API_KEY",
+    authDomain: "trich-new-server.firebaseapp.com",
+    projectId: "trich-new-server",
+    storageBucket: "trich-new-server.appspot.com",
+    messagingSenderId: "666749190814",
+    appId: "1:666749190814:web:dddf0a195500c61b4a718f",
+    measurementId: "G-YR29PK3HG5",
 };
 
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-export const db = getFirestore(app)
+auth.settings.appVerificationDisabledForTesting = true;
+
+export const db = getFirestore(app);

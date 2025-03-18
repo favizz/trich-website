@@ -136,7 +136,7 @@ export default function Barbers() {
                                         <div className="absolute inset-0 flex flex-col justify-end items-start p-4 text-white bg-gradient-to-t from-black/60 via-transparent to-transparent">
                                             {/* Name and Description */}
                                             <h3 className="text-xl font-bold mb-1">
-                                              {barber.name}
+                                                {barber.name}
                                             </h3>
                                             <p className="text-sm mb-3">
                                                 {barber.bio}
@@ -178,7 +178,6 @@ export default function Barbers() {
                             className="absolute top-0 right-0 h-full w-16 bg-gradient-to-l from-[#204b49] to-transparent z-10 pointer-events-none"
                             style={{ opacity: 0.5 }}
                         ></div>
-
                     </div>
                 </div>
             </section>
@@ -245,7 +244,7 @@ export default function Barbers() {
                             onClick={() => {
                                 const container =
                                     document.getElementById(
-                                        "portfolio-carousel"
+                                        "portfolio-carousel",
                                     );
                                 if (container) {
                                     container.scrollBy({
@@ -265,7 +264,7 @@ export default function Barbers() {
                             onClick={() => {
                                 const container =
                                     document.getElementById(
-                                        "portfolio-carousel"
+                                        "portfolio-carousel",
                                     );
                                 if (container) {
                                     container.scrollBy({

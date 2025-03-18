@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/config/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const withAuthAdmin = (WrappedComponent, requiredUserId) => {
     return (props) => {
@@ -8,28 +9,23 @@ const withAuthAdmin = (WrappedComponent, requiredUserId) => {
         const [authorized, setAuthorized] = useState(false);
 
         useEffect(() => {
-            const auth = getAuth();
             const unsubscribe = onAuthStateChanged(auth, (user) => {
                 if (user) {
-                        // Check if the logged-in user is the required user
                     if (user.uid === requiredUserId) {
                         setAuthorized(true);
                     } else {
-                        // Redirect them to home page or login
                         Router.push('/');
                     }
                 } else {
-                    // Not signed in, redirect to login
                     Router.push('/sign-in');
                 }
             });
 
-            return () => unsubscribe();  // Clean up subscription
+            return () => unsubscribe();
         }, [Router, requiredUserId]);
 
-        // Show the component only when authorized
         if (!authorized) {
-            return null; // or a loader component
+            return null; 
         }
 
         return <WrappedComponent {...props} />;

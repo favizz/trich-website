@@ -2,11 +2,12 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { db } from "@/config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { getConfigQuotas } from "@/utils/quota";
 
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
-
 import { Calendar } from "@/components/ui/calendar";
+import Spinner from "../components/Spinner";
 
 import LeftArrow from "@/public/reservationAssets/leftarrow.svg";
 import RightArrow from "@/public/reservationAssets/rightarrow.svg";
@@ -57,6 +58,8 @@ const ChooseTime = ({
     const [isDateValid, toggleDateValid] = useState(true);
     const [isMorningEdge, setMorningEdge] = useState(false);
 
+    const [isLoading, toggleLoading] = useState(false);
+
     const handleTimePick = (input) => {
         if (input === -1) {
             if (pickedTime > 0) {
@@ -71,7 +74,7 @@ const ChooseTime = ({
 
     useEffect(() => {
         handleTime(operationalTimes[pickedTime] || null);
-    }, [pickedDate, pickedTime, operationalTimes]);
+    }, [pickedDate, pickedTime, operationalTimes, isMorningEdge]);
 
     const handleDateChange = async (dateInput) => {
         pickDate(dateInput);
@@ -89,7 +92,7 @@ const ChooseTime = ({
         toggleDateValid(true);
 
         inputDate.setMinutes(
-            inputDate.getMinutes() + inputDate.getTimezoneOffset()
+            inputDate.getMinutes() + inputDate.getTimezoneOffset(),
         );
 
         const options = {
@@ -98,16 +101,20 @@ const ChooseTime = ({
             month: "long",
             day: "numeric",
         };
-        const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
-            inputDate
-        );
 
+        const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
+            inputDate,
+        );
         handleDate(formattedDate);
 
         let availableTimes = generateOperationalTimes(inputDate);
 
         if (inputDate.getDay() === 5) {
             availableTimes = availableTimes.filter((time) => time !== "12:00");
+        }
+
+        if (inputDate.getMonth() === 2) {
+            availableTimes = availableTimes.filter((time) => time !== "18:00");
         }
 
         if (pickedService && pickedService.includes("Morning Edge")) {
@@ -126,19 +133,23 @@ const ChooseTime = ({
         try {
             const q = query(
                 collection(db, "active_booking"),
-                where("date", "==", formattedDate)
+                where("date", "==", formattedDate),
             );
 
             const rq = query(
                 collection(db, "reservation_quota"),
-                where("date", "==", formattedDate)
+                where("date", "==", formattedDate),
             );
 
+            toggleLoading(true);
+
+            const { quota_base, quota_wd } = (await getConfigQuotas()) || {};
+            console.log(quota_wd, quota_base);
             const querySnapshot = await getDocs(q);
             const reservationQuerySnapshot = await getDocs(rq);
             const bookings = querySnapshot.docs.map((doc) => doc.data());
             const quotas = reservationQuerySnapshot.docs.map((doc) =>
-                doc.data()
+                doc.data(),
             );
 
             let fullyBookedTimes = bookings.reduce((acc, booking) => {
@@ -154,8 +165,7 @@ const ChooseTime = ({
                     if (fullyBookedTimes[time] >= quota.quota) {
                         if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
                             fullyBookedTimes[time] = 2;
-                        }
-                        else {
+                        } else {
                             fullyBookedTimes[time] = 2; // DEFAULT 2
                         }
                     }
@@ -164,17 +174,21 @@ const ChooseTime = ({
 
             if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
                 availableTimes = availableTimes.filter(
-                    (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2 // UBAH JADI 1 LAGI
+                    (time) =>
+                        !fullyBookedTimes[time] ||
+                        fullyBookedTimes[time] < quota_wd, // UBAH JADI 2 LAGI
                 );
-            }
-            else {
+            } else {
                 availableTimes = availableTimes.filter(
-                    (time) => !fullyBookedTimes[time] || fullyBookedTimes[time] < 2 // DEFAULT 2
+                    (time) =>
+                        !fullyBookedTimes[time] ||
+                        fullyBookedTimes[time] < quota_base, // DEFAULT 2
                 );
             }
 
             setOperationalTimes(availableTimes);
-            // console.log(pickedDate)
+
+            toggleLoading(false);
         } catch (error) {
             console.error(error);
         }
@@ -208,8 +222,11 @@ const ChooseTime = ({
             />
             <div className="w-full h-[0.5px] bg-gray-600 mb-8"></div>
             <div className="space-y-4 flex flex-col items-center">
-                <p className="font-bold">
-                    <span className="text-[#545454]">Selected Date:</span>{" "}
+                <p className="font-bold text-center">
+                    <span className="text-[#545454]">
+                        Selected Date:
+                        <br className="block sm:hidden" />
+                    </span>{" "}
                     {date}
                 </p>
                 <p className="font-extrabold">
@@ -221,36 +238,42 @@ const ChooseTime = ({
                         </span>
                     )}
                 </p>
-                {isMorningEdge ? (
-                    <p>
-                        {" "}
-                        Morning Edge is not available on{" "}
-                        <strong>Friday, Saturday, and Monday</strong>
-                    </p>
+
+                {isMorningEdge && operationalTimes.length === 0 ? (
+                    <p>Morning Edge is not available!</p>
                 ) : (
                     ""
                 )}
-                <div className="flex flex-row space-x-8">
-                    <Image
-                        onClick={() => handleTimePick(-1)}
-                        src={LeftArrow}
-                        alt="left-arrow"
-                    />
-                    <div className="text-black font-bold bg-white border border-1 border-black rounded px-6 py-2">
-                        {operationalTimes[pickedTime]}
-                    </div>
-                    <Image
-                        onClick={() => handleTimePick(1)}
-                        src={RightArrow}
-                        alt="right-arrow"
-                    />
-                </div>
-                <button
-                    onClick={() => handleContinue()}
-                    className="border border-1 border-orange1 text-orange1 font-bold px-12 py-2 rounded"
-                >
-                    Pay
-                </button>
+
+                {isLoading ? (
+                    <Spinner isLoading={isLoading} />
+                ) : (
+                    operationalTimes.length !== 0 && (
+                        <>
+                            <div className="flex flex-row space-x-8">
+                                <Image
+                                    onClick={() => handleTimePick(-1)}
+                                    src={LeftArrow}
+                                    alt="left-arrow"
+                                />
+                                <div className="text-black font-bold bg-white border border-1 border-black rounded px-6 py-2">
+                                    {operationalTimes[pickedTime]}
+                                </div>
+                                <Image
+                                    onClick={() => handleTimePick(1)}
+                                    src={RightArrow}
+                                    alt="right-arrow"
+                                />
+                            </div>
+                            <button
+                                onClick={() => handleContinue()}
+                                className="border border-1 border-orange1 text-orange1 font-bold px-12 py-2 rounded"
+                            >
+                                Pay
+                            </button>
+                        </>
+                    )
+                )}
             </div>
 
             <div className="w-0 h-0">

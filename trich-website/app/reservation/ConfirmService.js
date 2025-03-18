@@ -1,4 +1,4 @@
-const ConfirmService = ({
+{/* const ConfirmService = ({
   myService,
   toggleConfirm,
   handlePage,
@@ -32,3 +32,4 @@ const ConfirmService = ({
 };
 
 export default ConfirmService;
+*/}
