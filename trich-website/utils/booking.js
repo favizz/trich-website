@@ -71,3 +71,20 @@ export const deleteBooking = async (booking_id) => {
         return { success: false};
     }
 };
+
+
+export const logError = async (name, error_message) => {
+    try {
+        const errorCollectionRef = collection(db, "error_log");
+
+        await addDoc(errorCollectionRef, {
+            name: name,
+            error_message: error_message,
+            timestamp: new Date()
+        });
+
+        console.log('Error logged successfully');
+    } catch (error) {
+        console.error("Error logging error: ", error);
+    }
+};

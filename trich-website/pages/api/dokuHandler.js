@@ -1,10 +1,9 @@
 import Midtrans from "midtrans-client";
 
 let snap = new Midtrans.Snap({
-  // isProduction: process.env.VERCEL_ENV !== "development",
-  isProduction: false,
-  serverKey: process.env.SERVER_KEY,
-  clientKey: process.env.CLIENT_KEY,
+    isProduction: true,
+    serverKey: process.env.SERVER_KEY,
+    clientKey: process.env.CLIENT_KEY,
 });
 
 export default async function handler(req, res) {
