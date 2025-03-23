@@ -6,6 +6,7 @@ import BaseBanner from "./bannerComponents/BaseBanner";
 
 import MorningEdgeBox from "./bannerComponents/MorningEdgeBox";
 import TiberaPromo from "./bannerComponents/TiberaPromo";
+import TrichEssential from "./bannerComponents/TrichEssential";
 // import { BannerImages } from "./bannerComponents/BannerImages";
 
 const Banner = () => {
@@ -13,6 +14,7 @@ const Banner = () => {
     { type: "component", component: <TiberaPromo /> },
     { type: "component", component: <MorningEdgeBox /> },
     { type: "component", component: <BaseBanner /> },
+    { type: "component", component: <TrichEssential /> }
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);

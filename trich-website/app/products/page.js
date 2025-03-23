@@ -166,9 +166,9 @@ const Products = () => {
                                 className="p-3 hover:shadow-lg transition-shadow w-full"
                                 style={{ scrollSnapAlign: "start" }}
                             >
-                                {/* Image container with white background */}
-                                <div className="w-full h-72 mb-4 relative flex items-center justify-center overflow-hidden bg-white border border-gray-200">
-                                    <div className="relative w-3/5 h-3/5">
+                                {/* Image container with white background - now square */}
+                                <div className="w-full h-72 mb-4 relative flex items-center justify-center overflow-hidden bg-transparent border border-gray-200">
+                                    <div className="relative w-full h-full max-w-[18rem] max-h-[18rem] aspect-square">
                                         <Image
                                             src={product.image}
                                             alt={product.name}

@@ -12,7 +12,7 @@ const BaseBanner = () => {
         >
             <RevealTitle>
                 <Image
-                    src={HomeLogo}
+                    src={HomeLogo}a
                     width={800}
                     alt="Trich-Logo"
                     className="pt-[120px] pb-8"
