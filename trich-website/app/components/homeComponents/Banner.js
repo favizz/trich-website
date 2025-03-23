@@ -11,10 +11,10 @@ import TrichEssential from "./bannerComponents/TrichEssential";
 
 const Banner = () => {
   const BannerItems = [
+    { type: "component", component: <TrichEssential /> },
     { type: "component", component: <TiberaPromo /> },
     { type: "component", component: <MorningEdgeBox /> },
-    { type: "component", component: <BaseBanner /> },
-    { type: "component", component: <TrichEssential /> }
+    // { type: "component", component: <BaseBanner /> },
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
