@@ -72,6 +72,7 @@ export default async function handler(req, res) {
 
         // Add new / update user
         const bookingData = querySnapshot.docs[0].data();
+        console.log(bookingData.name, bookingData.phone_number);
         handleUser(bookingData.name, bookingData.phone_number);
 
         return res.status(200).json({ success: true, message: "Booking status updated successfully." });

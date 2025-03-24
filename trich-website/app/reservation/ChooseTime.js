@@ -144,7 +144,7 @@ const ChooseTime = ({
             toggleLoading(true);
 
             const { quota_base, quota_wd } = (await getConfigQuotas()) || {};
-            console.log(quota_wd, quota_base);
+            
             const querySnapshot = await getDocs(q);
             const reservationQuerySnapshot = await getDocs(rq);
             const bookings = querySnapshot.docs.map((doc) => doc.data());

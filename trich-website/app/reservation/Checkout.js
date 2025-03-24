@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { logError } from "@/utils/booking";
 
 import LoadingSpinner from "../components/animation/Spinner";
 import SuccessIcon from "@/public/signInAssets/success.svg";
@@ -12,43 +13,29 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
     const [reqBody, setReqBody] = useState(null);
     const [paymentStatus, setPaymentStatus] = useState(0);
 
-    console.log(first_name, phone_number, pickedService, totalPrice, orderId);
-
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const services = pickedService.toString().split(",");
-
-                const body = {
-                    transaction_details: {
-                        order_id: orderId,
-                        gross_amount: totalPrice,
-                    },
-                    item_details: services.map((service, idx) => ({
-                        name: service.trim(),
-                        price:
-                            services.length > 1
-                                ? totalPrice / 2
-                                : totalPrice,
-                        quantity: 1,
-                        id: `TS-${idx}`,
-                    })),
-                    customer_details: {
-                        first_name: first_name,
-                        phone_number: phone_number,
-                    },
-                    enabled_payments: ["other_qris"],
-                };
-
-                setReqBody(body);
-            } catch (error) {
-                console.error(error);
-                setPaymentStatus(2);
-            }
+        const services = pickedService.toString().split(",");
+    
+        const body = {
+            transaction_details: {
+                order_id: orderId,
+                gross_amount: totalPrice,
+            },
+            item_details: services.map((service, idx) => ({
+                name: service.trim(),
+                price: services.length > 1 ? totalPrice / 2 : totalPrice,
+                quantity: 1,
+                id: `TS-${idx}`,
+            })),
+            customer_details: {
+                first_name: first_name,
+                phone_number: phone_number,
+            },
+            enabled_payments: ["other_qris"],
         };
-
-        fetchData();
-    }, []);
+    
+        setReqBody(body);
+    }, [pickedService, orderId, totalPrice, first_name, phone_number]);
 
     useEffect(() => {
         async function fetchToken() {
@@ -84,6 +71,7 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
                 setLoading(false);
             } catch (error) {
                 console.error(error);
+                logError("MIDTRANS", error);
             } finally {
                 setLoading(false);
             }

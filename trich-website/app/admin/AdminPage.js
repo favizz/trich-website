@@ -102,22 +102,21 @@ const AdminDashboard = () => {
             for (const tempBooking of finishedBookings) {
                 try {
                     // Tambahkan ke koleksi 'past_booking'
-                    await addDoc(bookingRef, {
-                        create_booking_date: tempBooking.create_booking_date,
-                        amount: tempBooking.amount,
-                        name: tempBooking.name,
-                        email: tempBooking.email,
-                        phone_number: tempBooking.phone_number,
-                        user_id: tempBooking.user_id,
-                        service: tempBooking.service,
-                        date: tempBooking.date,
-                        time: tempBooking.time,
-                        status: 3,
-                        booking_id: tempBooking.booking_id,
-                    });
+                    // await addDoc(bookingRef, {
+                    //     phone_number: tempBooking.phone_number,
+                    //     service: tempBooking.service,
+                    //     order_id: tempBooking.order_id,
+                    //     booking_id: tempBooking.booking_id,
+                    //     status: 3,
+                    //     amount: tempBooking.amount,
+                    //     name: tempBooking.name,
+                    //     date: tempBooking.date,
+                    //     time: tempBooking.time,
+                    //     create_booking_date: tempBooking.create_booking_date,
+                    // });
 
                     // Hapus dari koleksi 'active_booking'
-                    await deleteActiveBooking(tempBooking.booking_id);
+                    await deleteActiveBooking(tempBooking.id);
 
                     console.log(
                         "Booking successfully moved and deleted:",
@@ -125,6 +124,7 @@ const AdminDashboard = () => {
                     );
                 } catch (error) {
                     console.error("Error moving booking:", error);
+                    console.log(tempBooking);
                     ToastManager.notify("Status gagal diupdate", "error");
                 }
             }
@@ -197,7 +197,7 @@ const AdminDashboard = () => {
             if (response.success) {
                 setBookings(
                     bookings.filter(
-                        (booking) => booking.booking_id !== booking_id,
+                        (booking) => booking.id !== booking_id,
                     ),
                 );
 
@@ -213,6 +213,7 @@ const AdminDashboard = () => {
             }
         } catch (error) {
             ToastManager.notify("Booking gagal dihapus!", "error");
+            console.log(booking_id);
             console.error("Error deleting booking:", error);
         }
     };
@@ -222,7 +223,7 @@ const AdminDashboard = () => {
             const response = await getQuota();
 
             if (response.success) {
-                setQuotas(quotaData);
+                setQuotas(response.data);
             }
         } catch (error) {
             console.error("Failed to fetch quotas: ", error);
@@ -363,7 +364,7 @@ const AdminDashboard = () => {
                                           </button>
                                       </td>
                                       <td className="border border-1 border-solid border-black">
-                                          {quota.quota ? quota.quota : "-"}
+                                          {quota.quota}
                                       </td>
                                   </tr>
                               ))

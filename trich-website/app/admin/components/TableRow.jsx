@@ -44,7 +44,7 @@ const TableRow = ({
                 </button>
             </td>
             <td className="border border-1 border-solid border-black">
-                {booking.phone_number.replace("+62", "0")}
+                {booking.phone_number}
             </td>
         </tr>
     );
