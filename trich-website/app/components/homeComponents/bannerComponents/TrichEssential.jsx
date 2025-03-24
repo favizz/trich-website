@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Essentialstext from '@/public/homeAssets/Essentials1.png';
-import Essentialsbanner from '@/public/homeAssets/Essentials2.png';
+import Essentialsbanner from '@/public/homeAssets/Essentials2.jpg';
 
 const TrichEssential = () => {
   return (
