@@ -6,23 +6,23 @@ const PointsGuide = () => {
       title: "Small Services",
       subtitle: "Trims & Masks",
       points: 5,
-      image: "/profileAssets/points1.png",
+      image: "/profileAssets/points1.webp",
     },
     {
       title: "The Cutting Edge",
       points: 10,
-      image: "/profileAssets/points2.png",
+      image: "/profileAssets/points2.webp",
     },
     {
       title: "TRICH Experience",
       points: 15,
-      image: "/profileAssets/points3.png",
+      image: "/profileAssets/points3.webp",
     },
     {
       title: "Large Services",
       subtitle: "Perming & Coloring",
       points: 40,
-      image: "/profileAssets/points4.png",
+      image: "/profileAssets/points4.webp",
     },
   ]
 

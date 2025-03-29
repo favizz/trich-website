@@ -1,34 +1,51 @@
-const LoyaltyRewards = () => {
-    const loyaltyRewards = [
-      {
+'use client'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+const loyaltyRewards = [
+    {
         title: "50% discount",
         subtitle: "on small services",
         points: 20,
-        image: "/profileAssets/loyalty1.png",
+        image: "/profileAssets/loyalty1.jpg",
         status: "active",
-      },
-      {
+        query: "w62jI0Zzbk",
+    },
+    {
         title: "FREE",
         subtitle: "Small Services",
         points: 50,
-        image: "/profileAssets/loyalty2.png",
-        status: "disabled",
-      },
-      {
+        image: "/profileAssets/loyalty2.jpg",
+        status: "active",
+        query: "5J8qcc6ahu",
+    },  
+    {
         title: "FREE",
         subtitle: "1x Trich Experience",
         points: 100,
-        image: "/profileAssets/loyalty3.png",
-        status: "disabled",
-      },
-      {
+        image: "/profileAssets/loyalty3.jpg",
+        status: "active",
+        query: "H3e5LrxK2R",
+    },
+    {
         title: "Coming Soon",
         subtitle: "",
         points: 200,
-        image: "/profileAssets/loyalty4.png",
+        image: "/profileAssets/loyalty4.jpg",
         status: "coming",
-      },
-    ];
+        query: "",
+    },
+];
+
+const LoyaltyRewards = ({
+  points
+}) => {
+    const router = useRouter();
+    const [point, setPoint] = useState(points ? points : 0);
+
+    const handlePromoRoute = (query) => {
+        router.push(`q=${query}`);
+    }
   
     return (
       <div className="bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-md">
@@ -61,12 +78,13 @@ const LoyaltyRewards = () => {
               {/* Redeem Button - Placed Below the Reward Container */}
               {reward.status !== "coming" && (
                 <button
-                  className={`mt-2 text-white py-0.5 sm:py-1 px-2 sm:px-3 md:px-4 rounded text-xs sm:text-sm font-extrabold tracking-wide w-16 sm:w-20 md:w-24 text-center ${
-                    reward.status === "active"
+                    className={`mt-2 text-white py-0.5 sm:py-1 px-2 sm:px-3 md:px-4 rounded text-xs sm:text-sm font-extrabold tracking-wide w-16 sm:w-20 md:w-24 text-center ${
+                    (reward.status === "active" && point >= reward.points) 
                       ? "bg-orange-500 hover:bg-orange-600"
                       : "bg-gray-400 cursor-not-allowed"
                   }`}
-                  disabled={reward.status === "disabled"}
+                    disabled={reward.status === "coming"}
+                    onClick={() => router.push(`/reservation?q=${reward.query}`)}
                 >
                   Redeem
                 </button>

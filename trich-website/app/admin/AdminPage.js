@@ -92,36 +92,33 @@ const AdminDashboard = () => {
     };
 
     const MoveFinishedBookings = async () => {
-        const bookingRef = collection(db, "past_booking");
+        const bookingRef = collection(db, "past_non_auth_booking");
         try {
             // Filter hanya bookings dengan status 3
             const finishedBookings = bookings.filter(
                 (tempBooking) => tempBooking.status == "3",
             );
+            console.log(finishedBookings);
 
             for (const tempBooking of finishedBookings) {
                 try {
-                    // Tambahkan ke koleksi 'past_booking'
-                    // await addDoc(bookingRef, {
-                    //     phone_number: tempBooking.phone_number,
-                    //     service: tempBooking.service,
-                    //     order_id: tempBooking.order_id,
-                    //     booking_id: tempBooking.booking_id,
-                    //     status: 3,
-                    //     amount: tempBooking.amount,
-                    //     name: tempBooking.name,
-                    //     date: tempBooking.date,
-                    //     time: tempBooking.time,
-                    //     create_booking_date: tempBooking.create_booking_date,
-                    // });
+                    // Tambahkan ke koleksi 'past_non_auth_booking'
+                    await addDoc(bookingRef, {
+                        phone_number: tempBooking.phone_number,
+                        service: tempBooking.service,
+                        order_id: tempBooking.order_id,
+                        booking_id: tempBooking.booking_id,
+                        status: 3,
+                        amount: tempBooking.amount,
+                        name: tempBooking.name,
+                        date: tempBooking.date,
+                        time: tempBooking.time,
+                        create_booking_date: tempBooking.create_booking_date,
+                    });
 
                     // Hapus dari koleksi 'active_booking'
                     await deleteActiveBooking(tempBooking.id);
 
-                    console.log(
-                        "Booking successfully moved and deleted:",
-                        tempBooking.booking_id,
-                    );
                 } catch (error) {
                     console.error("Error moving booking:", error);
                     console.log(tempBooking);
@@ -197,7 +194,7 @@ const AdminDashboard = () => {
             if (response.success) {
                 setBookings(
                     bookings.filter(
-                        (booking) => booking.id !== booking_id,
+                        (booking) => booking.booking_id !== booking_id,
                     ),
                 );
 
