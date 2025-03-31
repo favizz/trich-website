@@ -98,7 +98,6 @@ const AdminDashboard = () => {
             const finishedBookings = bookings.filter(
                 (tempBooking) => tempBooking.status == "3",
             );
-            console.log(finishedBookings);
 
             for (const tempBooking of finishedBookings) {
                 try {
@@ -117,7 +116,7 @@ const AdminDashboard = () => {
                     });
 
                     // Hapus dari koleksi 'active_booking'
-                    await deleteActiveBooking(tempBooking.id);
+                    await deleteActiveBooking(tempBooking.booking_id);
 
                 } catch (error) {
                     console.error("Error moving booking:", error);
@@ -134,19 +133,22 @@ const AdminDashboard = () => {
         try {
             if (newStatus == 3) {
                 try {
-                    const bookingCollectionRef = collection(db, "past_booking");
+                    const bookingRef = collection(db, "past_non_auth_booking");
                     const tempBooking = bookings.find(
                         (docs) => docs.booking_id == bookingId,
                     );
-                    await addDoc(bookingCollectionRef, {
-                        create_booking_date: tempBooking.create_booking_date,
-                        user_id: tempBooking.user_id,
+
+                    await addDoc(bookingRef, {
+                        phone_number: tempBooking.phone_number,
                         service: tempBooking.service,
+                        order_id: tempBooking.order_id,
+                        booking_id: tempBooking.booking_id,
+                        status: 3,
+                        amount: tempBooking.amount,
+                        name: tempBooking.name,
                         date: tempBooking.date,
                         time: tempBooking.time,
-                        notes: tempBooking.notes,
-                        status: 3,
-                        booking_id: tempBooking.booking_id,
+                        create_booking_date: tempBooking.create_booking_date,
                     });
 
                     await deleteActiveBooking(bookingId);
