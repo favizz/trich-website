@@ -12,6 +12,38 @@ import Spinner from "../components/Spinner";
 import LeftArrow from "@/public/reservationAssets/leftarrow.svg";
 import RightArrow from "@/public/reservationAssets/rightarrow.svg";
 
+function generateOperationalTimes(date) {
+    const allOperationalTimes = [];
+    const startHour = 10;
+    const endHour = 20;
+
+    const currentTime = new Date();
+
+    if (date.getDate() == currentTime.getDate()) {
+        let currentHour = currentTime.getHours();
+
+        if (currentTime.getMinutes() > 0) {
+            currentHour += 1;
+        }
+
+        currentHour = Math.max(currentHour, startHour);
+
+        for (let hour = currentHour; hour <= endHour; hour++) {
+            const timeString = `${hour.toString().padStart(2, "0")}:00`;
+            allOperationalTimes.push(timeString);
+        }
+    } else {
+        for (let hour = startHour; hour <= endHour; hour++) {
+            const timeString = `${hour.toString().padStart(2, "0")}:00`;
+            allOperationalTimes.push(timeString);
+        }
+    }
+
+    return allOperationalTimes;
+}
+
+const allOperationalTimes = [];
+
 const ChooseTime = ({
     pickedService,
     date,
@@ -19,38 +51,6 @@ const ChooseTime = ({
     handleTime,
     handlePage,
 }) => {
-    function generateOperationalTimes(date) {
-        const allOperationalTimes = [];
-        const startHour = 10;
-        const endHour = 20;
-
-        const currentTime = new Date();
-
-        if (date.getDate() == currentTime.getDate()) {
-            let currentHour = currentTime.getHours();
-
-            if (currentTime.getMinutes() > 0) {
-                currentHour += 1;
-            }
-
-            currentHour = Math.max(currentHour, startHour);
-
-            for (let hour = currentHour; hour <= endHour; hour++) {
-                const timeString = `${hour.toString().padStart(2, "0")}:00`;
-                allOperationalTimes.push(timeString);
-            }
-        } else {
-            for (let hour = startHour; hour <= endHour; hour++) {
-                const timeString = `${hour.toString().padStart(2, "0")}:00`;
-                allOperationalTimes.push(timeString);
-            }
-        }
-
-        return allOperationalTimes;
-    }
-
-    const allOperationalTimes = [];
-
     const [pickedDate, pickDate] = useState("");
     const [pickedTime, pickTime] = useState(0);
     const [operationalTimes, setOperationalTimes] =
@@ -81,11 +81,8 @@ const ChooseTime = ({
         const inputDate = dateInput;
         const currentDate = new Date();
 
-        inputDate.setHours(8, 0, 0, 0);
-        currentDate.setHours(8, 0, 0, 0);
-
-        if (inputDate < currentDate) {
-            toggleDateValid(!isDateValid);
+        if (new Date(inputDate.toDateString()) < new Date(currentDate.toDateString())) {
+            toggleDateValid(false);
             return;
         }
 
@@ -111,10 +108,6 @@ const ChooseTime = ({
 
         if (inputDate.getDay() === 5) {
             availableTimes = availableTimes.filter((time) => time !== "12:00");
-        }
-
-        if (inputDate.getMonth() === 2) {
-            availableTimes = availableTimes.filter((time) => time !== "18:00");
         }
 
         if (pickedService && pickedService.includes("Morning Edge")) {
@@ -248,7 +241,7 @@ const ChooseTime = ({
                 {isLoading ? (
                     <Spinner isLoading={isLoading} />
                 ) : (
-                    operationalTimes.length !== 0 && (
+                    operationalTimes.length !== 0 && isDateValid && (
                         <>
                             <div className="flex flex-row space-x-8">
                                 <Image
