@@ -1,3 +1,24 @@
+export const handleRewardMatch = (promo_query, obj_query, obj_price) => {
+    if (obj_query === null || obj_price === null) {
+        return 0;
+    }
+    if (!promo_query) {
+        return obj_price;
+    }
+    if (promo_query === "H3e5LrxK2R" && obj_query === promo_query)  { // free the trich experience
+        return 0;
+    }
+    else if (promo_query === "w62jI0Zzbk" && obj_query === promo_query) { // 50% small service
+        return obj_price / 2;
+    }
+    else if (promo_query === "5J8qcc6ahu" && obj_query === "w62jI0Zzbk") { // free small service
+        return 0;
+    }
+    else {
+        return obj_price;
+    }
+}
+
 export const Services = [
     {
         is_list: false,
@@ -9,6 +30,7 @@ export const Services = [
         is_promo: true,
         services: [],
         is_range: false,
+        query_code: "",
     },
     {
         is_list: false,
@@ -20,6 +42,7 @@ export const Services = [
         is_promo: false,
         services: [],
         is_range: false,
+        query_code: "H3e5LrxK2R",
     },
     {
         is_list: false,
@@ -31,6 +54,7 @@ export const Services = [
         is_promo: false,
         services: [],
         is_range: false,
+        query_code: "",
     },
     {
         is_list: false,
@@ -42,6 +66,7 @@ export const Services = [
         is_promo: true,
         services: [],
         is_range: false,
+        query_code: "",
     },
     {
         is_list: false,
@@ -53,6 +78,7 @@ export const Services = [
         is_promo: false,
         services: [],
         is_range: false,
+        query_code: "",
     },
     {
         is_list: false,
@@ -64,6 +90,7 @@ export const Services = [
         is_promo: false,
         services: [],
         is_range: false,
+        query_code: "",
     },
     // {
     //   is_list: true,
@@ -78,23 +105,26 @@ export const Services = [
     //       actual_price: "250.000-750.000",
     //       duration: 2,
     //       is_promo: false,
+    //       query_code: "",
     //     },
-    //     {
-    //       name: "Permification - Root Lift",
-    //       price: "100.000",
-    //       nominal: 75000,
-    //       actual_price: 150000,
-    //       duration: 0.75,
-    //       is_promo: false,
-    //     },
-    //     {
-    //       name: "Permification - Down",
-    //       price: "100.000",
-    //       nominal: 75000,
-    //       actual_price: 150000,
-    //       duration: 0.75,
-    //       is_promo: false,
-    //     },
+        // {
+        //   name: "Permification - Root Lift",
+        //   price: "100.000",
+        //   nominal: 75000,
+        //   actual_price: 150000,
+        //   duration: 0.75,
+        //   is_promo: false,
+        //   query_code: "",
+        // },
+        // {
+        //   name: "Permification - Down",
+        //   price: "100.000",
+        //   nominal: 75000,
+        //   actual_price: 150000,
+        //   duration: 0.75,
+        //   is_promo: false,
+        //   query_code: "",
+        // },
     //   ],
     // },
     // {
@@ -110,6 +140,7 @@ export const Services = [
     //       actual_price: "250.000-750.000",
     //       duration: 3,
     //       is_promo: false,
+            // query_code: "",
     //     },
     //     {
     //       name: "Highlight Colors",
@@ -118,6 +149,7 @@ export const Services = [
     //       actual_price: "250.000-750.000",
     //       duration: 3,
     //       is_promo: false,
+    //       query_code: "",
     //     },
     //   ],
     // },
@@ -131,6 +163,7 @@ export const Services = [
     //   is_promo: false,
     //   services: [],
     //   is_range:true,
+    //   query_code: "",
     // },
     {
         is_list: false,
@@ -142,6 +175,7 @@ export const Services = [
         is_promo: false,
         services: [],
         is_range: false,
+        query_code: "w62jI0Zzbk",
     },
     {
         is_list: false,
@@ -153,6 +187,7 @@ export const Services = [
         is_promo: false,
         services: [],
         is_range: false,
+        query_code: "w62jI0Zzbk",
     },
     {
         is_list: false,
@@ -164,5 +199,6 @@ export const Services = [
         is_promo: false,
         services: [],
         is_range: false,
+        query_code: "w62jI0Zzbk",
     },
 ];

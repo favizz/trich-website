@@ -1,52 +1,35 @@
 "use client";
 import { useState } from "react";
-import { getUserBookings } from "@/utils/user";
 import PhoneForm from "@/app/components/forms/PhoneForm";
+import Spinner from "@/app/components/Spinner";
 
 const ClientForm = ({
-    setBookings,
-    setPage
+    setPhoneNumber,
+    isLoading,
+    error,
 }) => {
-    const [phoneNumber, setPhoneNumber] = useState("");
+    const [tempPhoneNumber, setTempPhoneNumber] = useState("");
     const [isValid, toggleValid] = useState(true);
-    const [isLoading, toggleLoading] = useState(false);
-    const [error, setError] = useState(null);
-
-    const handleBooking = async () => {
-        toggleLoading(true);
-        const res = await getUserBookings(`+62${phoneNumber.replace(/\D/g, "")}`);
-
-        if (res.success) {
-            if (res.bookings) {
-                setBookings(res.bookings);
-                setPage(2);
-            }
-            else {
-                setError("No user or booking found!");
-            }
-        } else {
-            console.log(res.error);
-        }
-    }
-
 
     const handleContinue = (e) => {
         e.preventDefault();
 
-        if (phoneNumber === "" || !isValid) {
-            setError("Please Fill Correctly!");
-            return;
+        if (tempPhoneNumber !== "" && isValid) {
+            setPhoneNumber(tempPhoneNumber);
         }
-        handleBooking();
-        toggleLoading(false);
+        return;
     };
 
     return (
         <form onSubmit={handleContinue} className="bg-white px-8 py-8 rounded-lg w-full  lg:px-6 xl:px-10 space-y-4 mt-14 mb-14">
             {/* Phone Number Field */}
+            <div className="mb-4">
+                <p className="text-3xl font-bold mt-2">Dashboard</p>
+                <h2 className="text-lg font-medium text-gray-700">See your bookings & points!</h2>
+            </div>
             <PhoneForm 
-                phoneNumber={phoneNumber}
-                getPhoneNumber={setPhoneNumber}
+                phoneNumber={tempPhoneNumber}
+                getPhoneNumber={setTempPhoneNumber}
                 toggleValid={toggleValid}
             />
 
@@ -61,7 +44,8 @@ const ClientForm = ({
                     className="w-full text-center border hover:border-orange1 hover:bg-white bg-orange1 hover:text-orange1 text-white font-bold px-12 py-2 rounded"
                     disabled={isLoading}
                 >
-                    {isLoading ? "Loading..." : "Continue"}
+                    {!isLoading && "Continue"}
+                    <Spinner isLoading={isLoading} />
                 </button>
             </div>
         </form>

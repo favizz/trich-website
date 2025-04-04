@@ -41,12 +41,9 @@ const LoyaltyRewards = ({
   points
 }) => {
     const router = useRouter();
-    const [point, setPoint] = useState(points ? points : 0);
+    console.log(points);
+    const [point, setPoint] = useState(points);
 
-    const handlePromoRoute = (query) => {
-        router.push(`q=${query}`);
-    }
-  
     return (
       <div className="bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-md">
         <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold mb-1 sm:mb-2 text-center">LOYALTY REWARDS</h2>
@@ -83,7 +80,7 @@ const LoyaltyRewards = ({
                       ? "bg-orange-500 hover:bg-orange-600"
                       : "bg-gray-400 cursor-not-allowed"
                   }`}
-                    disabled={reward.status === "coming"}
+                    disabled={points < reward.points || reward.status === "coming"}
                     onClick={() => router.push(`/reservation?q=${reward.query}`)}
                 >
                   Redeem

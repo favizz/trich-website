@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const ClientPoints = ({ point }) => {
-  const [points, setPoints] = useState(point ? point : 0);
+  console.log("Point: ", point);
+  const [points, setPoints] = useState(point);
   const milestones = [0, 10, 25, 35, 50, 75, 100, 150, 200];
   const milestoneLabels = [0, 25, 50, 100, 200];
   const totalSegments = milestones.length - 1;

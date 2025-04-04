@@ -61,7 +61,6 @@ export const getPendingBookings = async (phoneNumber) => {
         const querySnapshot = await getDocs(bookingsQuery);
 
         if (querySnapshot.empty) {
-            console.log(`No pending bookings found for phone number: ${phoneNumber}`);
             return null;
         }
 
@@ -94,8 +93,6 @@ export const getMembership = async (phoneNumber) => {
     if (!phoneNumber.startsWith("+62")) {
         return { success: true, error: "Wrong phone format!" };
     }
-
-    console.log(phoneNumber);
 
     const q = query(
         collection(db, "membership"),
