@@ -131,32 +131,32 @@ const AdminDashboard = () => {
 
     const updateBookingStatusByBookingId = async (bookingId, newStatus) => {
         try {
-            if (newStatus == 3) {
-                try {
-                    const bookingRef = collection(db, "past_non_auth_booking");
-                    const tempBooking = bookings.find(
-                        (docs) => docs.booking_id == bookingId,
-                    );
+            // if (newStatus == 3) {
+            //     try {
+            //         const bookingRef = collection(db, "past_non_auth_booking");
+            //         const tempBooking = bookings.find(
+            //             (docs) => docs.booking_id == bookingId,
+            //         );
 
-                    await addDoc(bookingRef, {
-                        phone_number: tempBooking.phone_number,
-                        service: tempBooking.service,
-                        order_id: tempBooking.order_id,
-                        booking_id: tempBooking.booking_id,
-                        status: 3,
-                        amount: tempBooking.amount,
-                        name: tempBooking.name,
-                        date: tempBooking.date,
-                        time: tempBooking.time,
-                        create_booking_date: tempBooking.create_booking_date,
-                    });
+            //         await addDoc(bookingRef, {
+            //             phone_number: tempBooking.phone_number,
+            //             service: tempBooking.service,
+            //             order_id: tempBooking.order_id,
+            //             booking_id: tempBooking.booking_id,
+            //             status: 3,
+            //             amount: tempBooking.amount,
+            //             name: tempBooking.name,
+            //             date: tempBooking.date,
+            //             time: tempBooking.time,
+            //             create_booking_date: tempBooking.create_booking_date,
+            //         });
 
-                    await deleteActiveBooking(bookingId);
-                } catch (error) {
-                    console.log(error);
-                    ToastManager.notify("Status gagal diupdate", "error");
-                }
-            }
+            //         await deleteActiveBooking(bookingId);
+            //     } catch (error) {
+            //         console.log(error);
+            //         ToastManager.notify("Status gagal diupdate", "error");
+            //     }
+            // }
             const bookingCollectionRef = collection(db, "active_booking");
             const q = query(
                 bookingCollectionRef,
