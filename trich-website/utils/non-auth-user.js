@@ -1,5 +1,4 @@
 import { auth, db } from "@/config/firebase";
-import { v4 as uuidv4 } from "uuid";
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 
@@ -23,7 +22,7 @@ export const getUser = async (phone_number) => {
         return { success: true, user };
     } catch (error) {
         console.error("Error fetching user:", error);
-        return { success: false, error: error.message };
+        return { success: false, error: error };
     }
 };
 

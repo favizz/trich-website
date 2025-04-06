@@ -25,8 +25,11 @@ const QuotaConfig = () => {
             return;
         }
         try {
-            await updateConfigQuota(type, parseInt(value, 10));
-            alert(`Successfully updated ${type} quota to ${value}`);
+            await updateConfigQuota({
+                type: type, 
+                val: parseInt(value, 10)
+            });
+
             setQuotas((prev) => ({
                 ...prev,
                 [type === "wd" ? "quota_wd" : "quota_base"]: value,

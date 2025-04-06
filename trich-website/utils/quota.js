@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 
-const docId = "eN2iHGJx9UjoVklByUs1";
+const DOC_ID = "eN2iHGJx9UjoVklByUs1";
 
 export const getQuota = async () => {
     try {
@@ -81,7 +81,7 @@ export const deleteQuota = async (quota_id) => {
  */
 export const getConfigQuotas = async () => {
     try {
-        const docRef = doc(db, "config", docId);
+        const docRef = doc(db, "config", DOC_ID);
 
         const docSnap = await getDoc(docRef);
 
@@ -109,17 +109,22 @@ export const updateConfigQuota = async (updates) => {
     try {
         if (!updates || Object.keys(updates).length === 0) {
             console.error("No valid fields provided for update.");
-            return false;
         }
 
-        const docRef = doc(db, "config", docId);
+        if (updates.type === "wd") {
+            updates.type = "quota_wd";
+        }
+        else if (updates.type === "base") {
+            updates.type = "quota_base";
+        }
+        console.log(updates);
 
-        await updateDoc(docRef, updates);
+        const docRef = doc(db, "config", DOC_ID);
+
+        await updateDoc(docRef, { [updates.type]: updates.val });
 
         console.log("Quota value(s) updated successfully!", updates);
-        return true;
     } catch (error) {
         console.error("Error updating config quotas:", error);
-        return false;
     }
 };

@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Services } from "./Services";
+import { useSearchParams } from "next/navigation";
+
+import { Services, handleRewardMatch } from "./Services";
 import { getMembership } from "@/utils/user";
 
 import ToastManager from "../components/toaster";
@@ -63,6 +65,9 @@ const ChooseService = ({
     handleDuration,
     toggleConfirm,
 }) => {
+    const searchParams = useSearchParams();
+    const queryParam = searchParams.get("q");
+    
     const [chosenServices, setChosenServices] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalActualPrice, setTotalActualPrice] = useState(0);
@@ -147,7 +152,12 @@ const ChooseService = ({
                     serviceObj.nominal = 0;
                 }
 
-                return total + (serviceObj ? serviceObj.nominal : 0);
+                const tempTotalPrice = handleRewardMatch(
+                    queryParam, 
+                    serviceObj.query_code,
+                    serviceObj.nominal
+                )
+                return total + tempTotalPrice;
             }, 0),
         );
 
@@ -173,8 +183,13 @@ const ChooseService = ({
                 if (isMember && serviceName === "The Cutting Edge") {
                     serviceObj.actual_price = 0;
                 }
-
-                return total + (serviceObj ? serviceObj.actual_price : 0);
+                
+                const tempActualPrice = handleRewardMatch(
+                    queryParam,
+                    serviceObj.query_code,
+                    serviceObj.actual_price
+                )
+                return total + tempActualPrice;
             }, 0),
         );
 
@@ -282,8 +297,23 @@ const ChooseService = ({
                                                         "The Cutting Edge"
                                                   ? "Free"
                                                   : formatPrice(
-                                                        service.actual_price,
-                                                    )}
+                                                        handleRewardMatch(
+                                                            queryParam,
+                                                            service.query_code,
+                                                            service.actual_price
+                                                        )
+                                                    )
+                                            }
+                                            {
+                                                service.actual_price !== handleRewardMatch(
+                                                    queryParam,
+                                                    service.query_code,
+                                                    service.actual_price
+                                                ) ?
+                                                " (Promo!)"
+                                                :
+                                                ""
+                                            }
                                         </span>
                                     </p>
                                     {service.is_range && (

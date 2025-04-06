@@ -77,10 +77,12 @@ export const logError = async (name, error_message) => {
     try {
         const errorCollectionRef = collection(db, "error_log");
 
+        const indonesianDate = new Date();
+
         await addDoc(errorCollectionRef, {
             name: name,
-            error_message: error_message,
-            timestamp: new Date()
+            error_message: String(error_message),
+            timestamp: indonesianDate
         });
 
         console.log('Error logged successfully');

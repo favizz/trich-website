@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-const PhoneForm = ({ phoneNumber, getPhoneNumber, toggleValid }) => {
+const PhoneForm = ({ phoneNumber, getPhoneNumber, toggleValid, onBlurFunc }) => {
     const [error, setError] = useState("");
 
     const formatPhoneNumber = (value) => {
@@ -39,6 +39,9 @@ const PhoneForm = ({ phoneNumber, getPhoneNumber, toggleValid }) => {
             setError("Phone number must start with '8' and have 10-12 digits.");
         } else {
             toggleValid(true);
+            if (onBlurFunc) {
+                onBlurFunc();
+            }
             setError("");
         }
     };
