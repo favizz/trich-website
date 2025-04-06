@@ -88,10 +88,6 @@ const ChooseTime = ({
 
         toggleDateValid(true);
 
-        inputDate.setMinutes(
-            inputDate.getMinutes() + inputDate.getTimezoneOffset(),
-        );
-
         const options = {
             weekday: "long",
             year: "numeric",
