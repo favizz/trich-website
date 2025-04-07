@@ -122,67 +122,48 @@ const ChooseTime = ({
         try {
             const q = query(
                 collection(db, "active_booking"),
-                where("date", "==", formattedDate),
+                where("date", "==", formattedDate)
             );
-
             const rq = query(
                 collection(db, "reservation_quota"),
-                where("date", "==", formattedDate),
+                where("date", "==", formattedDate)
             );
-
+        
             toggleLoading(true);
-
+        
             const { quota_base, quota_wd } = (await getConfigQuotas()) || {};
             
             const querySnapshot = await getDocs(q);
             const reservationQuerySnapshot = await getDocs(rq);
             const bookings = querySnapshot.docs.map((doc) => doc.data());
-            const quotas = reservationQuerySnapshot.docs.map((doc) =>
-                doc.data(),
-            );
+            const quotas = reservationQuerySnapshot.docs.map((doc) => doc.data());
+        
+            let specificQuota = null;
+            if (quotas && quotas.length > 0) {
+                specificQuota = quotas[0].quota;
+            }
 
-            let fullyBookedTimes = bookings.reduce((acc, booking) => {
+            const day = inputDate.getDay();
+            let defaultQuota = (day > 0 && day < 5) ? quota_wd : quota_base;
+  
+            const quotaToUse = specificQuota !== null ? specificQuota : defaultQuota;
+            
+            const fullyBookedTimes = bookings.reduce((acc, booking) => {
                 acc[booking.time] = (acc[booking.time] || 0) + 1;
                 return acc;
             }, {});
-
-            // Set this first to block with wd and base
-            if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
-                availableTimes = availableTimes.filter(
-                    (time) =>
-                        !fullyBookedTimes[time] ||
-                        fullyBookedTimes[time] < quota_wd, // UBAH JADI 2 LAGI
-                );
-            } else {
-                availableTimes = availableTimes.filter(
-                    (time) =>
-                        !fullyBookedTimes[time] ||
-                        fullyBookedTimes[time] < quota_base, // DEFAULT 2
-                );
-            }
-
-            quotas.forEach((quota) => {
-                availableTimes.forEach((time) => {
-                    if (!fullyBookedTimes[time]) {
-                        fullyBookedTimes[time] = 0;
-                    }
-                    if (fullyBookedTimes[time] >= quota.quota) {
-                        if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
-                            fullyBookedTimes[time] = 2;
-                        } else {
-                            fullyBookedTimes[time] = 2; // DEFAULT 2
-                        }
-                    }
-                });
+            
+            availableTimes = availableTimes.filter((time) => {
+                const bookedCount = fullyBookedTimes[time] || 0;
+                return bookedCount < quotaToUse;
             });
-
+            
             setOperationalTimes(availableTimes);
-
             toggleLoading(false);
         } catch (error) {
             console.error(error);
         }
-
+        
         pickTime(0);
     };
 
