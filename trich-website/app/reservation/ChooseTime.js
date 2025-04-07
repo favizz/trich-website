@@ -146,6 +146,21 @@ const ChooseTime = ({
                 return acc;
             }, {});
 
+            // Set this first to block with wd and base
+            if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
+                availableTimes = availableTimes.filter(
+                    (time) =>
+                        !fullyBookedTimes[time] ||
+                        fullyBookedTimes[time] < quota_wd, // UBAH JADI 2 LAGI
+                );
+            } else {
+                availableTimes = availableTimes.filter(
+                    (time) =>
+                        !fullyBookedTimes[time] ||
+                        fullyBookedTimes[time] < quota_base, // DEFAULT 2
+                );
+            }
+
             quotas.forEach((quota) => {
                 availableTimes.forEach((time) => {
                     if (!fullyBookedTimes[time]) {
@@ -160,20 +175,6 @@ const ChooseTime = ({
                     }
                 });
             });
-
-            if (inputDate.getDay() > 0 && inputDate.getDay() < 5) {
-                availableTimes = availableTimes.filter(
-                    (time) =>
-                        !fullyBookedTimes[time] ||
-                        fullyBookedTimes[time] < quota_wd, // UBAH JADI 2 LAGI
-                );
-            } else {
-                availableTimes = availableTimes.filter(
-                    (time) =>
-                        !fullyBookedTimes[time] ||
-                        fullyBookedTimes[time] < quota_base, // DEFAULT 2
-                );
-            }
 
             setOperationalTimes(availableTimes);
 
