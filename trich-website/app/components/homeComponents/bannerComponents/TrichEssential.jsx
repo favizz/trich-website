@@ -31,7 +31,7 @@ const TrichEssential = () => {
         {/* Learn More button with same ratio as Trich Essentials text image, stretched to the right */}
         <Link href="/products" className="w-full flex justify-center">
           <div
-            className="bg-[#F26524] hover:bg-[#F4511E] text-white text-center py-3 px-8 w-full max-w-[350px] transition-colors duration-300 cursor-pointer font-semibold text-[11px]"
+            className="bg-[#F26524] hover:bg-[#F4511E] text-white text-center py-3 px-8 w-full max-w-[350px] transition-colors duration-300 cursor-pointer font-semibold text-2xl"
           >
             Learn More
           </div>
