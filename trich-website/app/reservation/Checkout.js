@@ -91,7 +91,7 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
         //         ? "https://app.sandbox.midtrans.com/snap/snap.js"   // Sandbox
         //         : "https://app.midtrans.com/snap/snap.js";          // Production
 
-        const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js";
+        const snapScript = "https://app.midtrans.com/snap/snap.js";
 
         const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY;
         const script = document.createElement("script");
