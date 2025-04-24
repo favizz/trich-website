@@ -40,6 +40,10 @@ const ClientForm = ({
         }
     }, [isLoading]);
 
+    useEffect(() => {
+        getStoredCredentials();
+    }, []);
+
     return (
         <form onSubmit={handleContinue} className="bg-white px-8 py-8 rounded-lg w-full lg:px-6 xl:px-10 space-y-4 mt-14 mb-14">
             {/* Phone Number Field */}
