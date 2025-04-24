@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import { getPendingBookings } from "@/utils/user";
 import { getUser } from "@/utils/non-auth-user";
-import { getCookie, setCookie } from "cookies-next";
+// import { getCookie, setCookie } from "cookies-next";
+import { getCredentials, setCredentials } from "@/utils/cookieManager";
 import PhoneForm from "../components/forms/PhoneForm";
 
 const ClientForm = ({
@@ -19,13 +20,11 @@ const ClientForm = ({
     const [error, setError] = useState(null);
 
     const getStoredCredentials = () => {
-        const credential = getCookie("trich_credential");
+        const credential = getCredentials();
 
         if (credential) {
-            const parsedData = JSON.parse(credential);
-
-            setFullName(parsedData.full_name);
-            setPhoneNumber(parsedData.phone_number);
+            setFullName(credential.full_name);
+            setPhoneNumber(credential.phone_number);
             toggleNameInput(true);
         } else {
             console.log("No Cookie!");
@@ -33,22 +32,7 @@ const ClientForm = ({
     }
 
     const storeCredentials = () => {
-        const credential = getCookie("trich_credential");
-
-        if (!credential) {
-            setCookie(
-                "trich_credential", 
-                JSON.stringify({
-                    phone_number: phoneNumber,
-                    full_name: fullName,
-                }), 
-                {
-                maxAge: 60 * 60 * 24 * 7,
-                path: "/", 
-                }
-            );
-        } 
-        // Cannot update a cookie once its on the client
+        setCredentials(phoneNumber, fullName);
     }
 
     const handleGetName = async (phone_number) => {

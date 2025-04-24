@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { getUser } from "@/utils/non-auth-user";
 import { getUserBookings } from "@/utils/user";
+import { setCredentials } from "@/utils/cookieManager";
 
 import ClientCard from "./ClientCard";
 // import ClientStats from "./ClientStats";
@@ -31,6 +32,10 @@ const ClientPage = () => {
         if (res.success) {
             if (res.user) {
                 setUser(res.user);
+                setCredentials(
+                    phoneNumber, 
+                    res.user.first_name
+                )
             }
             else {
                 setError("No user found!");

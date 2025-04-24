@@ -196,3 +196,65 @@ export async function removeExpiredBooking(orderId) {
         throw new Error("Internal Server Error");
     }
 }
+
+export async function handleUserPoints(orderId) {
+    try {
+      // Query the active_booking collection for the document with the matching orderId
+      const orderQuery = query(
+        collection(db, "active_booking"),
+        where("order_id", "==", orderId)
+      );
+  
+      const querySnapshot = await getDocs(orderQuery);
+  
+      if (querySnapshot.empty) {
+        console.log("No matching order found for orderId:", orderId);
+        return;
+      }
+  
+      // Access the first (and only) document returned by the query
+      const docSnapshot = querySnapshot.docs[0];
+      const orderData = docSnapshot.data();
+      const service = orderData.service || "";
+      const userId = orderData.userId; // Ensure that this field exists to identify the user
+  
+      // Determine the deduction amount based on the service string
+      let deduction = 0;
+      if (service.includes("(Free Trich Experience)")) {
+        deduction += 100;
+      }
+      if (service.includes("(50% Small Service)")) {
+        deduction += 20;
+      }
+      if (service.includes("(Free Small Service)")) {
+        deduction += 50;
+      }
+  
+      // If there is a deduction and a valid userId, proceed to update the user's points
+      if (deduction > 0 && userId) {
+        // Reference the user's document in the non_auth_user collection
+        const userRef = doc(db, "non_auth_user", userId);
+  
+        // Retrieve the user's current points
+        const userDoc = await getDoc(userRef);
+        if (!userDoc.exists()) {
+          console.log("User document not found for userId:", userId);
+          return;
+        }
+        const currentPoints = userDoc.data().point || 0;
+  
+        // Calculate the new points by subtracting the deduction
+        const newPoints = currentPoints - deduction;
+  
+        // Update the document with the new points value
+        await updateDoc(userRef, { point: newPoints });
+        console.log(
+          `Deducted ${deduction} points from user with id ${userId}. New point total: ${newPoints}.`
+        );
+      } else {
+        console.log("No matching service string found or userId is missing.");
+      }
+    } catch (error) {
+      console.error("Error updating user points:", error);
+    }
+  }

@@ -26,6 +26,7 @@ const ConfirmPay = ({
     duration,
     setOrderId,
     handlePage,
+    queryParam
 }) => {
     const router = useRouter();
 
@@ -35,16 +36,33 @@ const ConfirmPay = ({
         const orderid = generateCode();
         setOrderId(orderid);
 
+        let serviceName = service;
+        if (serviceName.includes("The Trich Experience")) {
+            if (queryParam === "H3e5LrxK2R") { // free the trich experience
+                serviceName = `${serviceName} (Free Trich Experience)`; 
+            } 
+        }
+        if (serviceName.includes("Trim & Treat") || 
+            serviceName.includes("Mask Off") || 
+            serviceName.includes("Creambath")
+        ) {
+            if (queryParam === "w62jI0Zzbk") { // 50% small service
+                serviceName = `${serviceName} (50% Small Service)`; 
+            } 
+            else if (queryParam === "5J8qcc6ahu") { // free small service
+                serviceName = `${serviceName} (Free Small Service)`; 
+            }
+        }
+
         await createBooking(
             user.first_name,
             user.phone_number,
-            service,
+            serviceName,
             time,
             date,
             price,
             orderid,
         );
-
     };
 
     const handleCheckout = async (e) => {

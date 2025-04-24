@@ -1,20 +1,35 @@
-export const handleRewardMatch = (promo_query, obj_query, obj_price) => {
+export const handleRewardMatch = (promo_query, obj_query, obj_price, points) => {
+    console.log("Jumlah points: ", points);
+    if (!promo_query) {
+        console.log("Gaada promo query");
+        return obj_price;
+    }
     if (obj_query === null || obj_price === null) {
         return 0;
     }
-    if (!promo_query) {
-        return obj_price;
-    }
-    if (promo_query === "H3e5LrxK2R" && obj_query === promo_query)  { // free the trich experience
+    if (promo_query === "H3e5LrxK2R" && // free the trich experience
+        obj_query === promo_query &&
+        points >= 100
+    )  {
         return 0;
     }
-    else if (promo_query === "w62jI0Zzbk" && obj_query === promo_query) { // 50% small service
+    else if (
+        promo_query === "w62jI0Zzbk" && // 50% small service
+        obj_query === promo_query &&
+        points >= 20
+    ) {
+        console.log("Dapet potongan 50%!");
         return obj_price / 2;
     }
-    else if (promo_query === "5J8qcc6ahu" && obj_query === "w62jI0Zzbk") { // free small service
+    else if (
+        promo_query === "5J8qcc6ahu" && // free small service
+        obj_query === "w62jI0Zzbk" &&
+        points >= 50
+    ) {
         return 0;
     }
     else {
+        console.log("Gadapet apapun!");
         return obj_price;
     }
 }

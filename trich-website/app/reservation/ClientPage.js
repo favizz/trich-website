@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { unhashQuery } from "@/utils/dateHash";
 
 import ClientForm from "./ClientForm";
 import ClientPendings from "./ClientPendings";
@@ -14,6 +16,7 @@ import { ToastContainer } from "react-toastify";
 const ClientPage = () => {
     const [fullName, setFullName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [points, setPoints] = useState(0);
 
     const [currPage, setPage] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -29,6 +32,10 @@ const ClientPage = () => {
         booking_ref: null,
         booking_data: null
     });
+
+    const searchParams = useSearchParams();
+    const encrypted = searchParams.get('q');          
+    const queryParam = unhashQuery(encrypted) 
 
     return (
         <>
@@ -98,12 +105,15 @@ const ClientPage = () => {
                 {currPage === 1 && (
                     <ChooseService
                         phoneNumber={`+62${phoneNumber.replace(/-/g, "")}`}
+                        points={points}
+                        setPoints={setPoints}
                         handlePage={setPage}
                         handleService={setService}
                         handleTotalPrice={setTotalPrice}
                         handleTotalActualPrice={setTotalActualPrice}
                         handleDuration={setDuration}
                         toggleConfirm={toggleConfirm}
+                        queryParam={queryParam}
                     />
                 )}
                 {currPage === 1 && isConfirm && (
@@ -133,6 +143,7 @@ const ClientPage = () => {
                         duration={totalDuration}
                         setOrderId={setOrderId}
                         handlePage={setPage}
+                        queryParam={queryParam}
                     />
                 )}
                 {currPage === 4 && (

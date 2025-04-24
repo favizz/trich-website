@@ -1,6 +1,7 @@
 'use client'
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { hashQuery } from "@/utils/dateHash";
 
 const loyaltyRewards = [
     {
@@ -81,7 +82,11 @@ const LoyaltyRewards = ({
                       : "bg-gray-400 cursor-not-allowed"
                   }`}
                     disabled={points < reward.points || reward.status === "coming"}
-                    onClick={() => router.push(`/reservation?q=${reward.query}`)}
+                    onClick={() =>
+                      router.push(
+                        `/reservation?q=${hashQuery(reward.query)}`
+                      )
+                    }
                 >
                   Redeem
                 </button>
