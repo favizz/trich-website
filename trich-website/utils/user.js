@@ -1,6 +1,15 @@
 import { auth, db } from "@/config/firebase";
-import { collection, query, where, getDocs, deleteDoc, addDoc, updateDoc } from "firebase/firestore";
+import { collection, query, where, getDoc, getDocs, deleteDoc, addDoc, updateDoc, increment } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
+
+export const computePoint = (service) => {
+    let total = 0;
+    if (service.includes("The Trich Experience")) total += 15;
+    if (service.includes("The Cutting Edge")) total += 10;
+    if (["Trim & Treat", "Mask Off", "Creambath"].some(s => service.includes(s))) total += 5;
+    if (["Korean Perm", "Root Lift", "Down Perm"].some(s => service.includes(s))) total += 40;
+    return total;
+}
 
 export const getUserData = async () => {
     const currentUserID = auth?.currentUser?.uid;
@@ -126,56 +135,52 @@ export const getUserBookings = async (phoneNumber) => {
     return { success: true, error: "No bookings with the provided phone number." };
 };
 
-export const handleUser = async (name, phone_number) => {
-    if (!name || !phone_number) {
-        console.error("Missing required fields: name or phone_number");
-        return;
+export const handleUser = async (firstName, phoneNumber) => {
+    if (!firstName || !phoneNumber) {
+        throw new Error("Missing required fields: firstName or phoneNumber");
     }
 
-    if (!phone_number.startsWith("+62")) {
-        phone_number = `+62${phone_number.replace(/\D/g, "")}`;
-    }
+    let normalized = phoneNumber.replace(/\D+/g, "");
+    if (!normalized.startsWith("62")) normalized = "62" + normalized;
+    normalized = "+" + normalized;
 
-    try {
-        const userQuery = query(collection(db, "non_auth_user"), where("phone_number", "==", phone_number));
-        const querySnapshot = await getDocs(userQuery);
+    const usersRef = collection(db, "non_auth_user");
+    const q = query(usersRef, where("phone_number", "==", normalized));
+    const snap = await getDocs(q);
 
-        if (!querySnapshot.empty) {
-            const docRef = querySnapshot.docs[0].ref;
-            const existingData = querySnapshot.docs[0].data();
-            const newPoints = existingData.point + 1;
+    const delta = computePoint(service);
 
-            console.log("User found!");
-
-            await updateDoc(docRef, { point: newPoints });
-
-            console.log("Finish adding new points");
-            return {
-                success: true,
-                message: "User exists, point incremented.",
-                data: {
-                    first_name: existingData.name,
-                    phone_number: existingData.phone_number,
-                    points: newPoints,
-                }
-            };
-        } else {
-            console.log("No user!");
-            const newUserRef = await addDoc(collection(db, "non_auth_user"), { 
-                first_name: name, 
-                phone_number: phone_number,
-                point: 1 
-            });
-            
-            console.log("Success adding user!");
-            return {
-                success: true,
-                message: "New user added with 0 points.",
-                data: { name, phone_number, points: 0, id: newUserRef.id }
-            };
-        }
-    } catch (error) {
-        console.error("Error processing user:", error);
+    if (!snap.empty) {
+        const userDoc = snap.docs[0];
+        await updateDoc(userDoc.ref, { point: increment(delta) });
+        const updated = await getDoc(userDoc.ref);
+        const data = updated.data();
+        return {
+            success: true,
+            message: "Existing user: points updated.",
+            data: {
+            first_name: data.first_name,
+            phone_number: data.phone_number,
+            points: data.point
+            }
+        };
+    } else {
+        const newUser = {
+            first_name: firstName,
+            phone_number: normalized,
+            point: delta
+        };
+        const newRef = await addDoc(usersRef, newUser);
+        return {
+            success: true,
+            message: "New user created with initial points.",
+            data: {
+            id: newRef.id,
+            first_name: newUser.first_name,
+            phone_number: newUser.phone_number,
+            points: newUser.point
+            }
+        };
     }
 }
 
@@ -197,64 +202,56 @@ export async function removeExpiredBooking(orderId) {
     }
 }
 
-export async function handleUserPoints(orderId) {
+export const handleUserPoints = async (orderId) => {
     try {
-      // Query the active_booking collection for the document with the matching orderId
-      const orderQuery = query(
-        collection(db, "active_booking"),
-        where("order_id", "==", orderId)
-      );
-  
-      const querySnapshot = await getDocs(orderQuery);
-  
-      if (querySnapshot.empty) {
-        console.log("No matching order found for orderId:", orderId);
-        return;
-      }
-  
-      // Access the first (and only) document returned by the query
-      const docSnapshot = querySnapshot.docs[0];
-      const orderData = docSnapshot.data();
-      const service = orderData.service || "";
-      const userId = orderData.userId; // Ensure that this field exists to identify the user
-  
-      // Determine the deduction amount based on the service string
-      let deduction = 0;
-      if (service.includes("(Free Trich Experience)")) {
-        deduction += 100;
-      }
-      if (service.includes("(50% Small Service)")) {
-        deduction += 20;
-      }
-      if (service.includes("(Free Small Service)")) {
-        deduction += 50;
-      }
-  
-      // If there is a deduction and a valid userId, proceed to update the user's points
-      if (deduction > 0 && userId) {
-        // Reference the user's document in the non_auth_user collection
-        const userRef = doc(db, "non_auth_user", userId);
-  
-        // Retrieve the user's current points
-        const userDoc = await getDoc(userRef);
-        if (!userDoc.exists()) {
-          console.log("User document not found for userId:", userId);
-          return;
-        }
-        const currentPoints = userDoc.data().point || 0;
-  
-        // Calculate the new points by subtracting the deduction
-        const newPoints = currentPoints - deduction;
-  
-        // Update the document with the new points value
-        await updateDoc(userRef, { point: newPoints });
-        console.log(
-          `Deducted ${deduction} points from user with id ${userId}. New point total: ${newPoints}.`
+        const orderQuery = query(
+            collection(db, "active_booking"),
+            where("order_id", "==", orderId)
         );
-      } else {
-        console.log("No matching service string found or userId is missing.");
-      }
+    
+        const querySnapshot = await getDocs(orderQuery);
+    
+        if (querySnapshot.empty) {
+            console.log("No matching order found for orderId:", orderId);
+            return;
+        }
+
+        const docSnapshot = querySnapshot.docs[0];
+        const orderData = docSnapshot.data();
+        const service = orderData.service || "";
+        const userId = orderData.userId;
+    
+        let deduction = 0;
+        if (service.includes("(Free Trich Experience)")) {
+            deduction += 100;
+        }
+        if (service.includes("(50% Small Service)")) {
+            deduction += 20;
+        }
+        if (service.includes("(Free Small Service)")) {
+            deduction += 50;
+        }
+    
+        if (deduction > 0 && userId) {
+            const userRef = doc(db, "non_auth_user", userId);
+
+            const userDoc = await getDoc(userRef);
+            if (!userDoc.exists()) {
+                console.log("User document not found for userId:", userId);
+                return;
+            }
+            const currentPoints = userDoc.data().point || 0;
+
+            const newPoints = currentPoints - deduction;
+
+            await updateDoc(userRef, { point: newPoints });
+            console.log(
+                `Deducted ${deduction} points from user with id ${userId}. New point total: ${newPoints}.`
+            );
+        } else {
+            console.log("No matching service string found or userId is missing.");
+        }
     } catch (error) {
       console.error("Error updating user points:", error);
     }
-  }
+}
