@@ -251,8 +251,6 @@ const ChooseService = ({
         
             if (res.user) {
                 setPoints(res.user.point);
-            } else {
-                setError("No user found!");
             }
         })();
       }, []);

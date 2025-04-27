@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { unhashQuery } from "@/utils/dateHash";
 
+import Header from "./Header";
 import ClientForm from "./ClientForm";
 import ClientPendings from "./ClientPendings";
 import ChooseService from "./ChooseService";
@@ -40,51 +41,9 @@ const ClientPage = () => {
     return (
         <>
             <section className="flex flex-col bg-white rounded-lg py-8 my-32 shadow-xl tracking-wider">
-
-
-                <h2 className="font-extrabold mb-6 lg:text-xl xl:text-2xl text-center">
-                    RESERVATION
-                </h2>
-                <div className="w-full h-[1px] bg-gray-600 "></div>
-                <div
-                    className="flex flex-row items-center justify-center space-x-3 md:space-x-8 px-3 lg:px-6 py-4 "
-                >
-                    <div
-                        onClick={() => setPage(0)}
-                        className={`${
-                            currPage == 0
-                                ? "bg-green1 text-white"
-                                : "text-black"
-                        } rounded-[30px] font-extrabold text-xs lg:text-xs xl:text-sm 2xl:text-base px-6 py-2 `}
-                    >
-                        Info
-                    </div>
-                    <p>&gt;</p>
-                    <div
-                        onClick={() => phoneNumber !== "" && fullName !== "" && setPage(1)}
-                        className={`${
-                            currPage == 1
-                                ? "bg-green1 text-white"
-                                : "text-black"
-                        } ${phoneNumber === ""? "opacity-50 cursor-not-allowed" : ""} rounded-[30px] font-extrabold text-xs lg:text-xs xl:text-sm 2xl:text-base px-6 py-2`}
-                    >
-                        Service
-                    </div>
-                    <p>&gt;</p>
-                    <div
-                        onClick={() => pickedService ? setPage(2) : null}
-                        className={`${
-                            currPage == 2
-                                ? "bg-green1 text-white"
-                                : "text-black"
-                        } ${!pickedService ? "opacity-50 cursor-not-allowed" : ""} 
-                        rounded-[30px] font-extrabold text-xs lg:text-xs xl:text-sm 2xl:text-base px-6 py-2`}
-                    >
-                        Time
-                    </div>
-
-                </div>
-                <div className="w-full h-[0.5px] mb-2 bg-gray-600 "></div>
+                <Header
+                    currPage={currPage}
+                />
                 {currPage === 0 && (
                     <ClientForm
                         fullName={fullName}

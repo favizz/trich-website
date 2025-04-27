@@ -1,7 +1,5 @@
 export const handleRewardMatch = (promo_query, obj_query, obj_price, points) => {
-    console.log("Jumlah points: ", points);
     if (!promo_query) {
-        console.log("Gaada promo query");
         return obj_price;
     }
     if (obj_query === null || obj_price === null) {
@@ -18,7 +16,6 @@ export const handleRewardMatch = (promo_query, obj_query, obj_price, points) => 
         obj_query === promo_query &&
         points >= 20
     ) {
-        console.log("Dapet potongan 50%!");
         return obj_price / 2;
     }
     else if (
@@ -29,7 +26,6 @@ export const handleRewardMatch = (promo_query, obj_query, obj_price, points) => 
         return 0;
     }
     else {
-        console.log("Gadapet apapun!");
         return obj_price;
     }
 }
