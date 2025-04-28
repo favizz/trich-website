@@ -330,7 +330,7 @@ const ChooseService = ({
                                                     service.actual_price,
                                                     points
                                                 ) ?
-                                                " (Promo!)"
+                                                " (Discount!)"
                                                 :
                                                 ""
                                             }

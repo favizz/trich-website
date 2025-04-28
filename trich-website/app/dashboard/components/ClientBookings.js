@@ -41,7 +41,7 @@ const ClientBookings = ({ phoneNumber, bookingData }) => {
               time={booking.time}
               status={booking.status}
               isPaid={booking.is_paid}
-              amount={booking.amount ? booking.amount : "42.500"}
+              amount={booking.amount}
               notes={booking.notes}
             />
           ))}

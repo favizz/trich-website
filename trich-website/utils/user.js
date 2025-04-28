@@ -1,13 +1,30 @@
 import { auth, db } from "@/config/firebase";
-import { collection, query, where, getDoc, getDocs, deleteDoc, addDoc, updateDoc, increment } from "firebase/firestore";
+import { collection, query, where, 
+         getDoc, getDocs, deleteDoc, 
+         addDoc, updateDoc, increment,
+         arrayUnion } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 
 export const computePoint = (service) => {
     let total = 0;
-    if (service.includes("The Trich Experience")) total += 15;
-    if (service.includes("The Cutting Edge")) total += 10;
-    if (["Trim & Treat", "Mask Off", "Creambath"].some(s => service.includes(s))) total += 5;
-    if (["Korean Perm", "Root Lift", "Down Perm"].some(s => service.includes(s))) total += 40;
+    if (service.includes("The Trich Experience")) {
+        if (service.includes("(Free Trich Experience)"))    total -= 100;
+        else                                                total += 15;
+    }
+    if (["Trim & Treat", "Mask Off", "Creambath"].
+        some(s => service.includes(s))) 
+        {
+        
+        if (service.includes("(50% Small Service)"))        total -= 20;
+        else if (service.includes("(Free Small Service)"))  total -= 50;
+        else                                                total += 5;
+        
+    }
+    if (service.includes("The Cutting Edge"))               total += 10;
+    if (["Korean Perm", "Root Lift", "Down Perm",
+        "Permification", "Colors", "Smooth Operator"
+    ].some(s => service.includes(s)))                       total += 40;
+    
     return total;
 }
 
@@ -135,7 +152,7 @@ export const getUserBookings = async (phoneNumber) => {
     return { success: true, error: "No bookings with the provided phone number." };
 };
 
-export const handleUser = async (firstName, phoneNumber) => {
+export const handleUser = async (firstName, phoneNumber, service) => {
     if (!firstName || !phoneNumber) {
         throw new Error("Missing required fields: firstName or phoneNumber");
     }
@@ -144,41 +161,64 @@ export const handleUser = async (firstName, phoneNumber) => {
     if (!normalized.startsWith("62")) normalized = "62" + normalized;
     normalized = "+" + normalized;
 
+    const delta = computePoint(service);
+    const bookingData = {
+        service: service.service,
+        order_id: service.order.id,
+        amount: service.amount,
+        date: service.date,
+        time: service.time,
+        status: service.status,
+        point: delta >= 0 ? delta : 0
+    }
+
     const usersRef = collection(db, "non_auth_user");
     const q = query(usersRef, where("phone_number", "==", normalized));
     const snap = await getDocs(q);
 
-    const delta = computePoint(service);
-
     if (!snap.empty) {
         const userDoc = snap.docs[0];
-        await updateDoc(userDoc.ref, { point: increment(delta) });
+        const data = userDoc.data();
+        const updates = { point: increment(delta) };
+
+        if (Array.isArray(data.bookings)) {
+            updates.bookings = arrayUnion(bookingData);
+        } else {
+            updates.bookings = [bookingData];
+        }
+
+        await updateDoc(userDoc.ref, updates);
         const updated = await getDoc(userDoc.ref);
-        const data = updated.data();
+        const newData = updated.data();
+
         return {
             success: true,
-            message: "Existing user: points updated.",
+            message: "Existing user: points and bookings updated.",
             data: {
-            first_name: data.first_name,
-            phone_number: data.phone_number,
-            points: data.point
+                first_name:   newData.first_name,
+                phone_number: newData.phone_number,
+                points:       newData.point,
+                bookings:     newData.bookings
             }
         };
     } else {
         const newUser = {
-            first_name: firstName,
+            first_name:   firstName,
             phone_number: normalized,
-            point: delta
+            point:        delta,
+            bookings:     [bookingData]
         };
         const newRef = await addDoc(usersRef, newUser);
+
         return {
             success: true,
-            message: "New user created with initial points.",
+            message: "New user created with initial points and booking.",
             data: {
-            id: newRef.id,
-            first_name: newUser.first_name,
-            phone_number: newUser.phone_number,
-            points: newUser.point
+                id:           newRef.id,
+                first_name:   newUser.first_name,
+                phone_number: newUser.phone_number,
+                points:       newUser.point,
+                bookings:     newUser.bookings
             }
         };
     }
@@ -199,59 +239,5 @@ export async function removeExpiredBooking(orderId) {
     } catch (error) {
         console.error("Error removing expired booking:", error);
         throw new Error("Internal Server Error");
-    }
-}
-
-export const handleUserPoints = async (orderId) => {
-    try {
-        const orderQuery = query(
-            collection(db, "active_booking"),
-            where("order_id", "==", orderId)
-        );
-    
-        const querySnapshot = await getDocs(orderQuery);
-    
-        if (querySnapshot.empty) {
-            console.log("No matching order found for orderId:", orderId);
-            return;
-        }
-
-        const docSnapshot = querySnapshot.docs[0];
-        const orderData = docSnapshot.data();
-        const service = orderData.service || "";
-        const userId = orderData.userId;
-    
-        let deduction = 0;
-        if (service.includes("(Free Trich Experience)")) {
-            deduction += 100;
-        }
-        if (service.includes("(50% Small Service)")) {
-            deduction += 20;
-        }
-        if (service.includes("(Free Small Service)")) {
-            deduction += 50;
-        }
-    
-        if (deduction > 0 && userId) {
-            const userRef = doc(db, "non_auth_user", userId);
-
-            const userDoc = await getDoc(userRef);
-            if (!userDoc.exists()) {
-                console.log("User document not found for userId:", userId);
-                return;
-            }
-            const currentPoints = userDoc.data().point || 0;
-
-            const newPoints = currentPoints - deduction;
-
-            await updateDoc(userRef, { point: newPoints });
-            console.log(
-                `Deducted ${deduction} points from user with id ${userId}. New point total: ${newPoints}.`
-            );
-        } else {
-            console.log("No matching service string found or userId is missing.");
-        }
-    } catch (error) {
-      console.error("Error updating user points:", error);
     }
 }

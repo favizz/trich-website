@@ -57,8 +57,9 @@ export default async function handler(req, res) {
 
         try {
             const booking = await updatePaidBooking(orderId);
-            const { first_name, phone_number, service } = booking;
-            await handleUser(first_name, phone_number, service);
+            console.log(booking);
+            const { name, phone_number, service } = booking;
+            await handleUser(name, phone_number, service);
             return res.status(200).json({
                 success: true,
                 message: "Booking paid and user points updated."
@@ -70,7 +71,6 @@ export default async function handler(req, res) {
             console.error("payment-notification error:", err);
             return sendResponse(res, 500, "Internal Server Error");
         }
-  
     } catch (err) {
         console.error("Error in payment-notification-handler:", err);
         return sendResponse(res, 500, "Internal Server Error");
