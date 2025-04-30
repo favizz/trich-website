@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getPendingBookings } from "@/utils/user";
 import { getUser } from "@/utils/non-auth-user";
 import PhoneForm from "../components/forms/PhoneForm";
+import Spinner from "../components/Spinner";
 
 const ClientForm = ({
     fullName,
@@ -14,10 +15,14 @@ const ClientForm = ({
 }) => {
     const [isValid, toggleValid] = useState(true);
     const [isLoading, toggleLoading] = useState(false);
+    const [isNameLoading, setIsNameLoading] = useState(false);
     const [showNameInput, toggleNameInput] = useState(false);
     const [error, setError] = useState(null);
 
     const handleGetName = async (phone_number) => {
+        if (!phone_number) return;
+        
+        setIsNameLoading(true);
         try {
             const { success, user, error } = await getUser(`+62${phone_number.replace(/\D/g, "")}`);
             if (success && user) {
@@ -32,7 +37,19 @@ const ClientForm = ({
             console.error("Error in handleGetName:", err);
         }
         toggleNameInput(true);
+        setIsNameLoading(false);
     };
+
+    // Reset loading state and trigger name fetch when phone number changes
+    useEffect(() => {
+        if (phoneNumber) {
+            // Debounce to avoid too many requests while typing
+            const timeoutId = setTimeout(() => {
+                handleGetName(phoneNumber);
+            }, 500);
+            return () => clearTimeout(timeoutId);
+        }
+    }, [phoneNumber]);
 
     const handleBookingCheck = async () => {
         toggleLoading(true);
@@ -75,18 +92,24 @@ const ClientForm = ({
             />
 
             {/* Full Name (Nickname) Field */}
-            <div className={`${showNameInput ? "flex " : "invisible" } flex-col space-y-1`}>
+            <div className={`${showNameInput ? "flex" : "invisible"} flex-col space-y-1`}>
                 <div className="flex justify-between items-center">
                     <label className="text-gray-700 font-medium">Full Name</label>
                 </div>
                 <div className="relative">
-                    <input
-                        type="text"
-                        placeholder="Full Name"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none pr-10"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                    />
+                    {isNameLoading ? (
+                        <div className="flex justify-center items-center py-2">
+                            <Spinner isLoading={isNameLoading} />
+                        </div>
+                    ) : (
+                        <input
+                            type="text"
+                            placeholder="Full Name"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none pr-10"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                        />
+                    )}
                 </div>
             </div>
 
@@ -104,7 +127,6 @@ const ClientForm = ({
                 </button>
             </div>
         </form>
-
     );
 };
 
