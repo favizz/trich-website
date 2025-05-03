@@ -1,8 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { createBooking } from "@/utils/user";
+import { handleUser, createBooking } from "@/utils/user";
 import { getOperationalTimes } from "@/utils/operationalTimes";
+import { updatePaidBooking } from "@/utils/booking";
 
 import { formatPrice } from "./ChooseService";
 
@@ -67,6 +68,8 @@ const ConfirmPay = ({
             price,
             orderid,
         );
+
+        return orderid;
     };
 
     const handleCheckout = async (e) => {
@@ -97,12 +100,14 @@ const ConfirmPay = ({
             return;
         }
 
-        await handleBooking();
+        const tempOrderId = await handleBooking();
     
         if (actualPrice > 0) {
-          handlePage(4);
+            handlePage(4);
         } else {
-          router.replace("payment-status");
+            const booking = await updatePaidBooking(tempOrderId);
+            await handleUser(booking);
+            router.replace("payment-status");
         }
     };
 

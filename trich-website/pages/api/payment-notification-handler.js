@@ -57,9 +57,7 @@ export default async function handler(req, res) {
 
         try {
             const booking = await updatePaidBooking(orderId);
-            console.log(booking);
-            const { name, phone_number, service } = booking;
-            await handleUser(name, phone_number, service);
+            await handleUser(booking);
             return res.status(200).json({
                 success: true,
                 message: "Booking paid and user points updated."

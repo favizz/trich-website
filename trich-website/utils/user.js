@@ -152,23 +152,23 @@ export const getUserBookings = async (phoneNumber) => {
     return { success: true, error: "No bookings with the provided phone number." };
 };
 
-export const handleUser = async (firstName, phoneNumber, service) => {
-    if (!firstName || !phoneNumber) {
-        throw new Error("Missing required fields: firstName or phoneNumber");
+export const handleUser = async (booking) => {
+    if (!booking) {
+        throw new Error("Missing required fields: booking data");
     }
 
-    let normalized = phoneNumber.replace(/\D+/g, "");
+    let normalized = booking.phone_number.replace(/\D+/g, "");
     if (!normalized.startsWith("62")) normalized = "62" + normalized;
     normalized = "+" + normalized;
 
-    const delta = computePoint(service);
+    const delta = computePoint(booking.service);
     const bookingData = {
-        service: service.service,
-        order_id: service.order.id,
-        amount: service.amount,
-        date: service.date,
-        time: service.time,
-        status: service.status,
+        service: booking.service,
+        order_id: booking.order_id,
+        amount: booking.amount,
+        date: booking.date,
+        time: booking.time,
+        status: booking.status,
         point: delta >= 0 ? delta : 0
     }
 
@@ -203,7 +203,7 @@ export const handleUser = async (firstName, phoneNumber, service) => {
         };
     } else {
         const newUser = {
-            first_name:   firstName,
+            first_name:   booking.name,
             phone_number: normalized,
             point:        delta,
             bookings:     [bookingData]
