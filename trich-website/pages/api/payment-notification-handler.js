@@ -1,11 +1,4 @@
-import { db } from "@/config/firebase";
-import {
-    collection,
-    query,
-    where,
-    getDocs,
-    updateDoc,
-} from "firebase/firestore";
+import { updatePaidBooking } from "@/utils/booking";
 import { handleUser, removeExpiredBooking } from "@/utils/user";
 
 const statusMessages = {
@@ -35,50 +28,50 @@ const sendResponse = (res, statusCode, message) => {
 
 export default async function handler(req, res) {
     if (req.method !== "POST") {
-        return sendResponse(res, 405, "Method not allowed");
+      return sendResponse(res, 405, "Method not allowed");
     }
-
+  
     try {
-        const { status_code: statusCode, order_id: orderId, transaction_status: transactionStatus } = req.body;
-
+        const {
+            status_code: statusCode,
+            order_id: orderId,
+            transaction_status: transactionStatus
+        } = req.body;
+    
         if (!orderId || !transactionStatus) {
             return sendResponse(res, 400, "Missing required fields: order_id or transaction_status");
         }
-
+    
         if (statusCode !== "200") {
-            return sendResponse(res, statusCode, statusMessages[statusCode]);
+            return sendResponse(res, +statusCode, statusMessages[statusCode] || "Unknown status");
         }
 
         if (transactionStatus === "expire") {
-            removeExpiredBooking(orderId);
+            await removeExpiredBooking(orderId);
+            return sendResponse(res, 200, "Booking expired and removed");
         }
 
         if (transactionStatus !== "settlement") {
-            return sendResponse(res, 201, "Transaction not settled yet.");
+            return sendResponse(res, 202, "Transaction not settled yet.");
         }
 
-        // Update Booking status
-        const orderQuery = query(collection(db, "active_booking"), where("order_id", "==", orderId));
-        const querySnapshot = await getDocs(orderQuery);
-
-        if (querySnapshot.empty) {
-            console.log(`No matching order found for order_id: ${orderId}`);
-            return sendResponse(res, 404, "Order not found");
+        try {
+            const booking = await updatePaidBooking(orderId);
+            await handleUser(booking);
+            return res.status(200).json({
+                success: true,
+                message: "Booking paid and user points updated."
+            });
+        } catch (err) {
+            if (err.message.startsWith("Order not found")) {
+                return sendResponse(res, 404, "Order not found");
+            }
+            console.error("payment-notification error:", err);
+            return sendResponse(res, 500, "Internal Server Error");
         }
-
-        const docRef = querySnapshot.docs[0].ref;
-        await updateDoc(docRef, { status: 2 });
-        console.log(`Booking status updated successfully for order_id: ${orderId}`);
-
-        // Add new / update user
-        const bookingData = querySnapshot.docs[0].data();
-        console.log(bookingData.name, bookingData.phone_number);
-        handleUser(bookingData.name, bookingData.phone_number);
-
-        return res.status(200).json({ success: true, message: "Booking status updated successfully." });
-
-    } catch (error) {
-        console.error("Error updating booking status:", error);
+    } catch (err) {
+        console.error("Error in payment-notification-handler:", err);
         return sendResponse(res, 500, "Internal Server Error");
     }
 }
+  

@@ -49,7 +49,7 @@ const ClientCard = ({ name, email, handlePaging, currPage }) => {
             sizes="(max-width: 1024px) 25px"
             alt="stats-icon"
           />
-          <p className="font-semibold lg:text-sm">Stats</p>
+          <p className="font-semibold lg:text-sm">Points</p>
         </div>
         <div
           onClick={() => handlePaging(2)}

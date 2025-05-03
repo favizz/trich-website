@@ -45,7 +45,18 @@ export const getBooking = async () => {
     }
 };
 
-export const updateBooking = async () => {};
+export const updatePaidBooking = async (orderId) => {
+    const q = query(
+      collection(db, "active_booking"),
+      where("order_id", "==", orderId)
+    );
+    const snap = await getDocs(q);
+    if (snap.empty) throw new Error(`Order not found: ${orderId}`);
+    const docRef = snap.docs[0].ref;
+    const data = snap.docs[0].data();
+    await updateDoc(docRef, { status: 2 });
+    return data;
+};
 
 export const deleteBooking = async (booking_id) => {
     try {

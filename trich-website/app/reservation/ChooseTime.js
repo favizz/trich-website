@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { db } from "@/config/firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { getConfigQuotas } from "@/utils/quota";
+import { getOperationalTimes } from "@/utils/operationalTimes";
 
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
@@ -11,38 +9,6 @@ import Spinner from "../components/Spinner";
 
 import LeftArrow from "@/public/reservationAssets/leftarrow.svg";
 import RightArrow from "@/public/reservationAssets/rightarrow.svg";
-
-function generateOperationalTimes(date) {
-    const allOperationalTimes = [];
-    const startHour = 10;
-    const endHour = 20;
-
-    const currentTime = new Date();
-
-    if (date.getDate() == currentTime.getDate()) {
-        let currentHour = currentTime.getHours();
-
-        if (currentTime.getMinutes() > 0) {
-            currentHour += 1;
-        }
-
-        currentHour = Math.max(currentHour, startHour);
-
-        for (let hour = currentHour; hour <= endHour; hour++) {
-            const timeString = `${hour.toString().padStart(2, "0")}:00`;
-            allOperationalTimes.push(timeString);
-        }
-    } else {
-        for (let hour = startHour; hour <= endHour; hour++) {
-            const timeString = `${hour.toString().padStart(2, "0")}:00`;
-            allOperationalTimes.push(timeString);
-        }
-    }
-
-    return allOperationalTimes;
-}
-
-const allOperationalTimes = [];
 
 const ChooseTime = ({
     pickedService,
@@ -54,7 +20,7 @@ const ChooseTime = ({
     const [pickedDate, pickDate] = useState("");
     const [pickedTime, pickTime] = useState(0);
     const [operationalTimes, setOperationalTimes] =
-        useState(allOperationalTimes);
+        useState([]);
     const [isDateValid, toggleDateValid] = useState(true);
     const [isMorningEdge, setMorningEdge] = useState(false);
 
@@ -77,94 +43,23 @@ const ChooseTime = ({
     }, [pickedDate, pickedTime, operationalTimes, isMorningEdge]);
 
     const handleDateChange = async (dateInput) => {
+        toggleLoading(true);
         pickDate(dateInput);
-        const inputDate = dateInput;
-        const currentDate = new Date();
+        console.log(dateInput);
+        const { times, formattedDate, isMorningEdge, error } =
+            await getOperationalTimes(dateInput, pickedService);
+        
+        console.log(formattedDate);
 
-        if (new Date(inputDate.toDateString()) < new Date(currentDate.toDateString())) {
+        if (error === "DATE_IN_PAST") {
             toggleDateValid(false);
             return;
         }
-
         toggleDateValid(true);
-
-        const options = {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        };
-
-        const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
-            inputDate,
-        );
         handleDate(formattedDate);
-
-        let availableTimes = generateOperationalTimes(inputDate);
-
-        if (inputDate.getDay() === 5) {
-            availableTimes = availableTimes.filter((time) => time !== "12:00");
-        }
-
-        if (pickedService && pickedService.includes("Morning Edge")) {
-            if (
-                inputDate.getDay() === 6 ||
-                inputDate.getDay() === 0 ||
-                inputDate.getDay() === 5
-            ) {
-                setOperationalTimes([]);
-                availableTimes = [];
-                setMorningEdge(true);
-            }
-            availableTimes = availableTimes.filter((time) => time <= "12:00");
-        } else setMorningEdge(false);
-
-        try {
-            const q = query(
-                collection(db, "active_booking"),
-                where("date", "==", formattedDate)
-            );
-            const rq = query(
-                collection(db, "reservation_quota"),
-                where("date", "==", formattedDate)
-            );
-        
-            toggleLoading(true);
-        
-            const { quota_base, quota_wd } = (await getConfigQuotas()) || {};
-            
-            const querySnapshot = await getDocs(q);
-            const reservationQuerySnapshot = await getDocs(rq);
-            const bookings = querySnapshot.docs.map((doc) => doc.data());
-            const quotas = reservationQuerySnapshot.docs.map((doc) => doc.data());
-        
-            let specificQuota = null;
-            if (quotas && quotas.length > 0) {
-                specificQuota = quotas[0].quota;
-            }
-
-            const day = inputDate.getDay();
-            let defaultQuota = (day > 0 && day < 5) ? quota_wd : quota_base;
-  
-            const quotaToUse = specificQuota !== null ? specificQuota : defaultQuota;
-            
-            const fullyBookedTimes = bookings.reduce((acc, booking) => {
-                acc[booking.time] = (acc[booking.time] || 0) + 1;
-                return acc;
-            }, {});
-            
-            availableTimes = availableTimes.filter((time) => {
-                const bookedCount = fullyBookedTimes[time] || 0;
-                return bookedCount < quotaToUse;
-            });
-            
-            setOperationalTimes(availableTimes);
-            toggleLoading(false);
-        } catch (error) {
-            console.error(error);
-        }
-        
-        pickTime(0);
+        setMorningEdge(isMorningEdge);
+        setOperationalTimes(times);
+        toggleLoading(false);
     };
 
     const handleContinue = () => {
@@ -192,7 +87,7 @@ const ChooseTime = ({
                 className="my-4 rounded-md border"
             />
             <div className="w-full h-[0.5px] bg-gray-600 mb-8"></div>
-            <div className="space-y-4 flex flex-col items-center">
+            <div className={`space-y-4 ${pickedDate === "" ? 'invisible' : 'flex flex-col'} items-center`}>
                 <p className="font-bold text-center">
                     <span className="text-[#545454]">
                         Selected Date:
@@ -217,7 +112,8 @@ const ChooseTime = ({
                 )}
 
                 {isLoading ? (
-                    <Spinner isLoading={isLoading} />
+                    isDateValid && 
+                        <Spinner isLoading={isLoading} />
                 ) : (
                     operationalTimes.length !== 0 && isDateValid && (
                         <>

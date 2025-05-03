@@ -1,5 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { handleRewardMatch } from "./Services";
 import { logError } from "@/utils/booking";
 
 import LoadingSpinner from "../components/animation/Spinner";
@@ -8,7 +10,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId }) => {
-    const [loading, setLoading] = useState(false);;
+    const searchParams = useSearchParams();
+    const queryParam = searchParams.get("q");
+
+    const [loading, setLoading] = useState(false);
 
     const [reqBody, setReqBody] = useState(null);
     const [paymentStatus, setPaymentStatus] = useState(0);
@@ -23,7 +28,7 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
             },
             item_details: services.map((service, idx) => ({
                 name: service.trim(),
-                price: services.length > 1 ? totalPrice / 2 : totalPrice,
+                price: totalPrice / pickedService.length,
                 quantity: 1,
                 id: `TS-${idx}`,
             })),

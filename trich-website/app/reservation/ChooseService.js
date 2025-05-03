@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 
 import { Services, handleRewardMatch } from "./Services";
 import { getMembership } from "@/utils/user";
+import { getUser } from "@/utils/non-auth-user";
 
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
@@ -58,16 +58,16 @@ export const handleActualPromoPricing = (service, actualPrice) => {
 
 const ChooseService = ({
     phoneNumber,
+    points,
+    setPoints,
     handlePage,
     handleService,
     handleTotalPrice,
     handleTotalActualPrice,
     handleDuration,
     toggleConfirm,
+    queryParam
 }) => {
-    const searchParams = useSearchParams();
-    const queryParam = searchParams.get("q");
-    
     const [chosenServices, setChosenServices] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalActualPrice, setTotalActualPrice] = useState(0);
@@ -92,7 +92,6 @@ const ChooseService = ({
                     ),
                 ];
             } else if (service === "Korean Perm") {
-                // When adding "Korean Perm", remove "Root Lift" and "Down Perm"
                 updatedServices = [
                     "Korean Perm",
                     ...chosenServices.filter(
@@ -155,7 +154,8 @@ const ChooseService = ({
                 const tempTotalPrice = handleRewardMatch(
                     queryParam, 
                     serviceObj.query_code,
-                    serviceObj.nominal
+                    serviceObj.nominal,
+                    points
                 )
                 return total + tempTotalPrice;
             }, 0),
@@ -187,7 +187,8 @@ const ChooseService = ({
                 const tempActualPrice = handleRewardMatch(
                     queryParam,
                     serviceObj.query_code,
-                    serviceObj.actual_price
+                    serviceObj.actual_price,
+                    points
                 )
                 return total + tempActualPrice;
             }, 0),
@@ -236,6 +237,23 @@ const ChooseService = ({
         toggleConfirm(true);
         handlePage(2);
     };
+
+    useEffect(() => {
+        (async () => {
+            toggleLoading(true);
+            const res = await getUser(phoneNumber);
+            toggleLoading(false);
+        
+            if (!res.success) {
+                console.error(res.error);
+                return;
+            }
+        
+            if (res.user) {
+                setPoints(res.user.point);
+            }
+        })();
+      }, []);
 
     useEffect(() => {
         toggleLoading(true);
@@ -300,7 +318,8 @@ const ChooseService = ({
                                                         handleRewardMatch(
                                                             queryParam,
                                                             service.query_code,
-                                                            service.actual_price
+                                                            service.actual_price,
+                                                            points
                                                         )
                                                     )
                                             }
@@ -308,9 +327,10 @@ const ChooseService = ({
                                                 service.actual_price !== handleRewardMatch(
                                                     queryParam,
                                                     service.query_code,
-                                                    service.actual_price
+                                                    service.actual_price,
+                                                    points
                                                 ) ?
-                                                " (Promo!)"
+                                                " (Discount!)"
                                                 :
                                                 ""
                                             }

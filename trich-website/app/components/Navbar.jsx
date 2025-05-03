@@ -38,24 +38,12 @@ const paths = [
 
 const Navbar = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const [isUserOpen, setUserOpen] = useState(false);
-    const { session, signOut } = useAuth();
-    const router = useRouter();
+    // const [isUserOpen, setUserOpen] = useState(false);
     const pathname = usePathname();
 
-    const SignOut = async () => {
-        await signOut(auth)
-            .then((response) => {
-                router.push("/sign-in");
-            })
-            .catch((e) => {
-                console.log("Logout Catch ", e.message);
-            });
-    };
-
-    const toggleDropdown = () => {
-        setUserOpen(!isUserOpen);
-    };
+    // const toggleDropdown = () => {
+    //     setUserOpen(!isUserOpen);
+    // };
 
     const navColor = () => {
         return (
@@ -129,67 +117,53 @@ const Navbar = () => {
                 </ul>
 
                 {/* "Book Now" button and user icon on the right */}
-                {session ? (
-                    <div className="flex items-center space-x-4">
-                        <Link
-                            href="/reservation"
-                            className={`flex ${pathname?.split("/")[1] == "reservation" ? "hidden" : ""}`}
-                        >
-                            <button className="transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 bg-orange1 font-bold text-white md:font-normal text-[14px] lg:text-[12px] xl:text-base py-2 px-6 rounded">
-                                Book Now
-                            </button>
-                        </Link>
-                        <div className="relative">
-                            <div
-                                className="cursor-pointer"
-                                onClick={toggleDropdown}
-                            >
-                                <Image
-                                    src={UserIcon}
-                                    width={40}
-                                    alt="user-Image"
-                                />
-                            </div>
-
-                            {isUserOpen && (
-                                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                    <div
-                                        className="py-1"
-                                        role="menu"
-                                        aria-orientation="vertical"
-                                        aria-labelledby="options-menu"
-                                    >
-                                        <Link href="/dashboard">
-                                            <p
-                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                role="menuitem"
-                                                onClick={toggleDropdown}
-                                            >
-                                                Profile
-                                            </p>
-                                        </Link>
-                                        <p
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                            role="menuitem"
-                                            onClick={() => {
-                                                toggleDropdown();
-                                                SignOut();
-                                            }}
-                                        >
-                                            Sign Out
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                ) : (
+                <div className="flex items-center space-x-4">
                     <Link href="/reservation">
                         <button className="bg-orange1 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded">
                             Book
                         </button>
                     </Link>
-                )}
+                    <Link href="/dashboard">
+                        <Image
+                            src={UserIcon}
+                            width={40}
+                            alt="user-Image"
+                        />
+                    </Link>
+                    {/* <div className="relative">
+                        <div
+                            className="cursor-pointer"
+                            onClick={toggleDropdown}
+                        >
+                            <Image
+                                src={UserIcon}
+                                width={40}
+                                alt="user-Image"
+                            />
+                        </div>
+
+                        {isUserOpen && (
+                            <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                <div
+                                    className="py-1"
+                                    role="menu"
+                                    aria-orientation="vertical"
+                                    aria-labelledby="options-menu"
+                                >
+                                    <Link href="/dashboard">
+                                        <p
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            role="menuitem"
+                                            onClick={toggleDropdown}
+                                        >
+                                            Profile
+                                        </p>
+                                    </Link>
+                                </div>
+                            </div>
+                        )}
+                    </div> */}
+                </div>
             </div>
 
             {/* Sidebar Component */}

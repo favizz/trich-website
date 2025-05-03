@@ -1,6 +1,32 @@
 import { auth, db } from "@/config/firebase";
-import { collection, query, where, getDocs, deleteDoc, addDoc, updateDoc } from "firebase/firestore";
+import { collection, query, where, 
+         getDoc, getDocs, deleteDoc, 
+         addDoc, updateDoc, increment,
+         arrayUnion } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
+
+export const computePoint = (service) => {
+    let total = 0;
+    if (service.includes("The Trich Experience")) {
+        if (service.includes("(Free Trich Experience)"))    total -= 100;
+        else                                                total += 15;
+    }
+    if (["Trim & Treat", "Mask Off", "Creambath"].
+        some(s => service.includes(s))) 
+        {
+        
+        if (service.includes("(50% Small Service)"))        total -= 20;
+        else if (service.includes("(Free Small Service)"))  total -= 50;
+        else                                                total += 5;
+        
+    }
+    if (service.includes("The Cutting Edge"))               total += 10;
+    if (["Korean Perm", "Root Lift", "Down Perm",
+        "Permification", "Colors", "Smooth Operator"
+    ].some(s => service.includes(s)))                       total += 40;
+    
+    return total;
+}
 
 export const getUserData = async () => {
     const currentUserID = auth?.currentUser?.uid;
@@ -126,56 +152,75 @@ export const getUserBookings = async (phoneNumber) => {
     return { success: true, error: "No bookings with the provided phone number." };
 };
 
-export const handleUser = async (name, phone_number) => {
-    if (!name || !phone_number) {
-        console.error("Missing required fields: name or phone_number");
-        return;
+export const handleUser = async (booking) => {
+    if (!booking) {
+        throw new Error("Missing required fields: booking data");
     }
 
-    if (!phone_number.startsWith("+62")) {
-        phone_number = `+62${phone_number.replace(/\D/g, "")}`;
+    let normalized = booking.phone_number.replace(/\D+/g, "");
+    if (!normalized.startsWith("62")) normalized = "62" + normalized;
+    normalized = "+" + normalized;
+
+    const delta = computePoint(booking.service);
+    const bookingData = {
+        service: booking.service,
+        order_id: booking.order_id,
+        amount: booking.amount,
+        date: booking.date,
+        time: booking.time,
+        status: booking.status,
+        point: delta >= 0 ? delta : 0
     }
 
-    try {
-        const userQuery = query(collection(db, "non_auth_user"), where("phone_number", "==", phone_number));
-        const querySnapshot = await getDocs(userQuery);
+    const usersRef = collection(db, "non_auth_user");
+    const q = query(usersRef, where("phone_number", "==", normalized));
+    const snap = await getDocs(q);
 
-        if (!querySnapshot.empty) {
-            const docRef = querySnapshot.docs[0].ref;
-            const existingData = querySnapshot.docs[0].data();
-            const newPoints = existingData.point + 1;
+    if (!snap.empty) {
+        const userDoc = snap.docs[0];
+        const data = userDoc.data();
+        const updates = { point: increment(delta) };
 
-            console.log("User found!");
-
-            await updateDoc(docRef, { point: newPoints });
-
-            console.log("Finish adding new points");
-            return {
-                success: true,
-                message: "User exists, point incremented.",
-                data: {
-                    first_name: existingData.name,
-                    phone_number: existingData.phone_number,
-                    points: newPoints,
-                }
-            };
+        if (Array.isArray(data.bookings)) {
+            updates.bookings = arrayUnion(bookingData);
         } else {
-            console.log("No user!");
-            const newUserRef = await addDoc(collection(db, "non_auth_user"), { 
-                first_name: name, 
-                phone_number: phone_number,
-                point: 1 
-            });
-            
-            console.log("Success adding user!");
-            return {
-                success: true,
-                message: "New user added with 0 points.",
-                data: { name, phone_number, points: 0, id: newUserRef.id }
-            };
+            updates.bookings = [bookingData];
         }
-    } catch (error) {
-        console.error("Error processing user:", error);
+
+        await updateDoc(userDoc.ref, updates);
+        const updated = await getDoc(userDoc.ref);
+        const newData = updated.data();
+
+        return {
+            success: true,
+            message: "Existing user: points and bookings updated.",
+            data: {
+                first_name:   newData.first_name,
+                phone_number: newData.phone_number,
+                points:       newData.point,
+                bookings:     newData.bookings
+            }
+        };
+    } else {
+        const newUser = {
+            first_name:   booking.name,
+            phone_number: normalized,
+            point:        delta,
+            bookings:     [bookingData]
+        };
+        const newRef = await addDoc(usersRef, newUser);
+
+        return {
+            success: true,
+            message: "New user created with initial points and booking.",
+            data: {
+                id:           newRef.id,
+                first_name:   newUser.first_name,
+                phone_number: newUser.phone_number,
+                points:       newUser.point,
+                bookings:     newUser.bookings
+            }
+        };
     }
 }
 

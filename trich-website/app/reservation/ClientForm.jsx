@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { getPendingBookings } from "@/utils/user";
 import { getUser } from "@/utils/non-auth-user";
+// import { getCookie, setCookie } from "cookies-next";
+import { getCredentials, setCredentials } from "@/utils/cookieManager";
 import PhoneForm from "../components/forms/PhoneForm";
 import Spinner from "../components/Spinner";
 
@@ -18,6 +20,22 @@ const ClientForm = ({
     const [isNameLoading, setIsNameLoading] = useState(false);
     const [showNameInput, toggleNameInput] = useState(false);
     const [error, setError] = useState(null);
+
+    const getStoredCredentials = () => {
+        const credential = getCredentials();
+
+        if (credential) {
+            setFullName(credential.full_name);
+            setPhoneNumber(credential.phone_number);
+            toggleNameInput(true);
+        } else {
+            console.log("No Cookie!");
+        }
+    }
+
+    const storeCredentials = () => {
+        setCredentials(phoneNumber, fullName);
+    }
 
     const handleGetName = async (phone_number) => {
         if (!phone_number) return;
@@ -74,8 +92,13 @@ const ClientForm = ({
             setError("Please Fill Correctly!");
             return;
         }
+        storeCredentials();
         handleBookingCheck();
     };
+
+    useEffect(() => {
+        getStoredCredentials();
+    }, [])
 
     return (
         <form onSubmit={handleContinue} className="w-full px-4 lg:px-6 xl:px-10 space-y-4 mt-14 mb-14">
@@ -120,8 +143,9 @@ const ClientForm = ({
             <div className="flex flex-col items-center justify-center space-y-2">
                 <button
                     type="submit"
-                    className="w-full text-center border hover:border-orange1 hover:bg-white bg-orange1 hover:text-orange1 text-white font-bold px-12 py-2 rounded"
-                    disabled={isLoading}
+                    className={`${fullName === "" || !isValid ? "bg-gray-400" : "bg-orange1 hover:text-orange1 hover:border-orange1 hover:bg-white"} 
+                    w-full text-center border text-white font-bold px-12 py-2 rounded`}
+                    disabled={isLoading || fullName === "" || phoneNumber === ""}
                 >
                     {isLoading ? "Loading..." : "Continue"}
                 </button>

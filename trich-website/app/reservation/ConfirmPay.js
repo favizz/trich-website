@@ -1,9 +1,14 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { createBooking } from "@/utils/user";
+import { handleUser, createBooking } from "@/utils/user";
+import { getOperationalTimes } from "@/utils/operationalTimes";
+import { updatePaidBooking } from "@/utils/booking";
 
 import { formatPrice } from "./ChooseService";
+
+import ToastManager from "../components/toaster";
+import { ToastContainer } from "react-toastify";
 
 export function generateCode() {
     const number = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
@@ -26,6 +31,7 @@ const ConfirmPay = ({
     duration,
     setOrderId,
     handlePage,
+    queryParam
 }) => {
     const router = useRouter();
 
@@ -35,29 +41,73 @@ const ConfirmPay = ({
         const orderid = generateCode();
         setOrderId(orderid);
 
+        let serviceName = service;
+        if (serviceName.includes("The Trich Experience")) {
+            if (queryParam === "H3e5LrxK2R") { // free the trich experience
+                serviceName = `${serviceName} (Free Trich Experience)`; 
+            } 
+        }
+        if (serviceName.includes("Trim & Treat") || 
+            serviceName.includes("Mask Off") || 
+            serviceName.includes("Creambath")
+        ) {
+            if (queryParam === "w62jI0Zzbk") { // 50% small service
+                serviceName = `${serviceName} (50% Small Service)`; 
+            } 
+            else if (queryParam === "5J8qcc6ahu") { // free small service
+                serviceName = `${serviceName} (Free Small Service)`; 
+            }
+        }
+
         await createBooking(
             user.first_name,
             user.phone_number,
-            service,
+            serviceName,
             time,
             date,
             price,
             orderid,
         );
 
+        return orderid;
     };
 
     const handleCheckout = async (e) => {
         e.preventDefault();
-        if (agreePolicy) {
-            await handleBooking();
-            if (actualPrice > 0) {
-                handlePage(4);
-            } else {
-                router.replace("payment-status");
-            }
-        } else {
+
+        const dateObj = new Date(Date.parse(date));
+        if (isNaN(dateObj)) {
+          alert("Invalid date format.");
+          return;
+        }
+
+        const { error, times } = await getOperationalTimes(dateObj, service);
+    
+        if (error === "DATE_IN_PAST") {
+            ToastManager.notify(
+                "Please pick today or a future date.",
+                "error",
+            );
             return;
+        }
+    
+        if (!times.includes(time)) {
+            ToastManager.notify(
+                "Sorry, that slot was just taken. Please go back to choose another time.",
+                "error",
+            );
+            handlePage(2);
+            return;
+        }
+
+        const tempOrderId = await handleBooking();
+    
+        if (actualPrice > 0) {
+            handlePage(4);
+        } else {
+            const booking = await updatePaidBooking(tempOrderId);
+            await handleUser(booking);
+            router.replace("payment-status");
         }
     };
 
@@ -92,9 +142,9 @@ const ConfirmPay = ({
                     Please arrive 10 minutes before appointment
                 </p>
                 <p className="max-w-[80vw] lg:max-w-[50vw] xl:max-w-[40vw]  2xl:max-w-[30vw] text-[11px]  lg:text-xs ">
-                    Cancellations are accepted; however, the down payment is
-                    non-refundable. We appreciate your understanding and
-                    cooperation.
+                    Cancellations are accepted, but the down payment is non-refundable. 
+                    Rescheduling is allowed up to 3 hours before your appointment. 
+                    We truly appreciate your understanding and cooperation.
                 </p>
                 <div className="flex flex-row items-center space-x-2">
                     <input
@@ -112,6 +162,10 @@ const ConfirmPay = ({
                 >
                     Checkout
                 </div>
+            </div>
+
+            <div className="w-0 h-0">
+                <ToastContainer />
             </div>
         </div>
     );

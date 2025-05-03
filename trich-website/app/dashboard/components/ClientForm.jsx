@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getCredentials } from "@/utils/cookieManager";
 import PhoneForm from "@/app/components/forms/PhoneForm";
 import Loading from "@/app/components/Loading";
 
@@ -10,7 +11,17 @@ const ClientForm = ({
 }) => {
     const [tempPhoneNumber, setTempPhoneNumber] = useState("");
     const [isValid, toggleValid] = useState(true);
-    
+
+    const getStoredCredentials = () => {
+        const credential = getCredentials();
+
+        if (credential) {
+            setTempPhoneNumber(credential.phone_number);
+        } else {
+            console.log("No Cookie!");
+        }
+    }
+
     const handleContinue = (e) => {
         e.preventDefault();
         
@@ -20,10 +31,19 @@ const ClientForm = ({
         return;
     };
     
-    if (isLoading) {
-        return <Loading duration={500} />;
-    }
-    
+    useEffect(() => {
+        if (isLoading) {
+            return <Loading duration={500} />;
+        }
+        if (tempPhoneNumber === "") {
+            getStoredCredentials();
+        }
+    }, [isLoading]);
+
+    useEffect(() => {
+        getStoredCredentials();
+    }, []);
+
     return (
         <form onSubmit={handleContinue} className="bg-white px-8 py-8 rounded-lg w-full lg:px-6 xl:px-10 space-y-4 mt-14 mb-14">
             {/* Phone Number Field */}
