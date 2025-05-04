@@ -28,7 +28,7 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
             },
             item_details: services.map((service, idx) => ({
                 name: service.trim(),
-                price: totalPrice / pickedService.length,
+                price: totalPrice / services.length,
                 quantity: 1,
                 id: `TS-${idx}`,
             })),
