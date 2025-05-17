@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { getUser } from "@/utils/non-auth-user";
 import { getUserBookings } from "@/utils/user";
 import { setCredentials } from "@/utils/cookieManager";
+import { getMembership } from "@/utils/user";
 
 import ClientCard from "./ClientCard";
 // import ClientStats from "./ClientStats";
@@ -21,6 +22,7 @@ const ClientPage = () => {
     const [currPage, setPage] = useState(0);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [user, setUser] = useState(null);
+    const [isMember, setMember] = useState(false);
     const [bookingData, setBookingData] = useState([]);
     const [isLoading, toggleLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -61,6 +63,21 @@ const ClientPage = () => {
         toggleLoading(false);
     }
 
+    const handleMembershipPricing = async () => {
+        const response = await getMembership(`+62${phoneNumber.replace(/\D/g, "")}`);
+
+        if (response.error) {
+            console.error(response.error);
+            return;
+        }
+
+        if (response.membership) {
+            setMember(true);
+        }
+        toggleLoading(false);
+        return;
+    };
+
     useEffect(() => {
         setError(null);
         if (phoneNumber === "") {
@@ -69,6 +86,7 @@ const ClientPage = () => {
 
         handleUser();
         handleBooking();
+        handleMembershipPricing();
         
         toggleLoading(false);
     }, [phoneNumber]);
@@ -89,6 +107,8 @@ const ClientPage = () => {
                 {currPage !== 0 && 
                     <ClientCard
                         name={user.first_name}
+                        phoneNumber={phoneNumber}
+                        isMember={isMember}
                         handlePaging={setPage}
                         currPage={currPage}
                     />  
