@@ -35,8 +35,9 @@ const ClientPage = () => {
     });
 
     const searchParams = useSearchParams();
-    const encrypted = searchParams.get('q');          
-    const queryParam = unhashQuery(encrypted) 
+    const encrypted = searchParams.get('q');
+
+    const queryParam = encrypted ? unhashQuery(encrypted) : null;
 
     return (
         <>
