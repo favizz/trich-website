@@ -38,7 +38,6 @@ const ClientPage = () => {
     const encrypted = searchParams.get('q');
 
     const queryParam = encrypted ? unhashQuery(encrypted) : null;
-
     return (
         <>
             <section className="flex flex-col bg-white rounded-lg py-8 my-32 shadow-xl tracking-wider">

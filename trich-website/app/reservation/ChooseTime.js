@@ -38,6 +38,7 @@ const ChooseTime = ({
         }
     };
 
+
     useEffect(() => {
         handleTime(operationalTimes[pickedTime] || null);
     }, [pickedDate, pickedTime, operationalTimes, isMorningEdge]);
@@ -45,22 +46,35 @@ const ChooseTime = ({
     const handleDateChange = async (dateInput) => {
         toggleLoading(true);
         pickDate(dateInput);
-        console.log(dateInput);
-        const { times, formattedDate, isMorningEdge, error } =
-            await getOperationalTimes(dateInput, pickedService);
-        
-        console.log(formattedDate);
+        // const { times, formattedDate, isMorningEdge, error } =
+        //     await getOperationalTimes(dateInput, pickedService);
 
-        if (error === "DATE_IN_PAST") {
+        const pad = (n) => String(n).padStart(2, "0");
+        const iso_date = `${dateInput.getFullYear()}-${pad(dateInput.getMonth() + 1)}-${pad(dateInput.getDate())}`;
+        const url = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/available?date=${encodeURIComponent(iso_date)}&service=${encodeURIComponent(pickedService)}`;
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await response.json();
+        if (data.error) {
             toggleDateValid(false);
             return;
         }
+        const times = data.times;
+        const formattedDate = data.formattedDate;
+        const isMorningEdge = data.morningEdge;
+        
         toggleDateValid(true);
         handleDate(formattedDate);
         setMorningEdge(isMorningEdge);
         setOperationalTimes(times);
         toggleLoading(false);
     };
+
 
     const handleContinue = () => {
         if (!date) {
