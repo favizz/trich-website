@@ -47,33 +47,53 @@ export const getUserData = async () => {
 };
 
 export const createBooking = async (
-        fullName,
-        userPhone,
-        pickedService,
-        pickedTime,
-        pickedDate,
-        totalPrice,
-        order_id,
-    ) => {
-        const userBookingRef = collection(db, "active_booking");
-        try {
-            await addDoc(userBookingRef, {
-                create_booking_date: new Date(),
-                name: fullName,
-                phone_number: userPhone,
-                service: pickedService,
-                amount: totalPrice,
-                date: pickedDate,
-                time: pickedTime,
-                status: 1,
-                booking_id: uuidv4(),
-                order_id: order_id.toString(),
-            }).catch((e) => {
-                console.error(e);
-            });
-        } catch (error) {
-            console.error(error);
+    fullName,
+    userPhone,
+    pickedService,
+    pickedTime,
+    pickedDate,
+    totalPrice,
+    order_id
+) => {
+    const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations`;
+
+    const [hour, minute] = pickedTime.split(":").map(Number);
+    const timeString = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00`;
+
+
+    const parsedDate = new Date("Saturday, July 26, 2025");
+    const isoDate = parsedDate.toISOString();
+
+    const body = {
+        orderId: order_id.toString(),
+        name: fullName,
+        phoneNumber: userPhone,
+        service: pickedService,
+        date: isoDate,
+        time: timeString,
+        amount: totalPrice,
+        status: 1
+    };
+
+    try {
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to create booking");
         }
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error("Booking creation failed:", error);
+        throw error;
+    }
 };
 
 export const getPendingBookings = async (phoneNumber) => {

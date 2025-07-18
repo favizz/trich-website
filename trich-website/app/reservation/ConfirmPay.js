@@ -77,8 +77,8 @@ const ConfirmPay = ({
 
         const dateObj = new Date(Date.parse(date));
         if (isNaN(dateObj)) {
-          alert("Invalid date format.");
-          return;
+            alert("Invalid date format.");
+            return;
         }
 
         const { error, times } = await getOperationalTimes(dateObj, service);
