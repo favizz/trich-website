@@ -42,10 +42,19 @@ const ClientForm = ({
         
         setIsNameLoading(true);
         try {
-            const { success, user, error } = await getUser(`+62${phone_number.replace(/\D/g, "")}`);
-            if (success && user) {
-                setFullName(user.first_name);
-                console.log(user.first_name);
+            const cleaned_phone_number = `+62${phone_number.replace(/\D/g, "")}`;
+            const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/profile/${cleaned_phone_number}`;
+            const response = await fetch(endpoint, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const user = await response.json();
+            if (user) {
+                setFullName(user.name);
+                console.log(user.name);
             } else {
                 console.log("User not found or error occurred:");
                 setFullName("");
