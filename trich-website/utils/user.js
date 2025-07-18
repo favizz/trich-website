@@ -60,8 +60,7 @@ export const createBooking = async (
     const [hour, minute] = pickedTime.split(":").map(Number);
     const timeString = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00`;
 
-
-    const parsedDate = new Date("Saturday, July 26, 2025");
+    const parsedDate = new Date(pickedDate);
     const isoDate = parsedDate.toISOString();
 
     const body = {
@@ -97,43 +96,41 @@ export const createBooking = async (
 };
 
 export const getPendingBookings = async (phoneNumber) => {
+    const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/${phoneNumber}`;
     try {
-        const bookingsQuery = query(
-            collection(db, "active_booking"),
-            where("phone_number", "==", phoneNumber),
-            where("status", "==", 1)
-        );
+        const response = await fetch(endpoint, {
+            method: "GET"
+            }
+        )
+        const reservations = await response.json();
+        const pendingReservation = reservations.find(r => r.status === 1);
 
-        const querySnapshot = await getDocs(bookingsQuery);
-
-        if (querySnapshot.empty) {
-            return null;
-        }
-
-        const doc = querySnapshot.docs[0];
-
-        return { docRef: doc.ref, data: doc.data() };
+        return pendingReservation || null;
     } catch (error) {
         console.error("Error fetching pending bookings:", error);
         return null;
     }
 };
 
-export const deleteBooking = async (docRef) => {
+export const deleteBooking = async (reservationId) => {
+    const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/${reservationId}`;
+
     try {
-        if (!docRef) {
-            console.error("Invalid document reference");
-            return false;
+        const response = await fetch(endpoint, {
+            method: "DELETE"
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to delete booking (status ${response.status})`);
         }
 
-        await deleteDoc(docRef);
-        console.log("Booking successfully deleted.");
         return true;
     } catch (error) {
         console.error("Error deleting booking:", error);
         return false;
     }
 };
+
 
 export const getMembership = async (phoneNumber) => {
     if (!phoneNumber.startsWith("+62")) {

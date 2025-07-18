@@ -83,10 +83,7 @@ const ClientForm = ({
         const pendingBooking = await getPendingBookings(`+62${phoneNumber.replace(/\D/g, "")}`);
 
         if (pendingBooking) {
-            setPendingBooking({
-                booking_ref: pendingBooking.docRef,
-                booking_data: pendingBooking.data
-            });
+            setPendingBooking(pendingBooking);
             setPage(5);
         } else {
             setPage(1);

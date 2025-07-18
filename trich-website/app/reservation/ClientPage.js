@@ -29,10 +29,7 @@ const ClientPage = () => {
     const [totalDuration, setDuration] = useState(null);
     const [orderid, setOrderId] = useState(0);
 
-    const [pendingBooking, setPendingBooking] = useState({
-        booking_ref: null,
-        booking_data: null
-    });
+    const [pendingBooking, setPendingBooking] = useState({});
 
     const searchParams = useSearchParams();
     const encrypted = searchParams.get('q');
@@ -109,9 +106,9 @@ const ClientPage = () => {
                     <Checkout
                         first_name={fullName}
                         phone_number={`+62${phoneNumber.replace(/-/g, "")}`}
-                        pickedService={pickedService || pendingBooking.booking_data.service}
-                        totalPrice={totalPrice || pendingBooking.booking_data.amount}
-                        orderId={orderid ||  pendingBooking.booking_data.order_id}
+                        pickedService={pickedService || pendingBooking.service}
+                        totalPrice={totalPrice || pendingBooking.amount}
+                        orderId={orderid ||  pendingBooking.order_id}
                     />
                 )}
                 <div className="w-0 h-0">
