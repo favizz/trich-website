@@ -48,7 +48,8 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
             if (!reqBody) return;
 
             try {
-                const response = await fetch("/api/dokuHandler", {
+                const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/admin/payment/token`;
+                const response = await fetch(endpoint, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -62,7 +63,7 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
 
                 const data = await response.json();
 
-                window.snap.pay(data.token, {
+                window.snap.pay(data.transactionToken, {
                     onSuccess: function (result) {
                         setPaymentStatus(1);
                     },
@@ -91,7 +92,7 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
         //         ? "https://app.sandbox.midtrans.com/snap/snap.js"   // Sandbox
         //         : "https://app.midtrans.com/snap/snap.js";          // Production
 
-        const snapScript = "https://app.midtrans.com/snap/snap.js";
+        const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js";
 
         const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY;
         const script = document.createElement("script");

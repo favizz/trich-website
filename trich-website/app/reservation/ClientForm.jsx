@@ -51,7 +51,8 @@ const ClientForm = ({
                 }
             });
 
-            const user = await response.json();
+            const user = await response;
+            console.log(user);
             if (user) {
                 setFullName(user.name);
                 console.log(user.name);

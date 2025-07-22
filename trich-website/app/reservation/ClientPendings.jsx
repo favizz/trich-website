@@ -11,31 +11,35 @@ const ClientPendings = ({ pendingBooking, setPendingBooking, setPage }) => {
             return;
         }
 
-        await deleteBooking(pendingBooking.reservationId);
+        try {
+            await deleteBooking(pendingBooking.reservationId);
 
-        if (modalType === "delete") {
-            setPage(1);
-        } else if (modalType === "pay") {
-            const tempOrderId = generateCode();
-            setPendingBooking(prevState => ({
-                ...prevState,
-                orderId: tempOrderId
-            }));
+            if (modalType === "delete") {
+                setPage(1);
+            } else if (modalType === "pay") {
+                const tempOrderId = generateCode();
 
-            console.log(pendingBooking);
+                setPendingBooking(prevState => ({
+                    ...prevState,
+                    orderId: tempOrderId
+                }));
 
-            await createBooking(
-                pendingBooking.name,
-                pendingBooking.phoneNumber,
-                pendingBooking.service,
-                pendingBooking.time,
-                pendingBooking.date,
-                pendingBooking.amount,
-                tempOrderId
-            )
-            
-            setPage(4);
+                await createBooking(
+                    pendingBooking.name,
+                    pendingBooking.phoneNumber,
+                    pendingBooking.service,
+                    pendingBooking.time,
+                    pendingBooking.date,
+                    pendingBooking.amount,
+                    tempOrderId
+                )
+                
+                setPage(4);
+            }
+        } catch (error) {
+            console.error(error);
         }
+
         setModalType(null);
     };
 

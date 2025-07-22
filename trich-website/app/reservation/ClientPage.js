@@ -108,7 +108,7 @@ const ClientPage = () => {
                         phone_number={`+62${phoneNumber.replace(/-/g, "")}`}
                         pickedService={pickedService || pendingBooking.service}
                         totalPrice={totalPrice || pendingBooking.amount}
-                        orderId={orderid ||  pendingBooking.order_id}
+                        orderId={orderid ||  pendingBooking.orderId}
                     />
                 )}
                 <div className="w-0 h-0">
