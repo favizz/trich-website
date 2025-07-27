@@ -138,7 +138,6 @@ const ClientPage = () => {
                         />
                         <ClientBookings 
                             phoneNumber={user.phone_number} 
-                            bookingData={bookingData}
                         />
                     </div>
                 )}

@@ -1,21 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { db } from "@/config/firebase";
-import {
-    collection,
-    query,
-    getDocs,
-    addDoc,
-    where,
-    updateDoc,
-    doc,
-    deleteDoc,
-} from "firebase/firestore";
-import { v4 as uuidv4 } from "uuid";
-
-import { getBooking, deleteBooking } from "@/utils/booking";
-import { getQuota, addQuota, deleteQuota } from "@/utils/quota";
 
 import { formatDate } from "@/hooks/time";
 
@@ -55,44 +40,23 @@ const AdminDashboard = () => {
 
     const fetchUserByName = async (firstName) => {
         try {
-            const usersRef = collection(db, "user");
-
-            // Convert firstName to uppercase before querying
-            const upperCaseFirstName = firstName.toUpperCase();
-
-            const q = query(
-                usersRef,
-                where("first_name", "==", upperCaseFirstName),
-            );
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.empty) {
-                throw new Error("User not found");
-            } else {
-                const userData = querySnapshot.docs[0].data();
-                console.log("User found:", userData);
-                setSearchedUser(userData); // Set the user data in state
-            }
+            const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/profile/${firstName}`);
+            if (!res.ok) throw new Error("User not found");
+            const json = await res.json();
+            setSearchedUser(json);
         } catch (error) {
             console.error("Failed to fetch user:", error);
+            ToastManager.notify("User tidak ditemukan", "error");
         }
     };
 
     const fetchActiveBookings = async () => {
-        try {
-            const response = await getBooking();
-
-            if (response.success) {
-                setBookings(response.data);
-            }
-        } catch (error) {
-            console.error("Failed to fetch bookings on client:", error);
-        }
-        return;
+        const res = await fetch(`${SPRING_URL}/website/reservations`);
+        const result = await res.json();
+        setBookings(result);
     };
 
     const MoveFinishedBookings = async () => {
-        const bookingRef = collection(db, "past_non_auth_booking");
         try {
             // Filter hanya bookings dengan status 3
             const finishedBookings = bookings.filter(
@@ -101,20 +65,6 @@ const AdminDashboard = () => {
 
             for (const tempBooking of finishedBookings) {
                 try {
-                    // Tambahkan ke koleksi 'past_non_auth_booking'
-                    await addDoc(bookingRef, {
-                        phone_number: tempBooking.phone_number,
-                        service: tempBooking.service,
-                        order_id: tempBooking.order_id,
-                        booking_id: tempBooking.booking_id,
-                        status: 3,
-                        amount: tempBooking.amount,
-                        name: tempBooking.name,
-                        date: tempBooking.date,
-                        time: tempBooking.time,
-                        create_booking_date: tempBooking.create_booking_date,
-                    });
-
                     // Hapus dari koleksi 'active_booking'
                     await deleteActiveBooking(tempBooking.booking_id);
 
@@ -130,100 +80,34 @@ const AdminDashboard = () => {
     };
 
     const updateBookingStatusByBookingId = async (bookingId, newStatus) => {
-        try {
-            // if (newStatus == 3) {
-            //     try {
-            //         const bookingRef = collection(db, "past_non_auth_booking");
-            //         const tempBooking = bookings.find(
-            //             (docs) => docs.booking_id == bookingId,
-            //         );
-
-            //         await addDoc(bookingRef, {
-            //             phone_number: tempBooking.phone_number,
-            //             service: tempBooking.service,
-            //             order_id: tempBooking.order_id,
-            //             booking_id: tempBooking.booking_id,
-            //             status: 3,
-            //             amount: tempBooking.amount,
-            //             name: tempBooking.name,
-            //             date: tempBooking.date,
-            //             time: tempBooking.time,
-            //             create_booking_date: tempBooking.create_booking_date,
-            //         });
-
-            //         await deleteActiveBooking(bookingId);
-            //     } catch (error) {
-            //         console.log(error);
-            //         ToastManager.notify("Status gagal diupdate", "error");
-            //     }
-            // }
-            const bookingCollectionRef = collection(db, "active_booking");
-            const q = query(
-                bookingCollectionRef,
-                where("booking_id", "==", bookingId),
-            );
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.empty) {
-                throw new Error(
-                    `No booking found with booking_id: ${bookingId}`,
-                );
-            }
-
-            const bookingDoc = querySnapshot.docs[0];
-            const bookingRef = doc(db, "active_booking", bookingDoc.id);
-
-            await updateDoc(bookingRef, { status: newStatus });
-            ToastManager.notify(
-                "Booking ID: " +
-                    bookingId +
-                    " diupdate menjadi " +
-                    newStatus +
-                    "!",
-                "success",
-            );
-            console.log("Booking status updated successfully");
-        } catch (error) {
-            ToastManager.notify("Status gagal diubah!", "error");
-            console.error("Failed to update booking:", error);
-        }
+        const res = await fetch(`${SPRING_URL}/website/reservations`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ reservationId: bookingId, status: newStatus }),
+        });
+        if (!res.ok) throw new Error();
+        ToastManager.notify(`Booking ID: ${bookingId} updated to ${newStatus}!`);
     };
 
-    const deleteActiveBooking = async (booking_id) => {
+    const deleteActiveBooking = async (bookingId) => {
         try {
-            const response = await deleteBooking(booking_id);
-
-            if (response.success) {
-                setBookings(
-                    bookings.filter(
-                        (booking) => booking.booking_id !== booking_id,
-                    ),
-                );
-
-                ToastManager.notify(
-                    "Booking ID: " + booking_id + " berhasil dihapus!",
-                    "success",
-                );
-            } else {
-                ToastManager.notify(
-                    "Booking ID: " + booking_id + " gagal dihapus!",
-                    "error",
-                );
-            }
-        } catch (error) {
+            const res = await fetch(`${SPRING_URL}/website/reservations/${bookingId}`, {
+                method: "DELETE",
+            });
+            if (!res.ok) throw new Error();
+            setBookings(bookings.filter(b => b.booking_id !== bookingId));
+            ToastManager.notify("Booking ID: " + bookingId + " berhasil dihapus!", "success");
+        } catch (err) {
             ToastManager.notify("Booking gagal dihapus!", "error");
-            console.log(booking_id);
-            console.error("Error deleting booking:", error);
+            console.error(err);
         }
     };
 
     const fetchQuotas = async () => {
         try {
-            const response = await getQuota();
-
-            if (response.success) {
-                setQuotas(response.data);
-            }
+            const res = await fetch(`${SPRING_URL}/website/quota`);
+            const json = await res.json();
+            setQuotas(json);
         } catch (error) {
             console.error("Failed to fetch quotas: ", error);
         }
@@ -231,18 +115,14 @@ const AdminDashboard = () => {
 
     const handleAddQuota = async () => {
         try {
-            const reservationQuotaRef = collection(db, "reservation_quota");
-
-            const quotaData = {
-                quota_id: uuidv4(),
-                date: quotaDate,
-                quota: parseInt(quotaQuota),
-            };
-
-            await addDoc(reservationQuotaRef, quotaData);
-
-            ToastManager.notify("Quota berhasil ditambahkan", "success");
-            console.log("Quota added successfully");
+            const res = await fetch(`${SPRING_URL}/website/quota/custom`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ date: quotaDate, quota: parseInt(quotaQuota) }),
+            });
+            if (!res.ok) throw new Error();
+            ToastManager.notify("Quota added!");
+            fetchQuotas();
         } catch (error) {
             ToastManager.notify("Quota gagal ditambahkan", "error");
             console.error("Failed to add quota: ", error);
@@ -251,26 +131,12 @@ const AdminDashboard = () => {
 
     const handleDeleteQuota = async (quotaId) => {
         try {
-            const quotaCollectionRef = collection(db, "reservation_quota");
-            const q = query(
-                quotaCollectionRef,
-                where("quota_id", "==", quotaId),
-            );
-            const querySnapshot = await getDocs(q);
-            if (querySnapshot.empty) {
-                throw new Error(`No quota found`);
-            }
-            const quotaDoc = querySnapshot.docs[0];
-            const quotaRef = doc(db, "reservation_quota", quotaDoc.id);
-
-            await deleteDoc(quotaRef);
-
-            setQuotas(quotas.filter((quota) => quota.quota_id !== quotaId));
-
-            ToastManager.notify(
-                "Quota ID: " + quotaId + " berhasil dihapus!",
-                "success",
-            );
+            const res = await fetch(`${SPRING_URL}/website/quota/${quotaId}`, {
+                method: "DELETE",
+            });
+            if (!res.ok) throw new Error();
+            setQuotas(quotas.filter(q => q.quota_id !== quotaId));
+            ToastManager.notify("Quota deleted!");
         } catch (error) {
             ToastManager.notify("Quota gagal dihapus!", "error");
             console.error("Failed to delete quota: ", error);
