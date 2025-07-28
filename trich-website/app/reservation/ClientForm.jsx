@@ -39,45 +39,29 @@ const ClientForm = ({
 
     const handleGetName = async (phone_number) => {
         if (!phone_number) return;
-        
+
         setIsNameLoading(true);
         try {
-            const cleaned_phone_number = `+62${phone_number.replace(/\D/g, "")}`;
-            const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/profile/${cleaned_phone_number}`;
-            const response = await fetch(endpoint, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
+            const cleaned = `+62${phone_number.replace(/\D/g, "")}`;
+            const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/profile/${cleaned}`;
+            const response = await fetch(endpoint, { method: "GET" });
 
-            const user = await response;
-            console.log(user);
-            if (user) {
-                setFullName(user.name);
-                console.log(user.name);
-            } else {
-                console.log("User not found or error occurred:");
+            if (!response.ok) {
+                console.error("Server error:", response.status, response.statusText);
                 setFullName("");
+            } else {
+                const data = await response.json();
+                console.log("payload:", data);
+                setFullName(data.name ?? "");
             }
         } catch (err) {
-            setFullName("");
             console.error("Error in handleGetName:", err);
+            setFullName("");
+        } finally {
+            toggleNameInput(true);
+            setIsNameLoading(false);
         }
-        toggleNameInput(true);
-        setIsNameLoading(false);
     };
-
-    // Reset loading state and trigger name fetch when phone number changes
-    useEffect(() => {
-        if (phoneNumber) {
-            // Debounce to avoid too many requests while typing
-            const timeoutId = setTimeout(() => {
-                handleGetName(phoneNumber);
-            }, 500);
-            return () => clearTimeout(timeoutId);
-        }
-    }, [phoneNumber]);
 
     const handleBookingCheck = async () => {
         toggleLoading(true);
