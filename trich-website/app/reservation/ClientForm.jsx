@@ -43,7 +43,7 @@ const ClientForm = ({
         setIsNameLoading(true);
         try {
             const cleaned = `+62${phone_number.replace(/\D/g, "")}`;
-            const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/profile/${cleaned}`;
+            const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/user/${cleaned}`;
             const response = await fetch(endpoint, { method: "GET" });
 
             if (!response.ok) {

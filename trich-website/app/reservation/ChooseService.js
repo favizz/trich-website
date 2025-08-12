@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 
 import { Services, handleRewardMatch } from "./Services";
+import { API_ROUTES } from "@/constants/routes";
 import { getMembership } from "@/utils/user";
 import { getUser } from "@/utils/non-auth-user";
 
@@ -28,34 +29,6 @@ export const formatPrice = (number) => {
     return formattedNumber;
 };
 
-export const promoPricing = (name) => {
-    const nowDate = new Date();
-    if (name === "The Cutting Edge") {
-        if (nowDate.getDay() >= 1 && nowDate.getDay() <= 4) {
-            if (nowDate.getHours() >= 10 && nowDate.getHours() < 13) {
-                return true;
-            }
-        }
-    }
-    return false;
-};
-
-export const handleActualPromoPricing = (service, actualPrice) => {
-    const nowDate = new Date();
-    // GANTI KALO UDH PERLU
-    if (service === "sbdjsdbs") {
-        if (nowDate.getHours() >= 10 && nowDate.getHours() < 13) {
-            return (
-                <>
-                    <span className="line-through">85.000</span>
-                    <span> - 65.000</span>
-                </>
-            );
-        }
-    }
-    return formatPrice(actualPrice);
-};
-
 const ChooseService = ({
     phoneNumber,
     points,
@@ -68,6 +41,7 @@ const ChooseService = ({
     toggleConfirm,
     queryParam
 }) => {
+    const [services, setServices] = useState([]);
     const [chosenServices, setChosenServices] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalActualPrice, setTotalActualPrice] = useState(0);
@@ -75,150 +49,84 @@ const ChooseService = ({
     const [isMember, setMember] = useState(false);
     const [isLoading, toggleLoading] = useState(false);
 
-    const handleServiceChange = (service) => {
-        let updatedServices;
+    const byName = (name) => (s) => s.name === name;
+    const hasName = (arr, name) => arr.some(byName(name));
+    const withoutNames = (arr, names) => arr.filter(s => !names.includes(s.name));
+    const withoutName = (arr, name) => arr.filter(s => s.name !== name);
 
-        if (chosenServices.includes(service)) {
-            updatedServices = chosenServices.filter((s) => s !== service);
-        } else {
-            if (service === "The Trich Experience") {
-                updatedServices = [
-                    "The Trich Experience",
-                    ...chosenServices.filter(
-                        (s) =>
-                            s !== "The Cutting Edge" &&
-                            s !== "Trim & Treat" &&
-                            s !== "Mask Off",
-                    ),
-                ];
-            } else if (service === "Korean Perm") {
-                updatedServices = [
-                    "Korean Perm",
-                    ...chosenServices.filter(
-                        (s) => s !== "Root Lift" && s !== "Down Perm",
-                    ),
-                ];
-            } else if (
-                service === "The Cutting Edge" ||
-                service === "Trim & Treat" ||
-                service === "Mask Off"
-            ) {
-                if (chosenServices.includes("The Trich Experience")) {
-                    ToastManager.notify(
-                        "Trich Experience already includes these services",
-                        "error",
-                    );
-                    return;
-                }
-                updatedServices = [...chosenServices, service];
-            } else if (service === "Root Lift" || service === "Down Perm") {
-                // Check if "Korean Perm" is already selected
-                if (chosenServices.includes("Korean Perm")) {
-                    ToastManager.notify(
-                        "Korean Perm already includes these services",
-                        "error",
-                    );
-                    return;
-                }
-                updatedServices = [...chosenServices, service];
-            } else {
-                updatedServices = [...chosenServices, service];
-            }
+    const TRICH = "The Trich Experience";
+    const TRICH_CHILDREN = ["The Cutting Edge", "Trim & Treat", "Mask Off"];
+    const KOREAN = "Korean Perm";
+    const KOREAN_CHILDREN = ["Root Lift", "Down Perm"];
+
+    function computeNextChosen(prev, service) {
+        // Toggle off if already selected
+        if (prev.some(s => s.name === service.name)) {
+            return withoutName(prev, service.name);
         }
 
-        setChosenServices(updatedServices);
+        // Selecting a bundle removes its children
+        if (service.name === TRICH) {
+            return [service, ...withoutNames(prev, TRICH_CHILDREN)];
+        }
+        if (service.name === KOREAN) {
+            return [service, ...withoutNames(prev, KOREAN_CHILDREN)];
+        }
 
-        setTotalPrice(
-            updatedServices.reduce((total, serviceName) => {
-                let serviceObj = Services.find((s) => s.name === serviceName);
+        // Selecting a child when bundle active → block
+        if (TRICH_CHILDREN.includes(service.name) && hasName(prev, TRICH)) {
+            ToastManager.notify("Trich Experience already includes these services", "error");
+            return prev;
+        }
+        if (KOREAN_CHILDREN.includes(service.name) && hasName(prev, KOREAN)) {
+            ToastManager.notify("Korean Perm already includes these services", "error");
+            return prev;
+        }
 
-                if (!serviceObj) {
-                    Services.forEach((parentService) => {
-                        if (
-                            parentService.is_list &&
-                            parentService.services.length > 0
-                        ) {
-                            const nestedService = parentService.services.find(
-                                (nested) => nested.name === serviceName,
-                            );
-                            if (nestedService) {
-                                serviceObj = nestedService;
-                            }
-                        }
-                    });
-                }
-                if (isMember && serviceName === "The Cutting Edge") {
-                    serviceObj.nominal = 0;
-                }
+        // Otherwise add
+        return [...prev, service];
+    }
 
-                const tempTotalPrice = handleRewardMatch(
-                    queryParam, 
-                    serviceObj.query_code,
-                    serviceObj.nominal,
-                    points
-                )
-                return total + tempTotalPrice;
-            }, 0),
-        );
+    function computeTotals(selected, { services, isMember, points, queryParam }) {
+        // Derive price & duration from selected objects directly (no strings).
+        const price = selected.reduce((total, svc) => {
+            // Do NOT mutate svc.nominal; compute a local effective price
+            const base = (isMember && svc.name === "The Cutting Edge") ? 0 : (svc.nominal ?? 0);
+            const adjusted = handleRewardMatch(
+            queryParam,
+            svc.query_code,
+            base,
+            points
+            );
+            return total + (adjusted ?? 0);
+        }, 0);
 
-        setTotalActualPrice(
-            updatedServices.reduce((total, serviceName) => {
-                let serviceObj = Services.find((s) => s.name === serviceName);
+        const duration = selected.reduce((total, svc) => {
+            return total + (svc?.duration ?? 0);
+        }, 0);
 
-                if (!serviceObj) {
-                    Services.forEach((parentService) => {
-                        if (
-                            parentService.is_list &&
-                            parentService.services.length > 0
-                        ) {
-                            const nestedService = parentService.services.find(
-                                (nested) => nested.name === serviceName,
-                            );
-                            if (nestedService) {
-                                serviceObj = nestedService;
-                            }
-                        }
-                    });
-                }
-                if (isMember && serviceName === "The Cutting Edge") {
-                    serviceObj.actual_price = 0;
-                }
-                
-                const tempActualPrice = handleRewardMatch(
-                    queryParam,
-                    serviceObj.query_code,
-                    serviceObj.actual_price,
-                    points
-                )
-                return total + tempActualPrice;
-            }, 0),
-        );
+        return { price, duration };
+    }
 
-        setDuration(
-            updatedServices.reduce((total, serviceName) => {
-                let serviceObj = Services.find((s) => s.name === serviceName);
+    const handleServiceChange = (service) => {
+        // 1) compute next list from current state (no async yet)
+        const nextChosen = computeNextChosen(chosenServices, service);
 
-                if (!serviceObj) {
-                    Services.forEach((parentService) => {
-                        if (
-                            parentService.is_list &&
-                            parentService.services.length > 0
-                        ) {
-                            const nestedService = parentService.services.find(
-                                (nested) => nested.name === serviceName,
-                            );
-                            if (nestedService) {
-                                serviceObj = nestedService;
-                            }
-                        }
-                    });
-                }
+        // 2) commit state
+        setChosenServices(nextChosen);
 
-                return total + (serviceObj ? serviceObj.duration : 0);
-            }, 0),
-        );
+        // 3) derive totals from the SAME array to avoid race conditions
+        const { price, duration } = computeTotals(nextChosen, {
+            services,         // if you need all services for anything later
+            isMember,
+            points,
+            queryParam,
+        });
+
+        setTotalPrice(price);
+        setDuration(duration);
     };
-
+    
     const handleSubmit = () => {
         if (chosenServices.length == 0) {
             ToastManager.notify("Please select a service!", "error");
@@ -239,52 +147,84 @@ const ChooseService = ({
     };
 
     useEffect(() => {
-        (async () => {
+        let isMounted = true;
+        const ac = new AbortController();
+
+        const run = async () => {
             toggleLoading(true);
-            const res = await getUser(phoneNumber);
-            toggleLoading(false);
-        
-            if (!res.success) {
-                console.error(res.error);
-                return;
-            }
-        
-            if (res.user) {
-                setPoints(res.user.point);
-            }
-        })();
-      }, []);
+            try {
+                const servicesReq = fetch(API_ROUTES.GET_SERVICES, { method: "GET", signal: ac.signal })
+                    .then(async (r) => {
+                            if (!r.ok) {
+                                console.log("Server error", r.status, r.statusText);
+                                return null;
+                            }
+                            return r.json();
+                        })
+                    .catch((err) => {
+                        if (err.name !== "AbortError") console.error("fetch services failed:", err);
+                        return null;
+                });
 
-    useEffect(() => {
-        toggleLoading(true);
+                const userReq = fetch(API_ROUTES.GET_USER_BY_PHONE(phoneNumber), { method: "GET", signal: ac.signal })
+                    .then(async (res) => {
+                            if (!res.ok) {
+                                console.error(res?.error);
+                                return null;
+                            }
+                            return res.json();
+                        })
+                    .catch((err) => {
+                        console.error("getUser failed:", err);
+                        return null;
+                    });
+                
+                const membershipReq = getMembership(phoneNumber)
+                    .then((res) => {
+                        if (res?.error) {
+                            console.error(res.error);
+                            return null;
+                        }
+                        return res.membership ?? null;
+                        })
+                        .catch((err) => {
+                        console.error("getMembership failed:", err);
+                        return null;
+                    });
 
-        const handleMembershipPricing = async () => {
-            const response = await getMembership(phoneNumber);
+                const [servicesData, user, membership] = await Promise.all([
+                    servicesReq,
+                    userReq,
+                    membershipReq,
+                ]);
 
-            if (response.error) {
-                console.error(response.error);
-                return;
+                if (!isMounted) return;
+
+                if (servicesData) setServices(servicesData);
+                if (user) setPoints(user.point);
+                if (membership) setMember(true);
+            } finally {
+                if (isMounted) toggleLoading(false);
             }
-
-            if (response.membership) {
-                setMember(true);
-            }
-            toggleLoading(false);
-            return;
         };
 
-        handleMembershipPricing();
+        run();
+
+        return () => {
+            isMounted = false;
+            ac.abort();
+        };
     }, []);
 
     return (
         <div className="w-full space-y-2">
-            {Services.map((service, idx) => {
+            {services.length > 0 && services.map((service, idx) => {
                 return (
                     <div key={idx} className="pt-1">
                         {/* non-drop down services */}
                         {!service.is_list && (
                             <div 
-                                onClick={() => handleServiceChange(service.name)}
+                                onClick={() => handleServiceChange(service)}
                                 className="flex flex-row items-center justify-between font-bold px-4 lg:px-6 xl:px-10">
                                 <div className="flex flex-col space-y-0">
                                     <p className="font-bold text-sm lg:text-sm xl:text-base 2xl:text-lg">
@@ -309,7 +249,7 @@ const ChooseService = ({
                                             )}
                                             {"  "}
                                             {service.is_range
-                                                ? service.actual_price
+                                                ? service.price
                                                 : isMember &&
                                                     service.name ===
                                                         "The Cutting Edge"
@@ -317,17 +257,17 @@ const ChooseService = ({
                                                   : formatPrice(
                                                         handleRewardMatch(
                                                             queryParam,
-                                                            service.query_code,
-                                                            service.actual_price,
+                                                            service?.query_code,
+                                                            service.price,
                                                             points
                                                         )
                                                     )
                                             }
                                             {
-                                                service.actual_price !== handleRewardMatch(
+                                                service.price !== handleRewardMatch(
                                                     queryParam,
-                                                    service.query_code,
-                                                    service.actual_price,
+                                                    service?.query_code,
+                                                    service.price,
                                                     points
                                                 ) ?
                                                 " (Discount!)"
@@ -345,7 +285,7 @@ const ChooseService = ({
                                     <p className="text-gray-500 font-semibold text-sm lg:text-sm xl:text-base 2xl:text-lg">
                                         duration:{" "}
                                         <span className="font-bold">
-                                            {service.duration * 60}
+                                            {service.duration}
                                         </span>{" "}
                                         minutes
                                     </p>
@@ -370,11 +310,9 @@ const ChooseService = ({
                                 <input
                                     type="checkbox"
                                     className="md:w-6 md:h-6 rounded-xl accent-orange1"
-                                    checked={chosenServices.includes(
-                                        service.name,
-                                    )}
+                                    checked={chosenServices.some(s => s.name === service.name)}
                                     onChange={() =>
-                                        handleServiceChange(service.name)
+                                        handleServiceChange(service)
                                     }
                                 />
                             </div>
@@ -416,16 +354,16 @@ const ChooseService = ({
                                                         {s.name} -{" "}
                                                         <span className="text-orange1 font-semibold">
                                                             {service.is_range
-                                                                ? s.actual_price
+                                                                ? s.price
                                                                 : formatPrice(
-                                                                      s.actual_price,
+                                                                      s.price,
                                                                   )}
                                                         </span>
                                                     </p>
                                                     <p className="text-gray-500 font-semibold text-sm lg:text-sm xl:text-base 2xl:text-lg">
                                                         duration:{" "}
                                                         <span className="font-bold">
-                                                            {s.duration * 60}
+                                                            {s.duration}
                                                         </span>{" "}
                                                         minutes
                                                     </p>
@@ -444,8 +382,7 @@ const ChooseService = ({
             <div className="flex flex-col items-center justify-center space-y-2 pt-4">
                 <div
                     onClick={() => {
-                        const tempService = chosenServices.join(", ");
-                        handleService(tempService);
+                        handleService(chosenServices);
                         handleTotalPrice(totalPrice);
                         handleTotalActualPrice(totalActualPrice);
                         handleDuration(totalDuration);

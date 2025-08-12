@@ -15,21 +15,23 @@ import Checkout from "./Checkout";
 import { ToastContainer } from "react-toastify";
 
 const ClientPage = () => {
-    const [fullName, setFullName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [points, setPoints] = useState(0);
+    const [fullName, setFullName] = useState("Adli");
+    const [phoneNumber, setPhoneNumber] = useState("812-3456-789");
+    const [points, setPoints] = useState(100);
 
-    const [currPage, setPage] = useState(0);
+    const [currPage, setPage] = useState(1);
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalActualPrice, setTotalActualPrice] = useState(0);
     const [isConfirm, toggleConfirm] = useState(false);
-    const [pickedService, setService] = useState(null);
+    const [pickedService, setService] = useState([]);
     const [pickedDate, setDate] = useState(null);
     const [pickedTime, setTime] = useState(null);
     const [totalDuration, setDuration] = useState(null);
     const [orderid, setOrderId] = useState(0);
+    const [selectedBarber, setSelectedBarber] = useState({});
 
     const [pendingBooking, setPendingBooking] = useState({});
+    const [bookingResponse, setBookingResponse] = useState({});
 
     const searchParams = useSearchParams();
     const encrypted = searchParams.get('q');
@@ -83,9 +85,11 @@ const ClientPage = () => {
                     <ChooseTime
                         pickedService={pickedService}
                         date={pickedDate}
+                        selectedBarber={selectedBarber}
                         handleDate={setDate}
                         handleTime={setTime}
                         handlePage={setPage}
+                        handleBarber={setSelectedBarber}
                     />
                 )}
                 {currPage === 3 && (
@@ -97,18 +101,19 @@ const ClientPage = () => {
                         price={totalPrice}
                         actualPrice={totalActualPrice}
                         duration={totalDuration}
+                        barber={selectedBarber}
                         setOrderId={setOrderId}
                         handlePage={setPage}
-                        queryParam={queryParam}
+                        setBookingResponse={setBookingResponse}
                     />
                 )}
                 {currPage === 4 && (
                     <Checkout
                         first_name={fullName}
                         phone_number={`+62${phoneNumber.replace(/-/g, "")}`}
-                        pickedService={pickedService || pendingBooking.service}
-                        totalPrice={totalPrice || pendingBooking.amount}
-                        orderId={orderid ||  pendingBooking.orderId}
+                        pickedService={bookingResponse.serviceNames || pendingBooking.service}
+                        totalPrice={bookingResponse.amount || pendingBooking.amount}
+                        orderId={bookingResponse.orderId ||  pendingBooking.orderId}
                     />
                 )}
                 <div className="w-0 h-0">

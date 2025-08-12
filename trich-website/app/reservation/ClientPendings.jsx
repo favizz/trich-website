@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { deleteBooking } from "@/utils/user";
-import { generateCode } from "./ConfirmPay";
-import { createBooking } from "@/utils/user";
+import { generateCode } from "@/utils/generateOrderId";
+import { createReservation } from "@/utils/user";
 
 const ClientPendings = ({ pendingBooking, setPendingBooking, setPage }) => {
     const [modalType, setModalType] = useState(null);

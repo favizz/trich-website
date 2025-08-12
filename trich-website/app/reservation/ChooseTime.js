@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { getOperationalTimes } from "@/utils/operationalTimes";
+
+import { API_ROUTES } from "@/constants/routes";
+import { getAvailableBarbers } from "@/utils/barber";
 
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
@@ -13,16 +15,18 @@ import RightArrow from "@/public/reservationAssets/rightarrow.svg";
 const ChooseTime = ({
     pickedService,
     date,
+    selectedBarber,
     handleDate,
     handleTime,
     handlePage,
+    handleBarber,
 }) => {
     const [pickedDate, pickDate] = useState("");
     const [pickedTime, pickTime] = useState(0);
-    const [operationalTimes, setOperationalTimes] =
-        useState([]);
+    const [operationalTimes, setOperationalTimes] = useState([]);
     const [isDateValid, toggleDateValid] = useState(true);
     const [isMorningEdge, setMorningEdge] = useState(false);
+    const [barbers, setBarbers] = useState([]);
 
     const [isLoading, toggleLoading] = useState(false);
 
@@ -38,6 +42,14 @@ const ChooseTime = ({
         }
     };
 
+    useEffect(() => {
+        const fetchBarbers = async () => {
+            const list = await getAvailableBarbers();
+            setBarbers(list);
+        };
+
+        fetchBarbers();
+    }, []);
 
     useEffect(() => {
         handleTime(operationalTimes[pickedTime] || null);
@@ -45,34 +57,53 @@ const ChooseTime = ({
 
     const handleDateChange = async (dateInput) => {
         toggleLoading(true);
-        pickDate(dateInput);
-        // const { times, formattedDate, isMorningEdge, error } =
-        //     await getOperationalTimes(dateInput, pickedService);
+        try {
+            pickDate(dateInput);
+            const dayNames = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+            const pickedDay = dayNames[dateInput.getDay()];
 
-        const pad = (n) => String(n).padStart(2, "0");
-        const iso_date = `${dateInput.getFullYear()}-${pad(dateInput.getMonth() + 1)}-${pad(dateInput.getDate())}`;
-        const url = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/available?date=${encodeURIComponent(iso_date)}&service=${encodeURIComponent(pickedService)}`;
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
+            const violates = pickedService.some(s =>
+                Array.isArray(s.availableDays) && s.availableDays.length > 0 && !s.availableDays.includes(pickedDay)
+            );
+
+            if (violates) {
+                toggleDateValid(false);
+                setOperationalTimes([]);
+                return;
             }
-        });
 
-        const data = await response.json();
-        if (data.error) {
+            const pad = (n) => String(n).padStart(2, "0");
+            const iso_date = `${dateInput.getFullYear()}-${pad(dateInput.getMonth() + 1)}-${pad(dateInput.getDate())}`;
+
+            const serviceIds = pickedService.map(s => s.id).filter(Boolean);
+
+            const res = await fetch(
+                API_ROUTES.GET_AVAILABLE_TIMES(encodeURIComponent(iso_date), serviceIds),
+                { method: "GET" }
+            );
+
+            const data = await res.json();
+            if (!res.ok || data?.error) {
+                toggleDateValid(false);
+                setOperationalTimes([]);
+                return;
+            }
+
+            const times = Array.isArray(data.times) ? data.times : [];
+            const formattedDate = data.formattedDate ?? iso_date;
+            const morningEdge = !!data.morningEdge;
+
+            toggleDateValid(true);
+            handleDate(formattedDate);
+            setMorningEdge(morningEdge);
+            setOperationalTimes(times);
+        } catch (err) {
+            console.error("handleDateChange failed:", err);
             toggleDateValid(false);
-            return;
+            setOperationalTimes([]);
+        } finally {
+            toggleLoading(false);
         }
-        const times = data.times;
-        const formattedDate = data.formattedDate;
-        const isMorningEdge = data.morningEdge;
-        
-        toggleDateValid(true);
-        handleDate(formattedDate);
-        setMorningEdge(isMorningEdge);
-        setOperationalTimes(times);
-        toggleLoading(false);
     };
 
 
@@ -109,7 +140,7 @@ const ChooseTime = ({
                     </span>{" "}
                     {date}
                 </p>
-                <p className="font-extrabold">
+                <p className="font-extrabold text-[#545454]">
                     {isDateValid ? (
                         "Select Available Time"
                     ) : (
@@ -145,6 +176,24 @@ const ChooseTime = ({
                                     src={RightArrow}
                                     alt="right-arrow"
                                 />
+                            </div>
+                            <div className="flex flex-col items-center gap-2">
+                                <p className="font-extrabold text-[#545454]">
+                                    Select Barber
+                                </p>
+                                <select
+                                    id="barber-select"
+                                    value={selectedBarber?.id ?? ""}
+                                    onChange={(e) => handleBarber(barbers.find(b => b.id === e.target.value) ?? {})}
+                                    className="w-full max-w-sm p-3 text-lg border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="">-- Choose a barber --</option>
+                                    {barbers.map(b => (
+                                        <option key={b.id} value={b.id}>
+                                            {b.name} (Chair {b.chairNumber})
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <button
                                 onClick={() => handleContinue()}

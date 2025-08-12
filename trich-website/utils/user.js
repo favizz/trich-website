@@ -4,6 +4,7 @@ import { collection, query, where,
          addDoc, updateDoc, increment,
          arrayUnion } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
+import { API_ROUTES } from "@/constants/routes";
 
 export const computePoint = (service) => {
     let total = 0;
@@ -46,36 +47,33 @@ export const getUserData = async () => {
     }
 };
 
-export const createBooking = async (
+export const createReservation = async (
+    order_id,
     fullName,
     userPhone,
     pickedService,
     pickedTime,
     pickedDate,
-    totalPrice,
-    order_id
+    pickedBarberId
 ) => {
-    const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations`;
-
     const [hour, minute] = pickedTime.split(":").map(Number);
-    const timeString = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00`;
+    const timeString = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
 
     const parsedDate = new Date(pickedDate);
-    const isoDate = parsedDate.toISOString();
+    const isoDate = parsedDate.toISOString().split("T")[0];
 
     const body = {
         orderId: order_id.toString(),
         name: fullName,
         phoneNumber: userPhone,
-        service: pickedService,
+        serviceIds: pickedService.map(s => s.id),
         date: isoDate,
         time: timeString,
-        amount: totalPrice,
-        status: 1
+        barberId: pickedBarberId
     };
 
     try {
-        const response = await fetch(endpoint, {
+        const response = await fetch(API_ROUTES.CREATE_RESERVATION, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
