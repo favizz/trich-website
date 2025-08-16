@@ -60,7 +60,8 @@ export const createReservation = async (
     const timeString = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
 
     const parsedDate = new Date(pickedDate);
-    const isoDate = parsedDate.toISOString().split("T")[0];
+    const isoDate = parsedDate.toLocaleDateString("en-CA"); 
+
 
     const body = {
         orderId: order_id.toString(),

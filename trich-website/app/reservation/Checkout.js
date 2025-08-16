@@ -34,7 +34,7 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
             })),
             customer_details: {
                 first_name: first_name,
-                phone_number: phone_number,
+                phone: phone_number,
             },
             enabled_payments: ["other_qris"],
         };
@@ -48,7 +48,7 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
             if (!reqBody) return;
 
             try {
-                const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/admin/payment/token`;
+                const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/operational/payment/token`;
                 const response = await fetch(endpoint, {
                     method: "POST",
                     headers: {
