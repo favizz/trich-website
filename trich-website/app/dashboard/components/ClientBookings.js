@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { API_ROUTES } from "@/constants/routes";
 import BookingCard from "./BookingCard";
 
 const ClientBookings = ({ phoneNumber }) => {
@@ -9,10 +8,22 @@ const ClientBookings = ({ phoneNumber }) => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const res = await fetch(API_ROUTES.GET_USER_RESERVATIONS(phoneNumber));
+        const res = await fetch(
+          process.env.NEXT_PUBLIC_SPRINGBOOT_URL + "/website/reservations/" + phoneNumber
+        );
         if (!res.ok) throw new Error("Failed to fetch bookings");
         const bookings = await res.json();
-        bookings.sort((a, b) => a.status - b.status);
+        console.log(bookings);
+
+        // map status string → number for sorting
+        const statusOrder = {
+          unpaid: 0,
+          half: 1,
+          walkIn: 2,
+          paid: 3,
+        };
+
+        bookings.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
         setData(bookings);
       } catch (err) {
         console.error("Error fetching bookings:", err);
@@ -24,7 +35,7 @@ const ClientBookings = ({ phoneNumber }) => {
   }, [phoneNumber]);
 
   return (
-    <section className="lg:w-[579px] xl:w-[759px] rounded-lg bg-[#FAFAFA] tracking-wider p-4 mb-10 lg:mb-0 lg:p-6 xl:p-10">
+    <section className="rounded-lg bg-[#FAFAFA] tracking-wider p-4 mb-10 lg:mb-0 lg:p-6 xl:p-10">
       <h2 className="text-3xl font-extrabold">My Bookings</h2>
       <div className="pt-4">
         <div
@@ -37,9 +48,11 @@ const ClientBookings = ({ phoneNumber }) => {
               key={index}
               date={booking.date}
               time={booking.time}
+              duration={booking.duration}
               status={booking.status}
-              isPaid={booking.is_paid}
               amount={booking.amount}
+              barberName={booking.barberName}
+              serviceNames={booking.serviceNames}
               notes={booking.notes}
             />
           ))}

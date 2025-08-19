@@ -16,7 +16,7 @@ const Membership = () => {
     const closeModal = () => setModalOpen(false);
 
     return (
-        <div className="bg-white w-full px-4 py-6 rounded-xl lg:max-w-[579px] xl:max-w-[759px] mx-auto">
+        <div className="bg-white w-full px-4 py-6 rounded-xl mx-auto">
             <p className="font-bold text-lg sm:text-xl leading-8 mb-4">
                 Upgrade to TRICH Membership for exclusive benefits
             </p>
