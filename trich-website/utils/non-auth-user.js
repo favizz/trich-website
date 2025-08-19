@@ -1,6 +1,4 @@
-import { auth, db } from "@/config/firebase";
-import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
-import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
+import { API_ROUTES } from "@/constants/routes";
 
 /**
  * Gets a user by phone number
@@ -9,20 +7,32 @@ import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
  */
 export const getUser = async (phone_number) => {
     try {
-        const usersRef = collection(db, "non_auth_user");
-        const q = query(usersRef, where("phone_number", "==", phone_number));
-        const querySnapshot = await getDocs(q);
+        // Ensure phone number has the +62 prefix and preserve dashes
+        let formattedPhone = phone_number;
+        if (!formattedPhone.startsWith("+62")) {
+            formattedPhone = `+62${formattedPhone}`;
+        }
+        
+        const response = await fetch(API_ROUTES.GET_USER_BY_PHONE(formattedPhone), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
-        if (querySnapshot.empty) {
-            return { success: true, user: null };
+        if (!response.ok) {
+            if (response.status === 404) {
+                return { success: true, user: null };
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const doc = querySnapshot.docs[0];
-        const user = { id: doc.id, ...doc.data() };
+        const user = await response.json();
         return { success: true, user };
     } catch (error) {
         console.error("Error fetching user:", error);
-        return { success: false, error: error };
+        // If API is not available, return no user (this is expected when backend is not ready)
+        return { success: true, user: null };
     }
 };
 

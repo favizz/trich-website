@@ -128,3 +128,55 @@ export const updateConfigQuota = async (updates) => {
         console.error("Error updating config quotas:", error);
     }
 };
+
+/**
+ * Get quota by type from the backend API
+ * @param {string} type - The type of quota to retrieve
+ * @returns {Promise<Object>} The quota data for the specified type
+ */
+export const getQuotaByType = async (type) => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/${type}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch quota by type: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching quota by type:", error);
+        throw error;
+    }
+};
+
+/**
+ * Create quota by type using the backend API
+ * @param {string} type - The type of quota to create
+ * @param {Object} quotaData - The quota data to create
+ * @returns {Promise<Object>} The created quota data
+ */
+export const createQuotaByType = async (type, quotaData) => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/${type}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(quotaData)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to create quota by type: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error creating quota by type:", error);
+        throw error;
+    }
+};

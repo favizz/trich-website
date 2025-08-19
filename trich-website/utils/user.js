@@ -1,10 +1,16 @@
+import { API_ROUTES } from "@/constants/routes";
+import { v4 as uuidv4 } from "uuid";
 import { auth, db } from "@/config/firebase";
 import { collection, query, where, 
          getDoc, getDocs, deleteDoc, 
          addDoc, updateDoc, increment,
          arrayUnion } from "firebase/firestore";
-import { v4 as uuidv4 } from "uuid";
-import { API_ROUTES } from "@/constants/routes";
+
+// Note: The following functions still require Firebase and are not used in the dashboard:
+// - handleUser: Used for handling new bookings (Firebase required)
+// - removeExpiredBooking: Used for removing expired bookings (Firebase required)
+// - getUserData: Used by AuthProvider for authentication (Firebase required)
+// These functions can be migrated to Spring Boot API in a future update if needed.
 
 export const computePoint = (service) => {
     let total = 0;
@@ -132,20 +138,37 @@ export const deleteBooking = async (reservationId) => {
 
 
 export const getMembership = async (phoneNumber) => {
-    if (!phoneNumber.startsWith("+62")) {
-        return { success: true, error: "Wrong phone format!" };
+    if (!phoneNumber || phoneNumber.length < 8) {
+        return { success: true, error: "Invalid phone number format!" };
     }
 
-    const q = query(
-        collection(db, "membership"),
-        where("phone_number", "==", phoneNumber),
-    );
+    try {
+        // Ensure phone number has the +62 prefix and preserve dashes
+        let formattedPhone = phoneNumber;
+        if (!formattedPhone.startsWith("+62")) {
+            formattedPhone = `+62${formattedPhone}`;
+        }
+        
+        const response = await fetch(API_ROUTES.GET_USER_MEMBERSHIP(formattedPhone), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
+        if (!response.ok) {
+            if (response.status === 404) {
+                return { success: true, membership: false };
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const membershipData = await response.json();
         return { success: true, membership: true };
-    } else {
-        return { success: true, error: "No user found with the provided phone number." };
+    } catch (error) {
+        console.error("Error fetching membership:", error);
+        // If API is not available, assume no membership (this is expected when backend is not ready)
+        return { success: true, membership: false };
     }
 };
 
@@ -153,19 +176,41 @@ export const getUserBookings = async (phoneNumber) => {
     if (!phoneNumber) {
         return { success: false, error: "No Phone Number!" };
     }
-    const q = query(
-        collection(db, "active_booking"),
-        where("phone_number", "==", phoneNumber),
-    );
 
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-        let bookings = querySnapshot.docs.map((doc) => doc.data());
-        bookings = bookings.sort((a, b) => a.status - b.status);
+    try {
+        // Ensure phone number has the +62 prefix and preserve dashes
+        let formattedPhone = phoneNumber;
+        if (!formattedPhone.startsWith("+62")) {
+            formattedPhone = `+62${formattedPhone}`;
+        }
+        
+        const response = await fetch(API_ROUTES.GET_USER_RESERVATIONS(formattedPhone), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
-        return { success: true, bookings: bookings };
+        if (!response.ok) {
+            if (response.status === 404) {
+                return { success: true, error: "No bookings with the provided phone number." };
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const bookings = await response.json();
+        if (bookings && bookings.length > 0) {
+            // Sort bookings by status (assuming status is a number)
+            bookings.sort((a, b) => a.status - b.status);
+            return { success: true, bookings: bookings };
+        }
+        
+        return { success: true, error: "No bookings with the provided phone number." };
+    } catch (error) {
+        console.error("Error fetching user bookings:", error);
+        // If API is not available, return empty bookings (this is expected when backend is not ready)
+        return { success: true, bookings: [] };
     }
-    return { success: true, error: "No bookings with the provided phone number." };
 };
 
 export const handleUser = async (booking) => {

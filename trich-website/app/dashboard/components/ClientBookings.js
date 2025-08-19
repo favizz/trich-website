@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { API_ROUTES } from "@/constants/routes";
 import BookingCard from "./BookingCard";
 
 const ClientBookings = ({ phoneNumber }) => {
@@ -8,7 +9,7 @@ const ClientBookings = ({ phoneNumber }) => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/${phoneNumber}`);
+        const res = await fetch(API_ROUTES.GET_USER_RESERVATIONS(phoneNumber));
         if (!res.ok) throw new Error("Failed to fetch bookings");
         const bookings = await res.json();
         bookings.sort((a, b) => a.status - b.status);
