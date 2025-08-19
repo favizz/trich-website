@@ -29,26 +29,31 @@ const ClientPage = () => {
 
     const handleUser = async () => {
         toggleLoading(true);
-        const res = await getUser(`+62${phoneNumber.replace(/\D/g, "")}`);
+        // Preserve the exact phone number format (including dashes) as stored in backend
+        const formattedPhone = `+62${phoneNumber.replace(/-/g, "").replace(/^0/, "")}`;
+        const res = await getUser(formattedPhone);
 
         if (res.success) {
             if (res.user) {
                 setUser(res.user);
                 setCredentials(
                     phoneNumber, 
-                    res.user.first_name
+                    res.user.name // Changed from first_name to name to match backend
                 )
             }
             else {
-                setError("No user found!");
+                setError("User not found. Please check your phone number or contact support.");
             }
         } else {
             console.log(res.error);
+            setError("Unable to fetch user data. Please try again later.");
         }
     }
 
     const handleBooking = async () => {
-        const res = await getUserBookings(`+62${phoneNumber.replace(/\D/g, "")}`);
+        // Preserve the exact phone number format (including dashes) as stored in backend
+        const formattedPhone = phoneNumber;
+        const res = await getUserBookings(formattedPhone);
 
         if (res.success) {
             if (res.bookings) {
@@ -56,23 +61,30 @@ const ClientPage = () => {
             }
             else {
                 console.error("No booking found!");
+                setBookingData([]);
             }
         } else {
             console.log(res.error);
+            setBookingData([]);
         }
         toggleLoading(false);
     }
 
     const handleMembershipPricing = async () => {
-        const response = await getMembership(`+62${phoneNumber.replace(/\D/g, "")}`);
+        // Preserve the exact phone number format (including dashes) as stored in backend
+        const formattedPhone = phoneNumber;
+        const response = await getMembership(formattedPhone);
 
         if (response.error) {
             console.error(response.error);
+            setMember(false);
             return;
         }
 
         if (response.membership) {
             setMember(true);
+        } else {
+            setMember(false);
         }
         toggleLoading(false);
         return;
@@ -106,7 +118,7 @@ const ClientPage = () => {
             <section className={`relative z-10 ${currPage === 0 ? "" : "pt-36"} flex flex-col lg:flex-row items-center lg:items-start justify-center space-y-5 lg:space-y-0 lg:space-x-8 mt-5 lg:mt-0`}>
                 {currPage !== 0 && 
                     <ClientCard
-                        name={user.first_name}
+                        name={user.name} // Changed from first_name to name to match backend
                         phoneNumber={phoneNumber}
                         isMember={isMember}
                         handlePaging={setPage}
@@ -137,15 +149,15 @@ const ClientPage = () => {
                             point={user.point}
                         />
                         <ClientBookings 
-                            phoneNumber={user.phone_number} 
+                            phoneNumber={user.phoneNumber} // Changed from phone_number to phoneNumber to match backend
                         />
                     </div>
                 )}
                 {currPage == 3 && (
                     <div className="space-y-5">
                         <ClientInfo
-                            first_name={user.first_name}
-                            phone_number={user.phone_number}
+                            first_name={user.name} // Changed from first_name to name to match backend
+                            phone_number={user.phoneNumber} // Changed from phone_number to phoneNumber to match backend
                         />
                     </div>
                 )}
