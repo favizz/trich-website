@@ -667,9 +667,8 @@ const AdminDashboard = () => {
                     
                     {/* Reservations Management Section */}
                     <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-                        <div className="bg-orange1 text-white px-6 py-4 rounded-t-lg">
+                        <div className="bg-orange1 text-white px-6 py-2 rounded-t-lg">
                             <h2 className="text-xl font-semibold">Reservations Management</h2>
-                            <p className="text-orange-100 text-sm mt-1">Manage and monitor all reservations</p>
                 </div>
                         <div className="p-6">
                             {/* Combined Reservations Table */}
@@ -721,9 +720,8 @@ const AdminDashboard = () => {
 
                     {/* User Management Section */}
                     <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-                        <div className="bg-orange1 text-white px-6 py-4 rounded-t-lg">
+                        <div className="bg-orange1 text-white px-6 py-2 rounded-t-lg">
                             <h2 className="text-xl font-semibold">User Management</h2>
-                            <p className="text-orange-100 text-sm mt-1">Manage and view user information</p>
                         </div>
                         <div className="p-6">
                             {/* Search User Form - Above Table */}
@@ -867,9 +865,8 @@ const AdminDashboard = () => {
 
                     {/* Services Management Section */}
                     <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-                        <div className="bg-orange1 text-white px-6 py-4 rounded-t-lg">
+                        <div className="bg-orange1 text-white px-6 py-2 rounded-t-lg">
                             <h2 className="text-xl font-semibold">Services Management</h2>
-                            <p className="text-orange-100 text-sm mt-1">Manage and add new services</p>
                         </div>
                         <div className="p-6">
             {/* Services Table */}
@@ -1172,9 +1169,8 @@ const AdminDashboard = () => {
 
                     {/* Barbers Management Section */}
                     <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-                        <div className="bg-orange1 text-white px-6 py-4 rounded-t-lg">
+                        <div className="bg-orange1 text-white px-6 py-2 rounded-t-lg">
                             <h2 className="text-xl font-semibold">Barbers Management</h2>
-                            <p className="text-orange-100 text-sm mt-1">Manage and add new barbers</p>
                         </div>
                         <div className="p-6">
             {/* Barbers Table */}
@@ -1329,9 +1325,8 @@ const AdminDashboard = () => {
 
                     {/* Enhanced Quota Management Section */}
                     <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-                        <div className="bg-orange1 text-white px-6 py-4 rounded-t-lg">
+                        <div className="bg-orange1 text-white px-6 py-2 rounded-t-lg">
                             <h2 className="text-xl font-semibold">Enhanced Quota Management</h2>
-                            <p className="text-orange-100 text-sm mt-1">Manage all quota settings and configurations</p>
                         </div>
                         <div className="p-6">
 
@@ -1382,7 +1377,6 @@ const AdminDashboard = () => {
                                     {/* Custom Quotas Table */}
                                     <div>
                                         <h4 className="font-semibold mb-2">Custom Quotas</h4>
-                                        <p className="text-sm text-gray-600 mb-3">Add specific date-based quota overrides</p>
                                         <table className="w-full">
                     <thead>
                         <tr className="bg-orange1 font-bold text-white">
@@ -1433,31 +1427,31 @@ const AdminDashboard = () => {
                     <tbody>
                         {quotas.length > 0 ? (
                             quotas.map((quota, idx) => (
-                                  <tr key={idx}>
+                                <tr key={idx}>
                                     <td className="border border-1 border-solid border-black p-2">
                                         {quota.quota_id || '-'}
                                     </td>
                                     <td className="border border-1 border-solid border-black p-2">
-                                          {quota.date ? quota.date : "-"}
+                                        {quota.date ? quota.date : "-"}
                                     </td>
                                     <td className="border border-1 border-solid border-black p-2">
                                         {quota.quota}
                                     </td>
                                     <td className="border border-1 border-solid border-black p-2">
-                                          <button
-                                              onClick={() =>
-                                                  handleDeleteQuota(
-                                                      quota.quota_id,
-                                                  )
-                                              }
-                                              className="w-full px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
-                                               title="Delete"
-                                          >
-                                               🗑️
-                                          </button>
-                                      </td>
-                                  </tr>
-                              ))
+                                            <button
+                                                onClick={() =>
+                                                    handleDeleteQuota(
+                                                        quota.quota_id,
+                                                    )
+                                                }
+                                                className="w-full px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
+                                                title="Delete"
+                                            >
+                                                🗑️
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
                         ) : (
                                 <tr>
                                 <td colSpan="4" className="text-center p-4 text-gray-500 bg-gray-50">
