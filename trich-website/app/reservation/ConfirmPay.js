@@ -5,7 +5,7 @@ import { handleUser, createReservation } from "@/utils/user";
 import { getOperationalTimes } from "@/utils/operationalTimes";
 import { updatePaidBooking } from "@/utils/booking";
 
-import { formatPrice } from "./ChooseService";
+import { formatPrice } from "@/utils/price";
 import { generateCode } from "@/utils/generateOrderId";
 
 import ToastManager from "../components/toaster";
@@ -16,6 +16,7 @@ const ConfirmPay = ({
     date,
     time,
     service,
+    totalPrice,
     duration,
     barber,
     setOrderId,
@@ -23,9 +24,6 @@ const ConfirmPay = ({
     setBookingResponse
 }) => {
     const [agreePolicy, setAgreePolicy] = useState(false);
-    const totalPrice = service.reduce((sum, service) => {
-        return sum + service.price;
-    }, 0);
 
     const handleBooking = async () => {
         const orderid = generateCode();

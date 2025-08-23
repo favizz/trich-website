@@ -187,7 +187,7 @@ const ChooseTime = ({
                                     onChange={(e) => handleBarber(barbers.find(b => b.id === e.target.value) ?? {})}
                                     className="w-full max-w-sm p-3 text-lg border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
-                                    <option value="">-- Choose a barber --</option>
+                                    <option value="">-- Any Barber --</option>
                                     {barbers.map(b => (
                                         <option key={b.id} value={b.id}>
                                             {b.name} (Chair {b.chairNumber})

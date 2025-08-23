@@ -1,8 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getPendingBookings } from "@/utils/user";
-import { getUser } from "@/utils/non-auth-user";
-// import { getCookie, setCookie } from "cookies-next";
+import { getPendingBookings, getUserData } from "@/utils/user";
 import { getCredentials, setCredentials } from "@/utils/cookieManager";
 import PhoneForm from "../components/forms/PhoneForm";
 import Spinner from "../components/Spinner";
@@ -12,6 +10,8 @@ const ClientForm = ({
     setFullName,
     phoneNumber,
     setPhoneNumber,
+    setPoints,
+    setMembership,
     setPage,
     setPendingBooking
 }) => {
@@ -27,14 +27,12 @@ const ClientForm = ({
         if (credential) {
             setFullName(credential.full_name);
             setPhoneNumber(credential.phone_number);
+            setPoints(credential.point);
+            setMembership(credential.is_member);
             toggleNameInput(true);
         } else {
             console.log("No Cookie!");
         }
-    }
-
-    const storeCredentials = () => {
-        setCredentials(phoneNumber, fullName);
     }
 
     const handleGetName = async (phone_number) => {
@@ -42,18 +40,13 @@ const ClientForm = ({
 
         setIsNameLoading(true);
         try {
-            const cleaned = `+62${phone_number.replace(/\D/g, "")}`;
-            const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/user/${cleaned}`;
-            const response = await fetch(endpoint, { method: "GET" });
+            const data = await getUserData(`+62${phone_number.replace(/\D/g, "")}`);
 
-            if (!response.ok) {
-                console.error("Server error:", response.status, response.statusText);
-                setFullName("");
-            } else {
-                const data = await response.json();
-                console.log("payload:", data);
-                setFullName(data.name ?? "");
-            }
+            setFullName(data.name);
+            setPoints(data.point);
+            setMembership(data.member);
+
+            setCredentials(phoneNumber, data.name, data.point, data.member);
         } catch (err) {
             console.error("Error in handleGetName:", err);
             setFullName("");
@@ -83,7 +76,7 @@ const ClientForm = ({
             setError("Please Fill Correctly!");
             return;
         }
-        storeCredentials();
+
         handleBookingCheck();
     };
 

@@ -35,21 +35,20 @@ export const computePoint = (service) => {
     return total;
 }
 
-export const getUserData = async () => {
-    const currentUserID = auth?.currentUser?.uid;
-    if (!currentUserID) {
-        return { success: false, error: "Not logged in!" };
-    }
-    const q = query(
-        collection(db, "non_auth_user"),
-        where("user_id", "==", currentUserID),
-    );
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-        const userInfo = querySnapshot.docs[0].data();
-        return { success: true, user: userInfo };
-    } else {
-        return { success: false, error: "no user found!" };
+export const getUserData = async (phoneNumber) => {
+    const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/user/${phoneNumber}`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: "GET"
+        })
+        
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        return null;
     }
 };
 

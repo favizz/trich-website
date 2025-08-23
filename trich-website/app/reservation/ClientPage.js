@@ -15,13 +15,13 @@ import Checkout from "./Checkout";
 import { ToastContainer } from "react-toastify";
 
 const ClientPage = () => {
-    const [fullName, setFullName] = useState("Adli");
-    const [phoneNumber, setPhoneNumber] = useState("812-3456-789");
-    const [points, setPoints] = useState(100);
+    const [fullName, setFullName] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [points, setPoints] = useState(0);
+    const [isMember, setMembership] = useState(false);
 
-    const [currPage, setPage] = useState(1);
+    const [currPage, setPage] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
-    const [totalActualPrice, setTotalActualPrice] = useState(0);
     const [isConfirm, toggleConfirm] = useState(false);
     const [pickedService, setService] = useState([]);
     const [pickedDate, setDate] = useState(null);
@@ -49,6 +49,8 @@ const ClientPage = () => {
                         setFullName={setFullName}
                         phoneNumber={phoneNumber}
                         setPhoneNumber={setPhoneNumber}
+                        setPoints={setPoints}
+                        setMembership={setMembership}
                         setPage={setPage}
                         setPendingBooking={setPendingBooking}
                     />
@@ -64,21 +66,13 @@ const ClientPage = () => {
                     <ChooseService
                         phoneNumber={`+62${phoneNumber.replace(/-/g, "")}`}
                         points={points}
-                        setPoints={setPoints}
+                        isMember={isMember}
                         handlePage={setPage}
                         handleService={setService}
                         handleTotalPrice={setTotalPrice}
-                        handleTotalActualPrice={setTotalActualPrice}
                         handleDuration={setDuration}
                         toggleConfirm={toggleConfirm}
                         queryParam={queryParam}
-                    />
-                )}
-                {currPage === 1 && isConfirm && (
-                    <ConfirmService
-                        myService={pickedService}
-                        toggleConfirm={toggleConfirm}
-                        handlePage={setPage}
                     />
                 )}
                 {currPage === 2 && (
@@ -98,8 +92,7 @@ const ClientPage = () => {
                         date={pickedDate}
                         time={pickedTime}
                         service={pickedService}
-                        price={totalPrice}
-                        actualPrice={totalActualPrice}
+                        totalPrice={totalPrice}
                         duration={totalDuration}
                         barber={selectedBarber}
                         setOrderId={setOrderId}
