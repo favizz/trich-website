@@ -111,14 +111,15 @@ export const fetchCurrentQuotas = async (setWdQuotaValue, setBaseQuotaValue) => 
         const wdRes = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/wd`);
         if (wdRes.ok) {
             const wdData = await wdRes.json();
-            setWdQuotaValue(wdData.value || "");
+            setWdQuotaValue(wdData.quota || "");
+            console.log(wdData);
         }
         
         // Fetch Default Quota
         const defaultRes = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/default`);
         if (defaultRes.ok) {
             const defaultData = await defaultRes.json();
-            setBaseQuotaValue(defaultData.value || "");
+            setBaseQuotaValue(defaultData.quota || "");
         }
     } catch (error) {
         console.error("Failed to fetch current quotas:", error);

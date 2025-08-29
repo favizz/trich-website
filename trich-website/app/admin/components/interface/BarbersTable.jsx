@@ -66,7 +66,7 @@ const BarbersTable = ({
                 {barbers.length > 0 ? (
                     barbers.map((barber, idx) => (
                         <tr key={idx}>
-                            <td className="border border-1 border-solid border-black p-2">{barber.barberId || '-'}</td>
+                            <td className="border border-1 border-solid border-black p-2">{barber.id || '-'}</td>
                             <td className="border border-1 border-solid border-black p-2">{barber.name}</td>
                             <td className="border border-1 border-solid border-black p-2">{barber.chairNumber}</td>
                             <td className="border border-1 border-solid border-black p-2">
@@ -78,10 +78,10 @@ const BarbersTable = ({
                             </td>
                             <td className="border border-1 border-solid border-black p-2">
                                 <div className="flex gap-1">
-                                    {editingBarber?.barberId === barber.barberId ? (
+                                    {editingBarber?.id === barber.id ? (
                                         <>
                                             <button
-                                                onClick={() => updateBarber(barber.barberId)}
+                                                onClick={() => updateBarber(barber.id)}
                                                 className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                                                 title="Save"
                                             >
@@ -105,7 +105,7 @@ const BarbersTable = ({
                                                 ✏️
                                             </button>
                                             <button
-                                                onClick={() => deleteBarber(barber.barberId)}
+                                                onClick={() => deleteBarber(barber.id)}
                                                 className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
                                                 title="Delete"
                                             >
@@ -130,7 +130,7 @@ const BarbersTable = ({
                         <td className="border border-1 border-solid border-black p-2">
                             <input
                                 type="text"
-                                value={editingBarber.barberId || ""}
+                                value={editingBarber.id || ""}
                                 className="w-full p-1 text-sm"
                                 disabled
                             />
@@ -165,7 +165,7 @@ const BarbersTable = ({
                         <td className="border border-1 border-solid border-black p-2">
                             <div className="flex gap-1">
                                 <button
-                                    onClick={() => updateBarber(editingBarber.barberId)}
+                                    onClick={() => updateBarber(editingBarber.id)}
                                     className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                                     title="Save"
                                 >

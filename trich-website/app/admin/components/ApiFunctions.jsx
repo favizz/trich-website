@@ -24,7 +24,7 @@ export const isDaySelected = (abbreviatedDay, availableDays) => {
 export const createService = async (newService, setNewService, fetchServices) => {
     if (!newService.name || !newService.price || !newService.duration || 
         newService.point === undefined || !newService.startTime || 
-        newService.endTime || !newService.availableDays || newService.availableDays.length === 0) {
+        !newService.endTime || !newService.availableDays || newService.availableDays.length === 0) {
         ToastManager.notify("Please fill in all fields before adding service", "warning");
         return;
     }
@@ -47,6 +47,7 @@ export const createService = async (newService, setNewService, fetchServices) =>
             price: parseFloat(newService.price),
             duration: parseInt(newService.duration),
             point: parseInt(newService.point),
+            useAI: newService.useAI,
             startTime: newService.startTime,
             endTime: newService.endTime,
             availableDays: mappedDays
@@ -87,6 +88,7 @@ export const updateService = async (serviceId, editingService, setEditingService
             price: parseFloat(editingService.price),
             duration: parseInt(editingService.duration),
             point: parseInt(editingService.point),
+            useAI: editingService.useAI,
             startTime: editingService.startTime,
             endTime: editingService.endTime,
             availableDays: mappedDays
@@ -153,7 +155,7 @@ export const createBarber = async (newBarber, setNewBarber, fetchBarbers) => {
 export const updateBarber = async (barberId, editingBarber, setEditingBarber, fetchBarbers) => {
     try {
         const barberData = {
-            barberId: editingBarber.barberId,
+            barberId: editingBarber.id,
             name: editingBarber.name,
             chairNumber: parseInt(editingBarber.chairNumber),
             available: editingBarber.available

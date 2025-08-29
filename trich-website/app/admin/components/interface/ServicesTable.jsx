@@ -35,6 +35,7 @@ const ServicesTable = ({
                     <th className="border border-1 border-solid border-black p-2 w-24">Price</th>
                     <th className="border border-1 border-solid border-black p-2 w-24">Duration</th>
                     <th className="border border-1 border-solid border-black p-2 w-24">Points</th>
+                    <th className="border border-1 border-solid border-black p-2 w-20">Use AI</th>
                     <th className="border border-1 border-solid border-black p-2 w-24">Start Time</th>
                     <th className="border border-1 border-solid border-black p-2 w-24">End Time</th>
                     <th className="border border-1 border-solid border-black p-2 w-32">Available Days</th>
@@ -54,7 +55,7 @@ const ServicesTable = ({
                     <td className="border border-1 border-solid border-black p-2">
                         <input
                             type="number"
-                            placeholder="Price ($)"
+                            placeholder="Price (Rp)"
                             className="border border-1 border-orange1 p-1 w-full text-sm"
                             value={newService.price}
                             onChange={(e) => setNewService({...newService, price: e.target.value})}
@@ -80,6 +81,13 @@ const ServicesTable = ({
                             value={newService.point}
                             onChange={(e) => setNewService({...newService, point: e.target.value})}
                             min="0"
+                        />
+                    </td>
+                    <td className="border border-1 border-solid border-black p-2">
+                        <input
+                            type="checkbox"
+                            checked={newService.useAI || false}
+                            onChange={(e) => setNewService({ ...newService, useAI: e.target.checked })}
                         />
                     </td>
                     <td className="border border-1 border-solid border-black p-2">
@@ -130,11 +138,14 @@ const ServicesTable = ({
                 {services.length > 0 ? (
                     services.map((service, idx) => (
                         <tr key={idx}>
-                            <td className="border border-1 border-solid border-black p-2">{service.serviceId || '-'}</td>
+                            <td className="border border-1 border-solid border-black p-2">{service.id || '-'}</td>
                             <td className="border border-1 border-solid border-black p-2">{service.name}</td>
-                            <td className="border border-1 border-solid border-black p-2">${service.price}</td>
+                            <td className="border border-1 border-solid border-black p-2">Rp {service.price}</td>
                             <td className="border border-1 border-solid border-black p-2">{service.duration} min</td>
                             <td className="border border-1 border-solid border-black p-2">{service.point}</td>
+                            <td className="border border-1 border-solid border-black p-2 text-center">
+                                <input type="checkbox" checked={service.useAI} disabled />
+                            </td>
                             <td className="border border-1 border-solid border-black p-2">{service.startTime}</td>
                             <td className="border border-1 border-solid border-black p-2">{service.endTime}</td>
                             <td className="border border-1 border-solid border-black p-2">
@@ -155,10 +166,10 @@ const ServicesTable = ({
                             </td>
                             <td className="border border-1 border-solid border-black p-2">
                                 <div className="flex gap-1">
-                                    {editingService?.serviceId === service.serviceId ? (
+                                    {editingService?.id === service.id ? (
                                         <>
                                             <button
-                                                onClick={() => updateService(service.serviceId)}
+                                                onClick={() => updateService(service.id)}
                                                 className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                                                 title="Save"
                                             >
@@ -182,7 +193,7 @@ const ServicesTable = ({
                                                 ✏️
                                             </button>
                                             <button
-                                                onClick={() => deleteService(service.serviceId)}
+                                                onClick={() => deleteService(service.id)}
                                                 className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
                                                 title="Delete"
                                             >
@@ -207,7 +218,7 @@ const ServicesTable = ({
                         <td className="border border-1 border-solid border-black p-2">
                             <input
                                 type="text"
-                                value={editingService.serviceId || ""}
+                                value={editingService.id || ""}
                                 className="w-full p-1 text-sm"
                                 disabled
                             />
@@ -248,6 +259,13 @@ const ServicesTable = ({
                                 min="0"
                             />
                         </td>
+                        <td className="border border-1 border-solid border-black p-2 text-center">
+                            <input
+                                type="checkbox"
+                                checked={editingService.useAI || false}
+                                onChange={(e) => setEditingService({ ...editingService, useAI: e.target.checked })}
+                            />
+                        </td>
                         <td className="border border-1 border-solid border-black p-2">
                             <input
                                 type="time"
@@ -285,7 +303,7 @@ const ServicesTable = ({
                         <td className="border border-1 border-solid border-black p-2">
                             <div className="flex gap-1">
                                 <button
-                                    onClick={() => updateService(editingService.serviceId)}
+                                    onClick={() => updateService(editingService.id)}
                                     className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                                     title="Save"
                                 >
