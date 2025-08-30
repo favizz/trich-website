@@ -80,7 +80,7 @@ export const updateService = async (serviceId, editingService, setEditingService
             'SAT': 'SATURDAY'
         };
         
-        const mappedDays = editingService.availableDays.map(day => dayMapping[day]);
+        const mappedDays = editingService.availableDays;
         
         const serviceData = {
             serviceId: editingService.serviceId,

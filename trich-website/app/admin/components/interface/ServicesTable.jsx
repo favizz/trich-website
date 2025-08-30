@@ -12,18 +12,66 @@ const ServicesTable = ({
     deleteService,
     isDaySelected
 }) => {
+    const dayMapping = {
+        'SUN': 'SUNDAY',
+        'MON': 'MONDAY', 
+        'TUE': 'TUESDAY',
+        'WED': 'WEDNESDAY',
+        'THU': 'THURSDAY',
+        'FRI': 'FRIDAY',
+        'SAT': 'SATURDAY'
+    };
+
+    const reverseDayMapping = {
+        'SUNDAY': 'SUN',
+        'MONDAY': 'MON',
+        'TUESDAY': 'TUE', 
+        'WEDNESDAY': 'WED',
+        'THURSDAY': 'THU',
+        'FRIDAY': 'FRI',
+        'SATURDAY': 'SAT'
+    };
+
     const handleDayToggle = (day) => {
-        const updatedDays = newService.availableDays.includes(day)
-            ? newService.availableDays.filter(d => d !== day)
-            : [...newService.availableDays, day];
-        setNewService({ ...newService, availableDays: updatedDays });
+        setNewService(prev => {
+            const fullDayName = dayMapping[day];
+            const currentDays = Array.isArray(prev.availableDays) ? [...prev.availableDays] : [];
+            const updatedDays = currentDays.includes(fullDayName)
+                ? currentDays.filter(d => d !== fullDayName)
+                : [...currentDays, fullDayName];
+            return { ...prev, availableDays: updatedDays };
+        });
     };
 
     const handleEditDayToggle = (day) => {
-        const updatedDays = editingService.availableDays.includes(day)
-            ? editingService.availableDays.filter(d => d !== day)
-            : [...editingService.availableDays, day];
-        setEditingService({ ...editingService, availableDays: updatedDays });
+        setEditingService(prev => {
+            const fullDayName = dayMapping[day];
+            const currentDays = Array.isArray(prev.availableDays) ? [...prev.availableDays] : [];
+            const updatedDays = currentDays.includes(fullDayName)
+                ? currentDays.filter(d => d !== fullDayName)
+                : [...currentDays, fullDayName];
+            return { ...prev, availableDays: updatedDays };
+        });
+    };
+
+    const convertDaysForAPI = (availableDays) => {
+        return availableDays;
+    };
+
+    const startEditing = (service) => {
+        const freshEditingData = {
+            id: service.id,
+            name: String(service.name || ''),
+            price: String(service.price || ''),
+            duration: String(service.duration || ''),
+            point: String(service.point || ''),
+            useAI: Boolean(service.useAI),
+            startTime: String(service.startTime || ''),
+            endTime: String(service.endTime || ''),
+            availableDays: service.availableDays ? JSON.parse(JSON.stringify(service.availableDays)) : []
+        };
+        
+        setEditingService(freshEditingData);
     };
 
     return (
@@ -114,7 +162,7 @@ const ServicesTable = ({
                                     type="button"
                                     onClick={() => handleDayToggle(day)}
                                     className={`px-2 py-1 text-xs rounded ${
-                                        newService.availableDays.includes(day)
+                                        (newService.availableDays || []).includes(dayMapping[day])
                                             ? 'bg-green-600 text-white'
                                             : 'bg-gray-300 text-gray-700'
                                     }`}
@@ -126,7 +174,14 @@ const ServicesTable = ({
                     </td>
                     <td className="border border-1 border-solid border-black p-2">
                         <button
-                            onClick={createService}
+                            onClick={() => {
+                                const serviceWithConvertedDays = {
+                                    ...newService,
+                                    availableDays: convertDaysForAPI(newService.availableDays)
+                                };
+                                console.log('Creating service with:', serviceWithConvertedDays);
+                                createService(serviceWithConvertedDays);
+                            }}
                             className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 w-full"
                         >
                             Add Service
@@ -169,7 +224,13 @@ const ServicesTable = ({
                                     {editingService?.id === service.id ? (
                                         <>
                                             <button
-                                                onClick={() => updateService(service.id)}
+                                                onClick={() => {
+                                                    const serviceWithConvertedDays = {
+                                                        ...editingService,
+                                                        availableDays: convertDaysForAPI(editingService.availableDays)
+                                                    };
+                                                    updateService(serviceWithConvertedDays.id, serviceWithConvertedDays);
+                                                }}
                                                 className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                                                 title="Save"
                                             >
@@ -186,7 +247,10 @@ const ServicesTable = ({
                                     ) : (
                                         <>
                                             <button
-                                                onClick={() => setEditingService(service)}
+                                                onClick={() => {
+                                                    console.log('Original service availableDays:', service.availableDays);
+                                                    startEditing(service);
+                                                }}
                                                 className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                                                 title="Edit"
                                             >
@@ -207,7 +271,7 @@ const ServicesTable = ({
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="9" className="text-center p-4 text-gray-500 bg-gray-50">
+                        <td colSpan="10" className="text-center p-4 text-gray-500 bg-gray-50">
                             No services available
                         </td>
                     </tr>
@@ -282,28 +346,38 @@ const ServicesTable = ({
                                 className="w-full p-1 text-sm"
                             />
                         </td>
-                        <td className="border border-1 border-solid border-black p-2">
-                            <div className="flex flex-wrap gap-1">
-                                {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map((day) => (
+                    <td className="border border-1 border-solid border-black p-2">
+                        <div className="flex flex-wrap gap-1">
+                            {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map((day) => {
+                                const isSelected = editingService?.availableDays?.includes(dayMapping[day]);
+                                return (
                                     <button
                                         key={day}
                                         type="button"
                                         onClick={() => handleEditDayToggle(day)}
                                         className={`px-2 py-1 text-xs rounded ${
-                                            editingService.availableDays.includes(day)
+                                            isSelected
                                                 ? 'bg-green-600 text-white'
                                                 : 'bg-gray-300 text-gray-700'
                                         }`}
                                     >
                                         {day}
                                     </button>
-                                ))}
-                            </div>
-                        </td>
+                                );
+                            })}
+                        </div>
+                    </td>
                         <td className="border border-1 border-solid border-black p-2">
                             <div className="flex gap-1">
                                 <button
-                                    onClick={() => updateService(editingService.id)}
+                                    onClick={() => {
+                                        const serviceWithConvertedDays = {
+                                            ...editingService,
+                                            availableDays: convertDaysForAPI(editingService.availableDays)
+                                        };
+                                        console.log('Sending to API:', serviceWithConvertedDays);
+                                        updateService(editingService.id, serviceWithConvertedDays);
+                                    }}
                                     className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                                     title="Save"
                                 >
