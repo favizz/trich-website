@@ -5,7 +5,7 @@ import { getConfigQuotas } from "./quota";
 function generateOperationalTimes(date) {
     const allOperationalTimes = [];
     const startHour = 10;
-    const endHour = 20;
+    const endHour = 17;
 
     const currentTime = new Date();
 
