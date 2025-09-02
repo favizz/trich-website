@@ -35,6 +35,10 @@ const ChooseTime = ({
         if (input === 1 && pickedTime < operationalTimes.length - 1) pickTime(pickedTime + 1);
     };
 
+    useEffect(() => { 
+        handleTime(operationalTimes[pickedTime]);
+    }, [pickedTime]);
+
     useEffect(() => {
         if (!pickedDate) return;
         const fetchBarbersForDay = async () => {
@@ -45,7 +49,7 @@ const ChooseTime = ({
                 const list = await getAvailableBarbers(pickedDay);
                 setBarbers(list);
                 if (selectedBarber && !list.find(b => b.id === selectedBarber.id)) {
-                    handleBarber(null);
+                    handleBarber({ name: "Any"});
                 }
             } catch (err) {
                 console.error("Failed to fetch barbers:", err);
@@ -84,10 +88,8 @@ const ChooseTime = ({
                 let apiUrl;
                 if (selectedBarber?.id) {
                     apiUrl = API_ROUTES.GET_AVAILABLE_TIMES_WITH_BARBER(encodeURIComponent(iso_date), serviceIds, selectedBarber.id);
-                    console.log("with barber");
                 } else {
                     apiUrl = API_ROUTES.GET_AVAILABLE_TIMES(encodeURIComponent(iso_date), serviceIds);
-                    console.log("without barber");
                 }
 
                 const res = await fetch(apiUrl, { method: "GET" });
