@@ -1,6 +1,10 @@
 "use client";
 import React from "react";
 
+const DAYS_OF_WEEK = [
+    "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"
+];
+
 const BarbersTable = ({ 
     barbers, 
     newBarber, 
@@ -11,14 +15,28 @@ const BarbersTable = ({
     updateBarber,
     deleteBarber
 }) => {
+
+    const toggleDay = (barber, day, isNew = false) => {
+        const currentDays = barber.availableDays || [];
+        const updatedDays = currentDays.includes(day)
+            ? currentDays.filter(d => d !== day)
+            : [...currentDays, day];
+
+        if (isNew) {
+            setNewBarber({...barber, availableDays: updatedDays});
+        } else {
+            setEditingBarber({...barber, availableDays: updatedDays});
+        }
+    };
+
     return (
         <table className="border-collapse w-full">
             <thead>
                 <tr className="bg-orange1 font-bold text-white">
                     <th className="border border-1 border-solid border-black p-2 w-32">ID</th>
                     <th className="border border-1 border-solid border-black p-2 min-w-0">Name</th>
-                    <th className="border border-1 border-solid border-black p-2 w-24">Chair Number</th>
-                    <th className="border border-1 border-solid border-black p-2 w-24">Available</th>
+                    <th className="border border-1 border-solid border-black p-2 w-24">Chair #</th>
+                    <th className="border border-1 border-solid border-black p-2 w-64">Available Days</th>
                     <th className="border border-1 border-solid border-black p-2 w-12">Actions</th>
                 </tr>
                 <tr className="bg-gray-50">
@@ -28,7 +46,7 @@ const BarbersTable = ({
                             type="text"
                             placeholder="Barber Name"
                             className="border border-1 border-orange1 p-1 w-full text-sm"
-                            value={newBarber.name}
+                            value={newBarber.name || ""}
                             onChange={(e) => setNewBarber({...newBarber, name: e.target.value})}
                         />
                     </td>
@@ -37,20 +55,23 @@ const BarbersTable = ({
                             type="number"
                             placeholder="Chair #"
                             className="border border-1 border-orange1 p-1 w-full text-sm"
-                            value={newBarber.chairNumber}
+                            value={newBarber.chairNumber || ""}
                             onChange={(e) => setNewBarber({...newBarber, chairNumber: e.target.value})}
                             min="1"
                         />
                     </td>
                     <td className="border border-1 border-solid border-black p-2">
-                        <select
-                            className="border border-1 border-orange1 p-1 w-full text-sm"
-                            value={newBarber.available}
-                            onChange={(e) => setNewBarber({...newBarber, available: e.target.value === 'true'})}
-                        >
-                            <option value={true}>Available</option>
-                            <option value={false}>Not Available</option>
-                        </select>
+                        <div className="flex flex-wrap gap-1">
+                            {DAYS_OF_WEEK.map(day => (
+                                <label key={day} className="text-xs">
+                                    <input
+                                        type="checkbox"
+                                        checked={newBarber.availableDays?.includes(day) || false}
+                                        onChange={() => toggleDay(newBarber, day, true)}
+                                    /> {day.slice(0,3)}
+                                </label>
+                            ))}
+                        </div>
                     </td>
                     <td className="border border-1 border-solid border-black p-2">
                         <button
@@ -70,11 +91,15 @@ const BarbersTable = ({
                             <td className="border border-1 border-solid border-black p-2">{barber.name}</td>
                             <td className="border border-1 border-solid border-black p-2">{barber.chairNumber}</td>
                             <td className="border border-1 border-solid border-black p-2">
-                                <span className={`px-2 py-1 text-xs rounded ${
-                                    barber.available ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
-                                }`}>
-                                    {barber.available ? 'Available' : 'Not Available'}
-                                </span>
+                                <div className="flex flex-wrap gap-1">
+                                    {DAYS_OF_WEEK.map(day => (
+                                        <span key={day} className={`px-2 py-1 text-xs rounded ${
+                                            barber.availableDays?.includes(day) ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+                                        }`}>
+                                            {day.slice(0,3)}
+                                        </span>
+                                    ))}
+                                </div>
                             </td>
                             <td className="border border-1 border-solid border-black p-2">
                                 <div className="flex gap-1">
@@ -124,7 +149,7 @@ const BarbersTable = ({
                         </td>
                     </tr>
                 )}
-                
+
                 {editingBarber && (
                     <tr className="bg-yellow-50">
                         <td className="border border-1 border-solid border-black p-2">
@@ -153,14 +178,17 @@ const BarbersTable = ({
                             />
                         </td>
                         <td className="border border-1 border-solid border-black p-2">
-                            <select
-                                className="border border-1 border-orange1 p-1 w-full text-sm"
-                                value={editingBarber.available}
-                                onChange={(e) => setEditingBarber({...editingBarber, available: e.target.value === 'true'})}
-                            >
-                                <option value={true}>Available</option>
-                                <option value={false}>Not Available</option>
-                            </select>
+                            <div className="flex flex-wrap gap-1">
+                                {DAYS_OF_WEEK.map(day => (
+                                    <label key={day} className="text-xs">
+                                        <input
+                                            type="checkbox"
+                                            checked={editingBarber.availableDays?.includes(day) || false}
+                                            onChange={() => toggleDay(editingBarber, day)}
+                                        /> {day.slice(0,3)}
+                                    </label>
+                                ))}
+                            </div>
                         </td>
                         <td className="border border-1 border-solid border-black p-2">
                             <div className="flex gap-1">

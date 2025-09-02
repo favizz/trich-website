@@ -158,7 +158,7 @@ export const updateBarber = async (barberId, editingBarber, setEditingBarber, fe
             barberId: editingBarber.id,
             name: editingBarber.name,
             chairNumber: parseInt(editingBarber.chairNumber),
-            available: editingBarber.available
+            availableDays: editingBarber.availableDays 
         };
         
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/barber/${barberId}`, {
@@ -175,6 +175,7 @@ export const updateBarber = async (barberId, editingBarber, setEditingBarber, fe
         ToastManager.notify("Failed to update barber", "error");
     }
 };
+
 
 export const deleteBarber = async (barberId, fetchBarbers) => {
     try {

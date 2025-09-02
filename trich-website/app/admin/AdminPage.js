@@ -8,7 +8,6 @@ import ServicesManagement from "./components/ServicesManagement";
 import BarbersManagement from "./components/BarbersManagement";
 import UserManagement from "./components/UserManagement";
 import ReservationsManagement from "./components/ReservationsManagement";
-import QuotaManagement from "./components/QuotaManagement";
 
 // Import functions
 import { 
@@ -55,10 +54,6 @@ const AdminDashboard = () => {
     const [newBarber, setNewBarber] = useState({ name: "", chairNumber: "", available: true });
     const [editingService, setEditingService] = useState(null);
     const [editingBarber, setEditingBarber] = useState(null);
-    const [wdQuotaValue, setWdQuotaValue] = useState("");
-    const [baseQuotaValue, setBaseQuotaValue] = useState("");
-    const [quotaDate, setQuotaDate] = useState("");
-    const [quotaQuota, setQuotaQuota] = useState("");
     const [searchUserPhone, setSearchUserPhone] = useState("");
     const [searchedUser, setSearchedUser] = useState(null);
     const [searchError, setSearchError] = useState("");
@@ -72,11 +67,9 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         fetchActiveBookings(setBookings);
-        fetchQuotas(setQuotas);
         fetchServices(setServices);
         fetchBarbers(setBarbers);
         fetchRecentBookings(20, setRecentBookings);
-        fetchCurrentQuotas(setWdQuotaValue, setBaseQuotaValue);
     }, []);
 
     // Wrapper functions for API calls
@@ -89,10 +82,6 @@ const AdminDashboard = () => {
     const handleFetchRecentBookings = () => fetchRecentBookings(lastNBookings, setRecentBookings);
     const handleFetchBookingsByDate = () => fetchBookingsByDate(selectedDate, setRecentBookings);
     const handleSearchUser = () => searchUser(searchUserPhone, setSearchedUser, setSearchError);
-    const handleSetWdQuota = () => setWdQuota(wdQuotaValue, () => fetchCurrentQuotas(setWdQuotaValue, setBaseQuotaValue));
-    const handleSetBaseQuota = () => setBaseQuota(baseQuotaValue, () => fetchCurrentQuotas(setWdQuotaValue, setBaseQuotaValue));
-    const handleAddCustomQuota = () => handleAddQuota(quotaDate, quotaQuota, setQuotaDate, setQuotaQuota, () => fetchQuotas(setQuotas));
-    const handleDeleteCustomQuota = (quotaId) => handleDeleteQuota(quotaId, () => fetchQuotas(setQuotas));
 
     return (
         <div className="pt-32 p-4 min-h-screen">
@@ -136,21 +125,6 @@ const AdminDashboard = () => {
                         createBarber={handleCreateBarber}
                         updateBarber={handleUpdateBarber}
                         deleteBarber={handleDeleteBarber}
-                    />
-                    <QuotaManagement 
-                        wdQuotaValue={wdQuotaValue}
-                        setWdQuotaValue={setWdQuotaValue}
-                        baseQuotaValue={baseQuotaValue}
-                        setBaseQuotaValue={setBaseQuotaValue}
-                        quotaDate={quotaDate}
-                        setQuotaDate={setQuotaDate}
-                        quotaQuota={quotaQuota}
-                        setQuotaQuota={setQuotaQuota}
-                        quotas={quotas}
-                        setWdQuota={handleSetWdQuota}
-                        setBaseQuota={handleSetBaseQuota}
-                        handleAddQuota={handleAddCustomQuota}
-                        handleDeleteQuota={handleDeleteCustomQuota}
                     />
                 </div>
             </div>
