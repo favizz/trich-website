@@ -1,6 +1,6 @@
 import { API_ROUTES } from "@/constants/routes"
 
-export const getAvailableBarbers = async () => {
+export const getAvailableBarbers = async (dayOfWeek) => {
     try {
         const res = await fetch(API_ROUTES.GET_BARBERS, { method: "GET" });
         if (!res.ok) throw new Error(`GET_BARBERS failed: ${res.status} ${res.statusText}`);
@@ -8,12 +8,13 @@ export const getAvailableBarbers = async () => {
         const data = await res.json();
         const list = Array.isArray(data) ? data : [];
 
-        return list.filter(b => b && b.available === true)
+        return list.filter(b => b && Array.isArray(b.availableDays) && b.availableDays.includes(dayOfWeek));
     } catch (err) {
         console.error("getAvailableBarbers error:", err);
         return [];
     }
 };
+
 
 /**
  * Get a barber by ID

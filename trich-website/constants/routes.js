@@ -7,9 +7,14 @@ export const API_ROUTES = {
     GET_USER_BY_PHONE: (phone_number) => `${BASE_URL}/website/user/${phone_number}`,
     GET_AVAILABLE_TIMES: (date, service_ids) => {
         const idsQuery = service_ids.map(id => `serviceIds=${encodeURIComponent(id)}`).join("&");
-        return `${BASE_URL}/website/quota/available?date=${date}&${idsQuery}`;
+        return `${BASE_URL}/website/quota?date=${date}&${idsQuery}`;
     },
-    
+
+    GET_AVAILABLE_TIMES_WITH_BARBER: (date, service_ids, barberId) => {
+        const idsQuery = service_ids.map(id => `serviceIds=${encodeURIComponent(id)}`).join("&");
+        return `${BASE_URL}/website/quota?date=${date}&${idsQuery}&barberId=${encodeURIComponent(barberId)}`;
+    },
+
     GET_BARBERS: `${BASE_URL}/website/barber`,
     CREATE_RESERVATION: `${BASE_URL}/website/reservations`
 };

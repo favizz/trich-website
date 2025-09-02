@@ -1,5 +1,6 @@
+"use client";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { useState, useEffect } from "react";
 
 import { API_ROUTES } from "@/constants/routes";
 import { getAvailableBarbers } from "@/utils/barber";
@@ -27,85 +28,101 @@ const ChooseTime = ({
     const [isDateValid, toggleDateValid] = useState(true);
     const [isMorningEdge, setMorningEdge] = useState(false);
     const [barbers, setBarbers] = useState([]);
-
     const [isLoading, toggleLoading] = useState(false);
 
     const handleTimePick = (input) => {
-        if (input === -1) {
-            if (pickedTime > 0) {
-                pickTime(pickedTime - 1);
-            }
-        } else if (input === 1) {
-            if (pickedTime < operationalTimes.length - 1) {
-                pickTime(pickedTime + 1);
-            }
-        }
+        if (input === -1 && pickedTime > 0) pickTime(pickedTime - 1);
+        if (input === 1 && pickedTime < operationalTimes.length - 1) pickTime(pickedTime + 1);
     };
 
     useEffect(() => {
-        const fetchBarbers = async () => {
-            const list = await getAvailableBarbers();
-            setBarbers(list);
+        if (!pickedDate) return;
+        const fetchBarbersForDay = async () => {
+            toggleLoading(true);
+            try {
+                const dayNames = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+                const pickedDay = dayNames[new Date(pickedDate).getDay()];
+                const list = await getAvailableBarbers(pickedDay);
+                setBarbers(list);
+                if (selectedBarber && !list.find(b => b.id === selectedBarber.id)) {
+                    handleBarber(null);
+                }
+            } catch (err) {
+                console.error("Failed to fetch barbers:", err);
+                setBarbers([]);
+            } finally {
+                toggleLoading(false);
+            }
+        };
+        fetchBarbersForDay();
+    }, [pickedDate]);
+
+    useEffect(() => {
+        if (!pickedDate) return;
+
+        const fetchAvailableTimes = async () => {
+            toggleLoading(true);
+            try {
+                const dayNames = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+                const pickedDay = dayNames[new Date(pickedDate).getDay()];
+
+                const violates = pickedService.some(s =>
+                    Array.isArray(s.availableDays) && s.availableDays.length > 0 && !s.availableDays.includes(pickedDay)
+                );
+
+                if (violates) {
+                    toggleDateValid(false);
+                    setOperationalTimes([]);
+                    return;
+                }
+
+                const pad = (n) => String(n).padStart(2, "0");
+                const iso_date = `${new Date(pickedDate).getFullYear()}-${pad(new Date(pickedDate).getMonth() + 1)}-${pad(new Date(pickedDate).getDate())}`;
+
+                const serviceIds = pickedService.map(s => s.id).filter(Boolean);
+
+                let apiUrl;
+                if (selectedBarber?.id) {
+                    apiUrl = API_ROUTES.GET_AVAILABLE_TIMES_WITH_BARBER(encodeURIComponent(iso_date), serviceIds, selectedBarber.id);
+                    console.log("with barber");
+                } else {
+                    apiUrl = API_ROUTES.GET_AVAILABLE_TIMES(encodeURIComponent(iso_date), serviceIds);
+                    console.log("without barber");
+                }
+
+                const res = await fetch(apiUrl, { method: "GET" });
+                const data = await res.json();
+
+                if (!res.ok || data?.error) {
+                    toggleDateValid(false);
+                    setOperationalTimes([]);
+                    return;
+                }
+
+                const times = Array.isArray(data.times) ? data.times : [];
+                const formattedDate = data.formattedDate ?? iso_date;
+                const morningEdge = !!data.morningEdge;
+
+                toggleDateValid(true);
+                handleDate(formattedDate);
+                setMorningEdge(morningEdge);
+                setOperationalTimes(times);
+                pickTime(0);
+            } catch (err) {
+                console.error("fetchAvailableTimes failed:", err);
+                toggleDateValid(false);
+                setOperationalTimes([]);
+            } finally {
+                toggleLoading(false);
+            }
         };
 
-        fetchBarbers();
-    }, []);
+        fetchAvailableTimes();
+    }, [pickedDate, selectedBarber]);
 
-    useEffect(() => {
-        handleTime(operationalTimes[pickedTime] || null);
-    }, [pickedDate, pickedTime, operationalTimes, isMorningEdge]);
-
-    const handleDateChange = async (dateInput) => {
-        toggleLoading(true);
-        try {
-            pickDate(dateInput);
-            const dayNames = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
-            const pickedDay = dayNames[dateInput.getDay()];
-
-            const violates = pickedService.some(s =>
-                Array.isArray(s.availableDays) && s.availableDays.length > 0 && !s.availableDays.includes(pickedDay)
-            );
-
-            if (violates) {
-                toggleDateValid(false);
-                setOperationalTimes([]);
-                return;
-            }
-
-            const pad = (n) => String(n).padStart(2, "0");
-            const iso_date = `${dateInput.getFullYear()}-${pad(dateInput.getMonth() + 1)}-${pad(dateInput.getDate())}`;
-
-            const serviceIds = pickedService.map(s => s.id).filter(Boolean);
-
-            const res = await fetch(
-                API_ROUTES.GET_AVAILABLE_TIMES(encodeURIComponent(iso_date), serviceIds),
-                { method: "GET" }
-            );
-
-            const data = await res.json();
-            if (!res.ok || data?.error) {
-                toggleDateValid(false);
-                setOperationalTimes([]);
-                return;
-            }
-
-            const times = Array.isArray(data.times) ? data.times : [];
-            const formattedDate = data.formattedDate ?? iso_date;
-            const morningEdge = !!data.morningEdge;
-
-            toggleDateValid(true);
-            handleDate(formattedDate);
-            setMorningEdge(morningEdge);
-            setOperationalTimes(times);
-        } catch (err) {
-            console.error("handleDateChange failed:", err);
-            toggleDateValid(false);
-            setOperationalTimes([]);
-        } finally {
-            toggleLoading(false);
-        }
+    const handleDateChange = (dateInput) => {
+        pickDate(dateInput);
     };
-
 
     const handleContinue = () => {
         if (!date) {
@@ -131,6 +148,7 @@ const ChooseTime = ({
                 onSelect={handleDateChange}
                 className="my-4 rounded-md border"
             />
+
             <div className="w-full h-[0.5px] bg-gray-600 mb-8"></div>
             <div className={`space-y-4 ${pickedDate === "" ? 'invisible' : 'flex flex-col'} items-center`}>
                 <p className="font-bold text-center">
@@ -144,71 +162,68 @@ const ChooseTime = ({
                     {isDateValid ? (
                         "Select Available Time"
                     ) : (
-                        <span className="text-orange1">
-                            Please select another date!
-                        </span>
+                        <span className="text-orange1">Please select another date!</span>
                     )}
                 </p>
 
-                {isMorningEdge && operationalTimes.length === 0 ? (
-                    <p>Morning Edge is not available!</p>
-                ) : (
-                    ""
-                )}
+                {isMorningEdge && operationalTimes.length === 0 && <p>Morning Edge is not available!</p>}
 
                 {isLoading ? (
-                    isDateValid && 
-                        <Spinner isLoading={isLoading} />
+                    <Spinner isLoading={isLoading} />
                 ) : (
-                    operationalTimes.length !== 0 && isDateValid && (
-                        <>
-                            <div className="flex flex-row space-x-8">
-                                <Image
-                                    onClick={() => handleTimePick(-1)}
-                                    src={LeftArrow}
-                                    alt="left-arrow"
-                                />
-                                <div className="text-black font-bold bg-white border border-1 border-black rounded px-6 py-2">
-                                    {operationalTimes[pickedTime]}
-                                </div>
-                                <Image
-                                    onClick={() => handleTimePick(1)}
-                                    src={RightArrow}
-                                    alt="right-arrow"
-                                />
-                            </div>
-                            <div className="flex flex-col items-center gap-2">
-                                <p className="font-extrabold text-[#545454]">
-                                    Select Barber
-                                </p>
-                                <select
-                                    id="barber-select"
-                                    value={selectedBarber?.id ?? ""}
-                                    onChange={(e) => handleBarber(barbers.find(b => b.id === e.target.value) ?? {})}
-                                    className="w-full max-w-sm p-3 text-lg border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">-- Any Barber --</option>
-                                    {barbers.map(b => (
-                                        <option key={b.id} value={b.id}>
-                                            {b.name} (Chair {b.chairNumber})
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <button
-                                onClick={() => handleContinue()}
-                                className="border border-1 border-orange1 text-orange1 font-bold px-12 py-2 rounded"
-                            >
-                                Pay
-                            </button>
-                        </>
-                    )
+                    <>
+                        {operationalTimes.length === 0 && pickedDate && isDateValid ? (
+                            <p className="text-red-600 font-bold mt-4 text-center">
+                                No available times on this date.<br /> Please pick another date.
+                            </p>
+                        ) : (
+                            operationalTimes.length !== 0 && isDateValid && (
+                                <>
+                                    <div className="flex flex-row space-x-8">
+                                        <Image
+                                            onClick={() => handleTimePick(-1)}
+                                            src={LeftArrow}
+                                            alt="left-arrow"
+                                        />
+                                        <div className="text-black font-bold bg-white border border-1 border-black rounded px-6 py-2">
+                                            {operationalTimes[pickedTime]}
+                                        </div>
+                                        <Image
+                                            onClick={() => handleTimePick(1)}
+                                            src={RightArrow}
+                                            alt="right-arrow"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <p className="font-extrabold text-[#545454]">Select Barber</p>
+                                        <select
+                                            id="barber-select"
+                                            value={selectedBarber?.id ?? ""}
+                                            onChange={(e) => handleBarber(barbers.find(b => b.id === e.target.value) ?? null)}
+                                            className="w-full max-w-sm p-3 text-lg border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <option value="">Any</option>
+                                            {barbers.map(b => (
+                                                <option key={b.id} value={b.id}>
+                                                    {b.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <button
+                                        onClick={handleContinue}
+                                        className="border border-1 border-orange1 text-orange1 font-bold px-12 py-2 rounded mt-4"
+                                    >
+                                        Pay
+                                    </button>
+                                </>
+                            )
+                        )}
+                    </>
                 )}
             </div>
 
-            <div className="w-0 h-0">
-                <ToastContainer />
-            </div>
+            <ToastContainer />
         </div>
     );
 };
