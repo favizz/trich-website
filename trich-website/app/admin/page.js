@@ -1,9 +1,10 @@
-import AdminPage from "./AdminPage"
+import { Suspense } from "react";
+import AdminPage from "./AdminPage";
 
-const page = () => {
+export default function Page() {
   return (
-    <AdminPage/>
-  )
+    <Suspense fallback={<div />}>
+      <AdminPage />
+    </Suspense>
+  );
 }
-
-export default page
