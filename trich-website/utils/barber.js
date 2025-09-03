@@ -17,7 +17,6 @@ export const getAvailableBarbers = async (dayOfWeek) => {
 
 
 /**
- * Get a barber by ID
  * @param {string} barberId - The ID of the barber to retrieve
  * @returns {Promise<Object>} The barber data
  */
