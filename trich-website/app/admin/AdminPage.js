@@ -3,13 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { ToastContainer } from "react-toastify";
 
-// Import components
 import ServicesManagement from "./components/ServicesManagement";
 import BarbersManagement from "./components/BarbersManagement";
 import UserManagement from "./components/UserManagement";
 import ReservationsManagement from "./components/ReservationsManagement";
 
-// Import functions
 import { 
     isDaySelected, 
     createService, 
