@@ -37,7 +37,7 @@ const ChooseTime = ({
 
     useEffect(() => { 
         handleTime(operationalTimes[pickedTime]);
-    }, [pickedTime]);
+    }, [pickedTime, operationalTimes]);
 
     useEffect(() => {
         if (!pickedDate) return;
