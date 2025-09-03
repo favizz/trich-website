@@ -34,7 +34,7 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
             })),
             customer_details: {
                 first_name: first_name,
-                phone_number: phone_number,
+                phone: phone_number,
             },
             enabled_payments: ["other_qris"],
         };
@@ -48,7 +48,8 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
             if (!reqBody) return;
 
             try {
-                const response = await fetch("/api/dokuHandler", {
+                const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/operational/payment/token`;
+                const response = await fetch(endpoint, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -62,7 +63,7 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
 
                 const data = await response.json();
 
-                window.snap.pay(data.token, {
+                window.snap.pay(data.transactionToken, {
                     onSuccess: function (result) {
                         setPaymentStatus(1);
                     },

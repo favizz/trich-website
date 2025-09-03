@@ -1,75 +1,45 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { handleUser, createBooking } from "@/utils/user";
+import { handleUser, createReservation } from "@/utils/user";
 import { getOperationalTimes } from "@/utils/operationalTimes";
 import { updatePaidBooking } from "@/utils/booking";
 
-import { formatPrice } from "./ChooseService";
+import { formatPrice } from "@/utils/price";
+import { generateCode } from "@/utils/generateOrderId";
 
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
-
-export function generateCode() {
-    const number = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
-
-    const letters = String.fromCharCode(
-        Math.floor(Math.random() * 26) + 65,
-        Math.floor(Math.random() * 26) + 65
-    );
-
-    return `TB-${number}${letters}`;
-}
 
 const ConfirmPay = ({
     user,
     date,
     time,
     service,
-    price,
-    actualPrice,
+    totalPrice,
     duration,
+    barber,
     setOrderId,
     handlePage,
-    queryParam
+    setBookingResponse
 }) => {
-    const router = useRouter();
-
     const [agreePolicy, setAgreePolicy] = useState(false);
 
     const handleBooking = async () => {
         const orderid = generateCode();
         setOrderId(orderid);
 
-        let serviceName = service;
-        if (serviceName.includes("The Trich Experience")) {
-            if (queryParam === "H3e5LrxK2R") { // free the trich experience
-                serviceName = `${serviceName} (Free Trich Experience)`; 
-            } 
-        }
-        if (serviceName.includes("Trim & Treat") || 
-            serviceName.includes("Mask Off") || 
-            serviceName.includes("Creambath")
-        ) {
-            if (queryParam === "w62jI0Zzbk") { // 50% small service
-                serviceName = `${serviceName} (50% Small Service)`; 
-            } 
-            else if (queryParam === "5J8qcc6ahu") { // free small service
-                serviceName = `${serviceName} (Free Small Service)`; 
-            }
-        }
-
-        await createBooking(
+        const response = await createReservation(
+            orderid,
             user.first_name,
             user.phone_number,
-            serviceName,
+            service,
             time,
             date,
-            price,
-            orderid,
+            barber.id
         );
 
-        return orderid;
+        return response;
     };
 
     const handleCheckout = async (e) => {
@@ -77,8 +47,8 @@ const ConfirmPay = ({
 
         const dateObj = new Date(Date.parse(date));
         if (isNaN(dateObj)) {
-          alert("Invalid date format.");
-          return;
+            alert("Invalid date format.");
+            return;
         }
 
         const { error, times } = await getOperationalTimes(dateObj, service);
@@ -90,7 +60,7 @@ const ConfirmPay = ({
             );
             return;
         }
-    
+
         if (!times.includes(time)) {
             ToastManager.notify(
                 "Sorry, that slot was just taken. Please go back to choose another time.",
@@ -100,14 +70,10 @@ const ConfirmPay = ({
             return;
         }
 
-        const tempOrderId = await handleBooking();
-    
-        if (actualPrice > 0) {
+        const response = await handleBooking();
+        setBookingResponse(response);
+        if (totalPrice > 0) {
             handlePage(4);
-        } else {
-            const booking = await updatePaidBooking(tempOrderId);
-            await handleUser(booking);
-            router.replace("payment-status");
         }
     };
 
@@ -124,15 +90,19 @@ const ConfirmPay = ({
                 />
                 <ReceiptList
                     title={"Services"}
-                    value={service}
+                    value={service.map(s => s.name).join(", ")}
+                />
+                <ReceiptList
+                    title={"Barber"}
+                    value={barber.name}
                 />
                 <ReceiptList
                     title={"Duration"}
-                    value={`${duration * 60} Minutes`}
+                    value={`${duration} Minutes`}
                 />
                 <ReceiptList
                     title={"Down Payment"}
-                    value={`IDR ${actualPrice >= 200000 ? "100.000" : formatPrice(price)}`}
+                    value={`IDR ${totalPrice >= 200000 ? "100.000" : formatPrice(totalPrice)}`}
                 />                
             </div>
             <div className="w-full h-[0.5px] bg-gray-600"></div>

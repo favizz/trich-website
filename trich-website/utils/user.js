@@ -1,9 +1,16 @@
+import { API_ROUTES } from "@/constants/routes";
+import { v4 as uuidv4 } from "uuid";
 import { auth, db } from "@/config/firebase";
 import { collection, query, where, 
          getDoc, getDocs, deleteDoc, 
          addDoc, updateDoc, increment,
          arrayUnion } from "firebase/firestore";
-import { v4 as uuidv4 } from "uuid";
+
+// Note: The following functions still require Firebase and are not used in the dashboard:
+// - handleUser: Used for handling new bookings (Firebase required)
+// - removeExpiredBooking: Used for removing expired bookings (Firebase required)
+// - getUserData: Used by AuthProvider for authentication (Firebase required)
+// These functions can be migrated to Spring Boot API in a future update if needed.
 
 export const computePoint = (service) => {
     let total = 0;
@@ -28,86 +35,99 @@ export const computePoint = (service) => {
     return total;
 }
 
-export const getUserData = async () => {
-    const currentUserID = auth?.currentUser?.uid;
-    if (!currentUserID) {
-        return { success: false, error: "Not logged in!" };
-    }
-    const q = query(
-        collection(db, "non_auth_user"),
-        where("user_id", "==", currentUserID),
-    );
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-        const userInfo = querySnapshot.docs[0].data();
-        return { success: true, user: userInfo };
-    } else {
-        return { success: false, error: "no user found!" };
+export const getUserData = async (phoneNumber) => {
+    const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/user/${phoneNumber}`;
+
+    try {
+        const response = await fetch(endpoint, {
+            method: "GET"
+        })
+        
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        return null;
     }
 };
 
-export const createBooking = async (
-        fullName,
-        userPhone,
-        pickedService,
-        pickedTime,
-        pickedDate,
-        totalPrice,
-        order_id,
-    ) => {
-        const userBookingRef = collection(db, "active_booking");
-        try {
-            await addDoc(userBookingRef, {
-                create_booking_date: new Date(),
-                name: fullName,
-                phone_number: userPhone,
-                service: pickedService,
-                amount: totalPrice,
-                date: pickedDate,
-                time: pickedTime,
-                status: 1,
-                booking_id: uuidv4(),
-                order_id: order_id.toString(),
-            }).catch((e) => {
-                console.error(e);
-            });
-        } catch (error) {
-            console.error(error);
+export const createReservation = async (
+    order_id,
+    fullName,
+    userPhone,
+    pickedService,
+    pickedTime,
+    pickedDate,
+    pickedBarberId
+) => {
+    const [hour, minute] = pickedTime.split(":").map(Number);
+    const timeString = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+
+    const parsedDate = new Date(pickedDate);
+    const isoDate = parsedDate.toLocaleDateString("en-CA"); 
+
+
+    const body = {
+        orderId: order_id.toString(),
+        name: fullName,
+        phoneNumber: userPhone,
+        serviceIds: pickedService.map(s => s.id),
+        date: isoDate,
+        time: timeString,
+        barberId: pickedBarberId
+    };
+
+    try {
+        const response = await fetch(API_ROUTES.CREATE_RESERVATION, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to create booking");
         }
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error("Booking creation failed:", error);
+        throw error;
+    }
 };
 
 export const getPendingBookings = async (phoneNumber) => {
+    const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/${phoneNumber}`;
     try {
-        const bookingsQuery = query(
-            collection(db, "active_booking"),
-            where("phone_number", "==", phoneNumber),
-            where("status", "==", 1)
-        );
+        const response = await fetch(endpoint, {
+            method: "GET"
+            }
+        )
+        const reservations = await response.json();
+        const pendingReservation = reservations.find(r => r.status === 1);
 
-        const querySnapshot = await getDocs(bookingsQuery);
-
-        if (querySnapshot.empty) {
-            return null;
-        }
-
-        const doc = querySnapshot.docs[0];
-
-        return { docRef: doc.ref, data: doc.data() };
+        return pendingReservation || null;
     } catch (error) {
         console.error("Error fetching pending bookings:", error);
         return null;
     }
 };
 
-export const deleteBooking = async (docRef) => {
+export const deleteBooking = async (reservationId) => {
+    const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/${reservationId}`;
+
     try {
-        if (!docRef) {
-            console.error("Invalid document reference");
-            return false;
+        const response = await fetch(endpoint, {
+            method: "DELETE"
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to delete booking (status ${response.status})`);
         }
 
-        await deleteDoc(docRef);
-        console.log("Booking successfully deleted.");
         return true;
     } catch (error) {
         console.error("Error deleting booking:", error);
@@ -115,21 +135,39 @@ export const deleteBooking = async (docRef) => {
     }
 };
 
+
 export const getMembership = async (phoneNumber) => {
-    if (!phoneNumber.startsWith("+62")) {
-        return { success: true, error: "Wrong phone format!" };
+    if (!phoneNumber || phoneNumber.length < 8) {
+        return { success: true, error: "Invalid phone number format!" };
     }
 
-    const q = query(
-        collection(db, "membership"),
-        where("phone_number", "==", phoneNumber),
-    );
+    try {
+        // Ensure phone number has the +62 prefix and preserve dashes
+        let formattedPhone = phoneNumber;
+        if (!formattedPhone.startsWith("+62")) {
+            formattedPhone = `+62${formattedPhone}`;
+        }
+        
+        const response = await fetch(API_ROUTES.GET_USER_MEMBERSHIP(formattedPhone), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
+        if (!response.ok) {
+            if (response.status === 404) {
+                return { success: true, membership: false };
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const membershipData = await response.json();
         return { success: true, membership: true };
-    } else {
-        return { success: true, error: "No user found with the provided phone number." };
+    } catch (error) {
+        console.error("Error fetching membership:", error);
+        // If API is not available, assume no membership (this is expected when backend is not ready)
+        return { success: true, membership: false };
     }
 };
 
@@ -137,19 +175,41 @@ export const getUserBookings = async (phoneNumber) => {
     if (!phoneNumber) {
         return { success: false, error: "No Phone Number!" };
     }
-    const q = query(
-        collection(db, "active_booking"),
-        where("phone_number", "==", phoneNumber),
-    );
 
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-        let bookings = querySnapshot.docs.map((doc) => doc.data());
-        bookings = bookings.sort((a, b) => a.status - b.status);
+    try {
+        // Ensure phone number has the +62 prefix and preserve dashes
+        let formattedPhone = phoneNumber;
+        if (!formattedPhone.startsWith("+62")) {
+            formattedPhone = `+62${formattedPhone}`;
+        }
+        
+        const response = await fetch(API_ROUTES.GET_USER_RESERVATIONS(formattedPhone), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
-        return { success: true, bookings: bookings };
+        if (!response.ok) {
+            if (response.status === 404) {
+                return { success: true, error: "No bookings with the provided phone number." };
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const bookings = await response.json();
+        if (bookings && bookings.length > 0) {
+            // Sort bookings by status (assuming status is a number)
+            bookings.sort((a, b) => a.status - b.status);
+            return { success: true, bookings: bookings };
+        }
+        
+        return { success: true, error: "No bookings with the provided phone number." };
+    } catch (error) {
+        console.error("Error fetching user bookings:", error);
+        // If API is not available, return empty bookings (this is expected when backend is not ready)
+        return { success: true, bookings: [] };
     }
-    return { success: true, error: "No bookings with the provided phone number." };
 };
 
 export const handleUser = async (booking) => {

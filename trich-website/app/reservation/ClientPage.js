@@ -18,27 +18,25 @@ const ClientPage = () => {
     const [fullName, setFullName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [points, setPoints] = useState(0);
+    const [isMember, setMembership] = useState(false);
 
     const [currPage, setPage] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
-    const [totalActualPrice, setTotalActualPrice] = useState(0);
     const [isConfirm, toggleConfirm] = useState(false);
-    const [pickedService, setService] = useState(null);
+    const [pickedService, setService] = useState([]);
     const [pickedDate, setDate] = useState(null);
     const [pickedTime, setTime] = useState(null);
     const [totalDuration, setDuration] = useState(null);
     const [orderid, setOrderId] = useState(0);
+    const [selectedBarber, setSelectedBarber] = useState({});
 
-    const [pendingBooking, setPendingBooking] = useState({
-        booking_ref: null,
-        booking_data: null
-    });
+    const [pendingBooking, setPendingBooking] = useState({});
+    const [bookingResponse, setBookingResponse] = useState({});
 
     const searchParams = useSearchParams();
     const encrypted = searchParams.get('q');
 
     const queryParam = encrypted ? unhashQuery(encrypted) : null;
-
     return (
         <>
             <section className="flex flex-col bg-white rounded-lg py-8 my-32 shadow-xl tracking-wider">
@@ -51,6 +49,8 @@ const ClientPage = () => {
                         setFullName={setFullName}
                         phoneNumber={phoneNumber}
                         setPhoneNumber={setPhoneNumber}
+                        setPoints={setPoints}
+                        setMembership={setMembership}
                         setPage={setPage}
                         setPendingBooking={setPendingBooking}
                     />
@@ -66,30 +66,24 @@ const ClientPage = () => {
                     <ChooseService
                         phoneNumber={`+62${phoneNumber.replace(/-/g, "")}`}
                         points={points}
-                        setPoints={setPoints}
+                        isMember={isMember}
                         handlePage={setPage}
                         handleService={setService}
                         handleTotalPrice={setTotalPrice}
-                        handleTotalActualPrice={setTotalActualPrice}
                         handleDuration={setDuration}
                         toggleConfirm={toggleConfirm}
                         queryParam={queryParam}
-                    />
-                )}
-                {currPage === 1 && isConfirm && (
-                    <ConfirmService
-                        myService={pickedService}
-                        toggleConfirm={toggleConfirm}
-                        handlePage={setPage}
                     />
                 )}
                 {currPage === 2 && (
                     <ChooseTime
                         pickedService={pickedService}
                         date={pickedDate}
+                        selectedBarber={selectedBarber}
                         handleDate={setDate}
                         handleTime={setTime}
                         handlePage={setPage}
+                        handleBarber={setSelectedBarber}
                     />
                 )}
                 {currPage === 3 && (
@@ -98,21 +92,21 @@ const ClientPage = () => {
                         date={pickedDate}
                         time={pickedTime}
                         service={pickedService}
-                        price={totalPrice}
-                        actualPrice={totalActualPrice}
+                        totalPrice={totalPrice}
                         duration={totalDuration}
+                        barber={selectedBarber}
                         setOrderId={setOrderId}
                         handlePage={setPage}
-                        queryParam={queryParam}
+                        setBookingResponse={setBookingResponse}
                     />
                 )}
                 {currPage === 4 && (
                     <Checkout
                         first_name={fullName}
                         phone_number={`+62${phoneNumber.replace(/-/g, "")}`}
-                        pickedService={pickedService || pendingBooking.booking_data.service}
-                        totalPrice={totalPrice || pendingBooking.booking_data.amount}
-                        orderId={orderid ||  pendingBooking.booking_data.order_id}
+                        pickedService={bookingResponse.serviceNames || pendingBooking.service}
+                        totalPrice={bookingResponse.amount || pendingBooking.amount}
+                        orderId={bookingResponse.orderId ||  pendingBooking.orderId}
                     />
                 )}
                 <div className="w-0 h-0">

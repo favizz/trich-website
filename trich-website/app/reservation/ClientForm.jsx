@@ -1,8 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getPendingBookings } from "@/utils/user";
-import { getUser } from "@/utils/non-auth-user";
-// import { getCookie, setCookie } from "cookies-next";
+import { getPendingBookings, getUserData } from "@/utils/user";
 import { getCredentials, setCredentials } from "@/utils/cookieManager";
 import PhoneForm from "../components/forms/PhoneForm";
 import Spinner from "../components/Spinner";
@@ -12,6 +10,8 @@ const ClientForm = ({
     setFullName,
     phoneNumber,
     setPhoneNumber,
+    setPoints,
+    setMembership,
     setPage,
     setPendingBooking
 }) => {
@@ -27,57 +27,41 @@ const ClientForm = ({
         if (credential) {
             setFullName(credential.full_name);
             setPhoneNumber(credential.phone_number);
+            setPoints(credential.point);
+            setMembership(credential.is_member);
             toggleNameInput(true);
         } else {
             console.log("No Cookie!");
         }
     }
 
-    const storeCredentials = () => {
-        setCredentials(phoneNumber, fullName);
-    }
-
     const handleGetName = async (phone_number) => {
         if (!phone_number) return;
-        
+
         setIsNameLoading(true);
         try {
-            const { success, user, error } = await getUser(`+62${phone_number.replace(/\D/g, "")}`);
-            if (success && user) {
-                setFullName(user.first_name);
-                console.log(user.first_name);
-            } else {
-                console.log("User not found or error occurred:");
-                setFullName("");
-            }
-        } catch (err) {
-            setFullName("");
-            console.error("Error in handleGetName:", err);
-        }
-        toggleNameInput(true);
-        setIsNameLoading(false);
-    };
+            const data = await getUserData(`+62${phone_number.replace(/\D/g, "")}`);
 
-    // Reset loading state and trigger name fetch when phone number changes
-    useEffect(() => {
-        if (phoneNumber) {
-            // Debounce to avoid too many requests while typing
-            const timeoutId = setTimeout(() => {
-                handleGetName(phoneNumber);
-            }, 500);
-            return () => clearTimeout(timeoutId);
+            setFullName(data.name);
+            setPoints(data.point);
+            setMembership(data.member);
+
+            setCredentials(phoneNumber, data.name, data.point, data.member);
+        } catch (err) {
+            console.error("Error in handleGetName:", err);
+            setFullName("");
+        } finally {
+            toggleNameInput(true);
+            setIsNameLoading(false);
         }
-    }, [phoneNumber]);
+    };
 
     const handleBookingCheck = async () => {
         toggleLoading(true);
         const pendingBooking = await getPendingBookings(`+62${phoneNumber.replace(/\D/g, "")}`);
 
         if (pendingBooking) {
-            setPendingBooking({
-                booking_ref: pendingBooking.docRef,
-                booking_data: pendingBooking.data
-            });
+            setPendingBooking(pendingBooking);
             setPage(5);
         } else {
             setPage(1);
@@ -92,7 +76,7 @@ const ClientForm = ({
             setError("Please Fill Correctly!");
             return;
         }
-        storeCredentials();
+
         handleBookingCheck();
     };
 

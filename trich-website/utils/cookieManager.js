@@ -9,6 +9,8 @@ export function getCredentials() {
             return {
                 phone_number: parsed.phone_number,
                 full_name: parsed.full_name,
+                point: parsed.point,
+                is_member: parsed.is_member
             }
         } catch (err) {
             console.error("Invalid trich_credential cookie format", err)
@@ -18,14 +20,19 @@ export function getCredentials() {
     return null
 }
 
-export function setCredentials(phoneNumber, fullName) {
+export function setCredentials(phoneNumber, fullName, points, isMember) {
     setCookie(
-      "trich_credential",
-      JSON.stringify({ phone_number: phoneNumber, full_name: fullName }),
-      {
-        maxAge: 60 * 60 * 24 * 7,
-        path: "/",
-      }
+        "trich_credential",
+        JSON.stringify({ 
+            phone_number: phoneNumber, 
+            full_name: fullName, 
+            point: points, 
+            is_member: isMember 
+        }),
+        {
+            maxAge: 60 * 60 * 24 * 7,
+            path: "/",
+        }
     )
 }
   

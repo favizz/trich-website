@@ -47,11 +47,11 @@ export async function getOperationalTimes(dateInput, pickedService) {
     let isMorningEdge = false;
     if (pickedService?.includes("Morning Edge")) {
         if ([5, 6, 0].includes(dateInput.getDay())) {
-        times = [];
-        isMorningEdge = true;
+            times = [];
+            isMorningEdge = true;
         } else {
-        times = times.filter(t => t <= "12:00");
-        isMorningEdge = true;
+            times = times.filter(t => t <= "12:00");
+            isMorningEdge = true;
         }
     }
 
