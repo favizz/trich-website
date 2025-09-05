@@ -4,7 +4,8 @@ import ReservationsFilters from "./interface/ReservationsFilters";
 import ReservationsTable from "./interface/ReservationsTable";
 
 const ReservationsManagement = ({ 
-    recentBookings, 
+    recentBookings,
+    setRecentBookings,
     selectedDate, 
     setSelectedDate, 
     lastNBookings, 
@@ -30,6 +31,7 @@ const ReservationsManagement = ({
                 <ReservationsTable 
                     recentBookings={recentBookings}
                     deleteActiveBooking={deleteActiveBooking}
+                    setRecentBookings={setRecentBookings}
                 />
             </div>
         </div>
