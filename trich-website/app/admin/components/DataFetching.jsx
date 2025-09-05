@@ -82,6 +82,34 @@ export const fetchRecentBookings = async (n, setRecentBookings) => {
     }
 };
 
+export const updateReservationStatus = async (reservationId, status) => {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/status`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    reservationId,
+                    status,
+                }),
+            }
+        );
+
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        ToastManager.notify("Status updated successfully!", "success");
+    } catch (error) {
+        console.error("Failed to update reservation status:", error);
+        ToastManager.notify("Failed to update reservation status", "error");
+    }
+};
+
+
 export const fetchBookingsByDate = async (date, setRecentBookings) => {
     try {
         if (!date) {

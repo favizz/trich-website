@@ -87,6 +87,7 @@ const AdminDashboard = () => {
                 <div className="space-y-8">
                     <ReservationsManagement 
                         recentBookings={recentBookings}
+                        setRecentBookings={setRecentBookings}
                         selectedDate={selectedDate}
                         setSelectedDate={setSelectedDate}
                         lastNBookings={lastNBookings}

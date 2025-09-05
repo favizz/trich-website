@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
+import { updateReservationStatus } from "../DataFetching";
 
-const ReservationsTable = ({ recentBookings, deleteActiveBooking }) => {
+const ReservationsTable = ({ recentBookings, setRecentBookings, deleteActiveBooking }) => {
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full border-collapse border border-gray-300">
@@ -48,7 +49,37 @@ const ReservationsTable = ({ recentBookings, deleteActiveBooking }) => {
                         <td className="border border-gray-300 p-2">{reservation.date || "-"}</td>
                         <td className="border border-gray-300 p-2">{reservation.time || "-"}</td>
                         <td className="border border-gray-300 p-2">{reservation.barberName || "-"}</td>
-                        <td className="border border-gray-300 p-2">{reservation.status || "-"}</td>
+                        <td className="border border-gray-300 p-2">
+                            <select
+                                value={reservation.status || "unpaid"}
+                                onChange={(e) => {
+                                    const newStatus = e.target.value;
+
+                                    setRecentBookings((prev) =>
+                                        prev.map((r) =>
+                                            r.reservationId === reservation.reservationId
+                                                ? { ...r, status: newStatus }
+                                                : r
+                                        )
+                                    );
+
+                                    updateReservationStatus(reservation.reservationId, newStatus).catch(() => {
+                                        setRecentBookings((prev) =>
+                                            prev.map((r) =>
+                                                r.reservationId === reservation.reservationId
+                                                    ? { ...r, status: reservation.status }
+                                                    : r
+                                            )
+                                        );
+                                    });
+                                }}
+                                className="border rounded px-1 py-0.5 text-sm"
+                            >
+                                <option value="unpaid">Unpaid</option>
+                                <option value="half">Half</option>
+                                <option value="paid">Paid</option>
+                            </select>
+                        </td>
                         <td className="border border-gray-300 p-2">
                             {reservation.amount ? `Rp ${reservation.amount}` : "-"}
                         </td>
