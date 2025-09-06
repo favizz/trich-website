@@ -16,21 +16,21 @@ import Work5 from "@/public/barbersasset/ourwork5.png";
 import DescBg from "@/public/homeAssets/DescBg.png";
 
 const barbers = [
-    {
-        name: "Joni",
-        bio: "Joni is a dedicated professional with decades of barbering experiences and friendly approach. Communicative is his priority, making him as a true craftsman to cater high quality haircuts just for you!",
-        image: Barber1,
-    },
-    {
-        name: "Gio",
-        bio: "Originally named Ade, he received his current name from his passion for classic Vespa Piaggio. With his high-focused and detailed approach to barbering, he ensures you have only the best haircut that meets your needs!",
-        image: Barber2,
-    },
-    {
-        name: "Abah Wanto",
-        bio: "Abah Wanto is one of the most senior barberman in town, known for his fast-paced technique and high quality haircut. His experiences are unquestionable, serving great looks from one generation to another.",
-        image: Barber3,
-    },
+//     {
+//         name: "Joni",
+//         bio: "Joni is a dedicated professional with decades of barbering experiences and friendly approach. Communicative is his priority, making him as a true craftsman to cater high quality haircuts just for you!",
+//         image: Barber1,
+//     },
+//     {
+//         name: "Gio",
+//         bio: "Originally named Ade, he received his current name from his passion for classic Vespa Piaggio. With his high-focused and detailed approach to barbering, he ensures you have only the best haircut that meets your needs!",
+//         image: Barber2,
+//     },
+//     {
+//         name: "Abah Wanto",
+//         bio: "Abah Wanto is one of the most senior barberman in town, known for his fast-paced technique and high quality haircut. His experiences are unquestionable, serving great looks from one generation to another.",
+//         image: Barber3,
+//     },
 ];
 
 const portfolio = [Work3, Work4, Work5, Work1, Work4, Work5, Work1, Work3];
@@ -112,6 +112,9 @@ export default function Barbers() {
                                 height: "60vh",
                             }}
                         >
+                            {barbers.length == 0 && 
+                                <h1 className="text-xl">Coming soon...</h1>
+                            }
                             {barbers.map((barber, i) => (
                                 <div
                                     key={i}
