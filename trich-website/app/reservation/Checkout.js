@@ -11,7 +11,7 @@ import Link from "next/link";
 const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId }) => {
     const [loading, setLoading] = useState(false);
     const [paymentStatus, setPaymentStatus] = useState(0);
-
+    console.log(pickedService, totalPrice, orderId)
     useEffect(() => {
         async function fetchToken() {
             setLoading(true);

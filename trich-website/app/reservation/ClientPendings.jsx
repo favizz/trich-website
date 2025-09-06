@@ -3,7 +3,8 @@ import { deleteBooking } from "@/utils/user";
 import { generateCode } from "@/utils/generateOrderId";
 import { createReservation } from "@/utils/user";
 
-const ClientPendings = ({ pendingBooking, setPendingBooking, setPage }) => {
+const ClientPendings = ({ pendingBooking, 
+  setPendingBooking, setPage }) => {
     const [modalType, setModalType] = useState(null);
 
     const handleConfirm = async () => {
@@ -24,15 +25,19 @@ const ClientPendings = ({ pendingBooking, setPendingBooking, setPage }) => {
                     orderId: tempOrderId
                 }));
 
-                await createBooking(
-                    pendingBooking.name,
-                    pendingBooking.phoneNumber,
-                    pendingBooking.service,
-                    pendingBooking.time,
-                    pendingBooking.date,
-                    pendingBooking.amount,
-                    tempOrderId
-                )
+                const newServices = pendingBooking.serviceIds.map((id, index) => (
+                  { id, name: pendingBooking.serviceNames?.[index] || "", }
+                ));
+
+                await createReservation( 
+                  tempOrderId, 
+                  pendingBooking.name, 
+                  pendingBooking.phoneNumber, 
+                  newServices, 
+                  pendingBooking.time, 
+                  pendingBooking.date, 
+                  pendingBooking.barberId 
+                );
                 
                 setPage(4);
             }

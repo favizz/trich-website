@@ -35,7 +35,7 @@ const ClientPage = () => {
 
     const searchParams = useSearchParams();
     const encrypted = searchParams.get('q');
-
+    console.log(pendingBooking);
     const queryParam = encrypted ? unhashQuery(encrypted) : null;
     return (
         <>
@@ -104,7 +104,7 @@ const ClientPage = () => {
                     <Checkout
                         first_name={fullName}
                         phone_number={`+62${phoneNumber.replace(/-/g, "")}`}
-                        pickedService={bookingResponse.serviceNames || pendingBooking.service}
+                        pickedService={bookingResponse.serviceNames || pendingBooking.serviceNames}
                         totalPrice={bookingResponse.amount || pendingBooking.amount}
                         orderId={bookingResponse.orderId ||  pendingBooking.orderId}
                     />
