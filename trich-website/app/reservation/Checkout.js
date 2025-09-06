@@ -24,7 +24,7 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
         const body = {
             transaction_details: {
                 order_id: orderId,
-                gross_amount: totalPrice,
+                gross_amount: Math.round(totalPrice / 2),
             },
             item_details: services.map((service, idx) => ({
                 name: service.trim(),

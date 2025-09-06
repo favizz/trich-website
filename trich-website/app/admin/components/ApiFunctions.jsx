@@ -199,8 +199,6 @@ export const deleteActiveBooking = async (reservationId) => {
         });
         if (!res.ok) throw new Error("Failed to delete reservation");
         ToastManager.notify("Reservation deleted successfully!", "success");
-        // Refresh the bookings list
-        window.location.reload();
     } catch (error) {
         console.error("Failed to delete reservation:", error);
         ToastManager.notify("Failed to delete reservation", "error");
