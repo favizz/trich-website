@@ -7,7 +7,7 @@ const UserSearchForm = ({
     searchUser 
 }) => {
     return (
-        <div className="mb-6">
+        <div className="mb-6 ">
             <h3 className="text-lg font-semibold mb-3">Search User Information</h3>
             <div className="flex gap-4 mb-4">
                 <input

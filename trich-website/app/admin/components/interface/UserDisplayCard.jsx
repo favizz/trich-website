@@ -15,7 +15,7 @@ const UserDisplayCard = ({ searchedUser, searchError }) => {
     }
 
     return (
-        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 ">
             <h4 className="text-lg font-semibold mb-4 text-gray-800">User Information</h4>
             <div className="grid grid-cols-2 gap-4">
                 <div>
