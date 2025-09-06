@@ -86,9 +86,11 @@ const ReservationsTable = ({ recentBookings, setRecentBookings, deleteActiveBook
                         <td className="border border-gray-300 p-2">
                             <button
                                 onClick={() =>
-                                    deleteActiveBooking(
-                                        reservation.reservationId || reservation.id
-                                    )
+                                    deleteActiveBooking(reservation.reservationId).then(() => {
+                                        setRecentBookings((prev) =>
+                                            prev.filter((r) => (r.reservationId || r.id) !== reservation.reservationId)
+                                        );
+                                    })
                                 }
                                 className="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600"
                             >
