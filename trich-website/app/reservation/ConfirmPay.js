@@ -50,16 +50,17 @@ const ConfirmPay = ({
             alert("Invalid date format.");
             return;
         }
-
-        const { error, times } = await getOperationalTimes(dateObj, service);
+        
+        const times = await getOperationalTimes(dateObj, service);
+        console.log(dateObj);
     
-        if (error === "DATE_IN_PAST") {
-            ToastManager.notify(
-                "Please pick today or a future date.",
-                "error",
-            );
-            return;
-        }
+        // if (error === "DATE_IN_PAST") {
+        //     ToastManager.notify(
+        //         "Please pick today or a future date.",
+        //         "error",
+        //     );
+        //     return;
+        // }
 
         if (!times.includes(time)) {
             ToastManager.notify(

@@ -35,7 +35,6 @@ const ClientPage = () => {
 
     const searchParams = useSearchParams();
     const encrypted = searchParams.get('q');
-    console.log(pendingBooking);
     const queryParam = encrypted ? unhashQuery(encrypted) : null;
     return (
         <>
