@@ -107,7 +107,7 @@ export const getPendingBookings = async (phoneNumber) => {
             }
         )
         const reservations = await response.json();
-        const pendingReservation = reservations.find(r => r.status === 1);
+        const pendingReservation = reservations.find(r => r.status === "unpaid");
 
         return pendingReservation || null;
     } catch (error) {

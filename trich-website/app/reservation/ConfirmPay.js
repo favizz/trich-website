@@ -102,7 +102,7 @@ const ConfirmPay = ({
                 />
                 <ReceiptList
                     title={"Down Payment"}
-                    value={`IDR ${totalPrice >= 200000 ? "100.000" : formatPrice(totalPrice)}`}
+                    value={`IDR ${formatPrice(totalPrice / 2)}`}
                 />                
             </div>
             <div className="w-full h-[0.5px] bg-gray-600"></div>

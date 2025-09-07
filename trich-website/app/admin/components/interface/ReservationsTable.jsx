@@ -4,7 +4,7 @@ import { updateReservationStatus } from "../DataFetching";
 
 const ReservationsTable = ({ recentBookings, setRecentBookings, deleteActiveBooking }) => {
     return (
-        <div className="overflow-x-auto">
+        <div className="border-collapse w-full">
             <table className="min-w-full border-collapse border border-gray-300">
                 <thead>
                     <tr className="bg-orange1 font-bold text-white">

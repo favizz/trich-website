@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import { handleRewardMatch } from "./Services";
 import { logError } from "@/utils/booking";
 
@@ -10,102 +9,72 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId }) => {
-    const searchParams = useSearchParams();
-    const queryParam = searchParams.get("q");
-
     const [loading, setLoading] = useState(false);
-
-    const [reqBody, setReqBody] = useState(null);
     const [paymentStatus, setPaymentStatus] = useState(0);
-
-    useEffect(() => {
-        const services = pickedService.toString().split(",");
-    
-        const body = {
-            transaction_details: {
-                order_id: orderId,
-                gross_amount: Math.round(totalPrice / 2),
-            },
-            item_details: services.map((service, idx) => ({
-                name: service.trim(),
-                price: totalPrice / services.length,
-                quantity: 1,
-                id: `TS-${idx}`,
-            })),
-            customer_details: {
-                first_name: first_name,
-                phone: phone_number,
-            },
-            enabled_payments: ["other_qris"],
-        };
-    
-        setReqBody(body);
-    }, [pickedService, orderId, totalPrice, first_name, phone_number]);
-
+    console.log(pickedService, totalPrice, orderId)
     useEffect(() => {
         async function fetchToken() {
             setLoading(true);
-            if (!reqBody) return;
 
             try {
+                const services = pickedService.toString().split(",");
+
+                const body = {
+                    transaction_details: {
+                        order_id: orderId,
+                        gross_amount: Math.round(totalPrice / 2),
+                    },
+                    item_details: services.map((service, idx) => ({
+                        name: service.trim(),
+                        quantity: 1,
+                        price: Math.round(totalPrice / 2) / services.length,
+                        id: `TS-${idx}`,
+                    })),
+                    customer_details: {
+                        first_name,
+                        phone: phone_number,
+                    },
+                    enabled_payments: ["other_qris"],
+                };
+
                 const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/operational/payment/token`;
                 const response = await fetch(endpoint, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(reqBody),
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body),
                 });
 
-                if (!response.ok) {
-                    console.error("Failed to fetch token");
-                }
-
+                if (!response.ok) throw new Error("Failed to fetch token");
                 const data = await response.json();
 
                 window.snap.pay(data.transactionToken, {
-                    onSuccess: function (result) {
-                        setPaymentStatus(1);
-                    },
-                    onError: function (result) {
-                        setPaymentStatus(2);
-                    },
-                    onPending: function (result) {
-                        setPaymentStatus(3);
-                    },
+                    onSuccess: () => setPaymentStatus(1),
+                    onError: () => setPaymentStatus(2),
+                    onPending: () => setPaymentStatus(3),
                 });
-                setLoading(false);
             } catch (error) {
                 console.error(error);
                 logError("MIDTRANS", error);
+                setPaymentStatus(2);
             } finally {
                 setLoading(false);
             }
         }
 
         fetchToken();
-    }, [reqBody]);
+    }, [first_name, phone_number, pickedService, totalPrice, orderId]);
 
     useEffect(() => {
-        // const snapScript =
-        //     process.env.VERCEL_ENV === "development"
-        //         ? "https://app.sandbox.midtrans.com/snap/snap.js"   // Sandbox
-        //         : "https://app.midtrans.com/snap/snap.js";          // Production
-
         const snapScript = "https://app.midtrans.com/snap/snap.js";
-
         const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY;
-        const script = document.createElement("script");
 
+        const script = document.createElement("script");
         script.src = snapScript;
         script.setAttribute("data-client-key", clientKey);
         script.async = true;
 
         document.body.appendChild(script);
-
-        return () => {
-            document.body.removeChild(script);
-        };
+        return () => document.body.removeChild(script);
     }, []);
 
     return (
@@ -123,28 +92,14 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
                 )}
             </p>
 
-            {/* Loading */}
-            {loading ? (
-                <LoadingSpinner
-                    toggleShow={
-                        loading &&
-                        paymentStatus !== 1 &&
-                        paymentStatus !== 2 &&
-                        paymentStatus !== 3
-                    }
-                />
-            ) : (
-                ""
+            {loading && paymentStatus === 0 && (
+                <LoadingSpinner toggleShow={true} />
             )}
 
-            {/* Icons */}
             {paymentStatus === 1 && (
-                <Image
-                    src={SuccessIcon}
-                    alt="Payment-success-icon"
-                    width={100}
-                />
+                <Image src={SuccessIcon} alt="Payment-success-icon" width={100} />
             )}
+
             {paymentStatus === 2 && (
                 <Link href="/">
                     <button className="px-6 py-2 font-semibold bg-orange1 text-white rounded-[10px]">

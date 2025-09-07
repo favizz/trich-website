@@ -11,7 +11,7 @@ const UserManagement = ({
     searchUser 
 }) => {
     return (
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm ">
             <div className="bg-orange1 text-white px-6 py-2 rounded-t-lg">
                 <h2 className="text-xl font-semibold">User Management</h2>
             </div>
