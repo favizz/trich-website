@@ -1,0 +1,69 @@
+name: Hotfix → Main (auto-merge and push as Qibaal)
+
+on:
+  push:
+    branches:
+      - hotfix
+
+concurrency:
+  group: hotfix-to-main
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  merge_hotfix_into_main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity (commit author/committer)
+        run: |
+          git config user.name "Qibaal"
+          git config user.email "${{ secrets.QIBAAL_EMAIL }}"
+
+      - name: Fetch branches
+        run: |
+          git fetch origin main hotfix
+
+      - name: Reset local main to origin/main
+        run: |
+          git checkout main
+          git reset --hard origin/main
+
+      - name: Merge hotfix into main (no-ff)
+        id: merge
+        run: |
+          set -e
+          # Try a merge commit so there's a single commit authored by "Qibaal"
+          if git merge --no-ff --no-edit origin/hotfix; then
+            echo "status=merged" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=conflict" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Push main as Qibaal (triggers Vercel)
+        if: steps.merge.outputs.status == 'merged'
+        env:
+          PAT: ${{ secrets.QIBAAL_PAT }}
+        run: |
+          # Push using Qibaal's PAT so the "pusher" is Qibaal
+          git push "https://x-access-token:${PAT}@github.com/${{ github.repository }}" HEAD:main
+
+      - name: Create PR if conflict
+        if: steps.merge.outputs.status == 'conflict'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.QIBAAL_PAT }}
+          commit-message: "Auto PR: merge hotfix → main"
+          title: "Auto PR: hotfix → main (merge conflict)"
+          body: |
+            Automatic merge from `hotfix` to `main` encountered conflicts.
+            Please resolve this PR.
+          base: main
+          branch: "autopr/hotfix-${{ github.run_id }}"
