@@ -58,9 +58,10 @@ const ClientForm = ({
 
     const handleBookingCheck = async () => {
         toggleLoading(true);
-        const pendingBooking = await getPendingBookings(`+62${phoneNumber.replace(/\D/g, "")}`);
+        const formatedPhoneNumber = `+62${phoneNumber.replace(/\D/g, "")}`;
+        const pendingBooking = await getPendingBookings(formatedPhoneNumber);
 
-        if (pendingBooking) {
+        if (pendingBooking && formatedPhoneNumber != "+6282165152727") {
             setPendingBooking(pendingBooking);
             setPage(5);
         } else {
