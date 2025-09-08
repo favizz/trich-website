@@ -34,6 +34,8 @@ export default function HistoryPage() {
         fetchSessions(date);
     }, [date]);
 
+    console.log(sessions);
+
     return (
         <div className="p-6 min-h-screen bg-gray-100 mt-32">
         <h1 className="text-4xl font-bold mb-6 text-center">Session History</h1>
@@ -67,7 +69,6 @@ export default function HistoryPage() {
                     key={session.id}
                     className="relative w-full rounded overflow-hidden shadow-lg"
                 >
-                    {/* 2x2 grid */}
                     <div className="grid grid-cols-2 grid-rows-2 gap-2">
                     {photos.map((photo, idx) => (
                         <div
@@ -75,19 +76,17 @@ export default function HistoryPage() {
                         className="w-full aspect-video"
                         >
                         <img
-                            src={`${photo}`}
+                            src={`data:image/png;base64,${photo}`}
                             alt={`Session ${idx}`}
                             className="w-full h-full object-cover rounded"
                         />
                         </div>
                     ))}
-                    {/* Fill empty slots if less than 4 photos */}
                     {Array.from({ length: 4 - photos.length }).map((_, idx) => (
                         <div key={`empty-${idx}`} className="w-full aspect-video bg-gray-200 rounded"></div>
                     ))}
                     </div>
 
-                    {/* Info overlay */}
                     <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4">
                     <h2 className="text-xl font-semibold">{session.phoneNumber}</h2>
                     <p className="text-sm">
