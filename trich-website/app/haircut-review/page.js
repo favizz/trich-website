@@ -6,35 +6,58 @@ export default function HistoryPage() {
         const now = new Date();
         const indonesianOffset = 7 * 60; // GMT+7
         const localOffset = now.getTimezoneOffset();
-        const jakartaTime = new Date(now.getTime() + (indonesianOffset + localOffset) * 60000);
+        const jakartaTime = new Date(
+        now.getTime() + (indonesianOffset + localOffset) * 60000
+        );
         return jakartaTime.toISOString().split("T")[0];
     });
 
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
 
-    const fetchSessions = async (selectedDate) => {
+    const fetchSessions = async (selectedDate, pageToFetch = 0) => {
+        if (loading) return;
         setLoading(true);
         try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/operational/session/date/${selectedDate}`);
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/operational/session/date/${selectedDate}?page=${pageToFetch}&size=3`
+        );
         if (res.ok) {
             const data = await res.json();
-            setSessions(data);
+
+            const items = Array.isArray(data) ? data : data.content ?? [];
+
+            if (pageToFetch === 0) {
+            setSessions(items);
+            } else {
+            setSessions((prev) => [...prev, ...items]);
+            }
+
+            setHasMore(items.length === 3);
         } else {
-            setSessions([]);
+            if (pageToFetch === 0) setSessions([]);
+            setHasMore(false);
         }
         } catch (err) {
         console.error(err);
-        setSessions([]);
+        if (pageToFetch === 0) setSessions([]);
+        setHasMore(false);
         }
         setLoading(false);
     };
 
     useEffect(() => {
-        fetchSessions(date);
+        setPage(0);
+        fetchSessions(date, 0);
     }, [date]);
 
-    console.log(sessions);
+    const loadMore = () => {
+        const nextPage = page + 1;
+        setPage(nextPage);
+        fetchSessions(date, nextPage);
+    };
 
     return (
         <div className="p-6 min-h-screen bg-gray-100 mt-32">
@@ -50,9 +73,7 @@ export default function HistoryPage() {
             />
         </div>
 
-        {loading ? (
-            <p className="text-center">Loading...</p>
-        ) : sessions.length === 0 ? (
+        {sessions.length === 0 && !loading ? (
             <p className="text-center">No sessions found for {date}</p>
         ) : (
             <div className="space-y-64">
@@ -71,10 +92,7 @@ export default function HistoryPage() {
                 >
                     <div className="grid grid-cols-2 grid-rows-2 gap-2">
                     {photos.map((photo, idx) => (
-                        <div
-                        key={idx}
-                        className="w-full aspect-video"
-                        >
+                        <div key={idx} className="w-full aspect-video">
                         <img
                             src={`data:image/png;base64,${photo}`}
                             alt={`Session ${idx}`}
@@ -83,15 +101,19 @@ export default function HistoryPage() {
                         </div>
                     ))}
                     {Array.from({ length: 4 - photos.length }).map((_, idx) => (
-                        <div key={`empty-${idx}`} className="w-full aspect-video bg-gray-200 rounded"></div>
+                        <div
+                        key={`empty-${idx}`}
+                        className="w-full aspect-video bg-gray-200 rounded"
+                        ></div>
                     ))}
                     </div>
 
                     <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4">
                     <h2 className="text-xl font-semibold">{session.phoneNumber}</h2>
                     <p className="text-sm">
-                        Front Cut: <span className="font-medium">{session.frontCut}</span> / Side Cut:{" "}
-                        <span className="font-medium">{session.sideCut}</span>
+                        Front Cut:{" "}
+                        <span className="font-medium">{session.frontCut}</span> / Side
+                        Cut: <span className="font-medium">{session.sideCut}</span>
                     </p>
                     <p className="text-sm">Date: {session.date}</p>
                     </div>
@@ -100,6 +122,21 @@ export default function HistoryPage() {
             })}
             </div>
         )}
+
+        <div className="text-center mt-8">
+            {loading ? (
+            <p>Loading...</p>
+            ) : hasMore ? (
+            <button
+                onClick={loadMore}
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+                Load More
+            </button>
+            ) : (
+            <p>No more data</p>
+            )}
+        </div>
         </div>
     );
 }
