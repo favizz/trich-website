@@ -25,6 +25,8 @@ const ChooseService = ({
     const [totalDuration, setDuration] = useState(null);
     const [isLoading, toggleLoading] = useState(false);
 
+    console.log(totalDuration);
+
     const byName = (name) => (s) => s.name === name;
     const hasName = (arr, name) => arr.some(byName(name));
     const withoutNames = (arr, names) => arr.filter(s => !names.includes(s.name));
@@ -89,11 +91,7 @@ const ChooseService = ({
             return;
         }
         if (
-            chosenServices.length < 2 &&
-            (chosenServices.includes("Mask Off") ||
-                chosenServices.includes("Wax Mining") ||
-                chosenServices.includes("Trim & Treat") ||
-                chosenServices.includes("Creambath"))
+            totalDuration < 60
         ) {
             ToastManager.notify("Please add another service!", "error");
             return;
