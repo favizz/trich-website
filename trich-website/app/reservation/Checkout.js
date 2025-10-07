@@ -61,7 +61,8 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
             }
         }
 
-        fetchToken();
+        if (totalPrice > 0) fetchToken();
+        else setPaymentStatus(1);
     }, [first_name, phone_number, pickedService, totalPrice, orderId]);
 
     useEffect(() => {

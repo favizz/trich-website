@@ -73,7 +73,7 @@ const ConfirmPay = ({
 
         const response = await handleBooking();
         setBookingResponse(response);
-        if (totalPrice > 0) {
+        if (totalPrice >= 0) {
             handlePage(4);
         }
     };
