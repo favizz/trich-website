@@ -9,7 +9,13 @@ const ClientBookings = ({ phoneNumber }) => {
     const fetchBookings = async () => {
       try {
         const res = await fetch(
-          process.env.NEXT_PUBLIC_SPRINGBOOT_URL + "/website/reservations/" + phoneNumber
+          process.env.NEXT_PUBLIC_SPRINGBOOT_URL + "/website/reservations/" + phoneNumber,
+          {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+          }
         );
         if (!res.ok) throw new Error("Failed to fetch bookings");
         const bookings = await res.json();

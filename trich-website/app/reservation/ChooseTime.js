@@ -92,7 +92,11 @@ const ChooseTime = ({
                     apiUrl = API_ROUTES.GET_AVAILABLE_TIMES(encodeURIComponent(iso_date), serviceIds);
                 }
 
-                const res = await fetch(apiUrl, { method: "GET" });
+                const res = await fetch(apiUrl, { method: "GET",
+                    headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+                });
                 const data = await res.json();
 
                 if (!res.ok || data?.error) {

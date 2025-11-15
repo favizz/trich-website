@@ -139,7 +139,8 @@ export const getQuotaByType = async (type) => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/${type}`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             }
         });
 
@@ -165,7 +166,8 @@ export const createQuotaByType = async (type, quotaData) => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/${type}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             },
             body: JSON.stringify(quotaData)
         });

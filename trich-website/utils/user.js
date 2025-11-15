@@ -40,7 +40,11 @@ export const getUserData = async (phoneNumber) => {
 
     try {
         const response = await fetch(endpoint, {
-            method: "GET"
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+            }
         })
         
         const data = await response.json();
@@ -82,7 +86,8 @@ export const createReservation = async (
         const response = await fetch(API_ROUTES.CREATE_RESERVATION, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             },
             body: JSON.stringify(body)
         });
@@ -103,7 +108,11 @@ export const getPendingBookings = async (phoneNumber) => {
     const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/${phoneNumber}`;
     try {
         const response = await fetch(endpoint, {
-            method: "GET"
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+            }
             }
         )
         const reservations = await response.json();
@@ -121,7 +130,11 @@ export const deleteBooking = async (reservationId) => {
 
     try {
         const response = await fetch(endpoint, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+            }
         });
 
         if (!response.ok) {
@@ -151,7 +164,8 @@ export const getMembership = async (phoneNumber) => {
         const response = await fetch(API_ROUTES.GET_USER_MEMBERSHIP(formattedPhone), {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             }
         });
 
@@ -186,7 +200,8 @@ export const getUserBookings = async (phoneNumber) => {
         const response = await fetch(API_ROUTES.GET_USER_RESERVATIONS(formattedPhone), {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             }
         });
 
