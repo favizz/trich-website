@@ -56,7 +56,6 @@ const AdminDashboard = () => {
     const [searchedUser, setSearchedUser] = useState(null);
     const [searchError, setSearchError] = useState("");
 
-    // Effects
     useEffect(() => {
         if (pathname === "/admin" && queryParam !== "123456") {
             router.replace("https://trich.id");

@@ -55,7 +55,10 @@ export const createService = async (newService, setNewService, fetchServices) =>
         
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/services`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+            },
             body: JSON.stringify(serviceData),
         });
         if (!res.ok) throw new Error("Failed to create service");
@@ -96,7 +99,10 @@ export const updateService = async (serviceId, editingService, setEditingService
         
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/services/${serviceId}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`
+                },
             body: JSON.stringify(serviceData),
         });
         if (!res.ok) throw new Error("Failed to update service");
@@ -113,6 +119,9 @@ export const deleteService = async (serviceId, fetchServices) => {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/services/${serviceId}`, {
             method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+            }
         });
         if (!res.ok) throw new Error("Failed to delete service");
         ToastManager.notify("Service deleted successfully!", "success");
@@ -140,6 +149,7 @@ export const createBarber = async (newBarber, setNewBarber, fetchBarbers) => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/barber`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             body: JSON.stringify(barberData),
         });
         if (!res.ok) throw new Error("Failed to create barber");
@@ -163,7 +173,10 @@ export const updateBarber = async (barberId, editingBarber, setEditingBarber, fe
         
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/barber/${barberId}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`
+                },
             body: JSON.stringify(barberData),
         });
         if (!res.ok) throw new Error("Failed to update barber");
@@ -181,6 +194,9 @@ export const deleteBarber = async (barberId, fetchBarbers) => {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/barber/${barberId}`, {
             method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+            }
         });
         if (!res.ok) throw new Error("Failed to delete barber");
         ToastManager.notify("Barber deleted successfully!", "success");
@@ -196,6 +212,9 @@ export const deleteActiveBooking = async (reservationId) => {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/${reservationId}`, {
             method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+            }
         });
         if (!res.ok) throw new Error("Failed to delete reservation");
         ToastManager.notify("Reservation deleted successfully!", "success");
@@ -230,6 +249,7 @@ export const handleAddQuota = async (quotaDate, quotaQuota, setQuotaDate, setQuo
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/custom`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             body: JSON.stringify(quotaData),
         });
         if (!res.ok) throw new Error("Failed to create custom quota");
@@ -247,6 +267,9 @@ export const handleDeleteQuota = async (quotaId, fetchQuotas) => {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/${quotaId}`, {
             method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+            }
         });
         if (!res.ok) throw new Error("Failed to delete quota");
         ToastManager.notify("Quota deleted successfully!", "success");
@@ -267,6 +290,7 @@ export const setWdQuota = async (wdQuotaValue, fetchCurrentQuotas) => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/wd?value=${parseInt(wdQuotaValue)}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
         });
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         ToastManager.notify("WD Quota set successfully!", "success");
@@ -287,6 +311,7 @@ export const setBaseQuota = async (baseQuotaValue, fetchCurrentQuotas) => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/default?value=${parseInt(baseQuotaValue)}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
         });
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         ToastManager.notify("Default Quota set successfully!", "success");

@@ -22,7 +22,13 @@ export default function HistoryPage() {
         setLoading(true);
         try {
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/operational/session/date/${selectedDate}?page=${pageToFetch}&size=3`
+            `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/operational/session/date/${selectedDate}?page=${pageToFetch}&size=3`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+            }
         );
         if (res.ok) {
             const data = await res.json();

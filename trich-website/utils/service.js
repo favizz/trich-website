@@ -10,7 +10,8 @@ export const getServiceById = async (serviceId) => {
         const response = await fetch(API_ROUTES.GET_SERVICE_BY_ID(serviceId), {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             }
         });
 
@@ -35,7 +36,8 @@ export const createService = async (serviceData) => {
         const response = await fetch(API_ROUTES.CREATE_SERVICE, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             },
             body: JSON.stringify(serviceData)
         });
@@ -62,7 +64,8 @@ export const updateService = async (serviceId, serviceData) => {
         const response = await fetch(API_ROUTES.UPDATE_SERVICE(serviceId), {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             },
             body: JSON.stringify(serviceData)
         });
@@ -88,7 +91,8 @@ export const deleteService = async (serviceId) => {
         const response = await fetch(API_ROUTES.DELETE_SERVICE(serviceId), {
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             }
         });
 

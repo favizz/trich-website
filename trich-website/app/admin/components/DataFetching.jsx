@@ -5,7 +5,16 @@ import ToastManager from "../../components/toaster";
 // Data fetching functions
 export const fetchActiveBookings = async (setBookings) => {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/last/50`);
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/last/50`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+            }
+        );
+
         if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`);
         }
@@ -20,7 +29,14 @@ export const fetchActiveBookings = async (setBookings) => {
 
 export const fetchServices = async (setServices) => {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/services`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/services`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+            }
+        );
         if (!res.ok) throw new Error("Failed to fetch services");
         const result = await res.json();
         setServices(result);
@@ -32,7 +48,14 @@ export const fetchServices = async (setServices) => {
 
 export const fetchBarbers = async (setBarbers) => {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/barber`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/barber`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+            }
+        );
         if (!res.ok) throw new Error("Failed to fetch barbers");
         const result = await res.json();
         setBarbers(result);
@@ -44,7 +67,14 @@ export const fetchBarbers = async (setBarbers) => {
 
 export const fetchQuotas = async (setQuotas) => {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+            }
+        );
         if (!res.ok) throw new Error("Failed to fetch quotas");
         const result = await res.json();
         setQuotas(result);
@@ -66,7 +96,14 @@ export const fetchRecentBookings = async (n, setRecentBookings) => {
             throw new Error("Invalid number: must be between 1 and 100");
         }
         
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/last/${validN}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/last/${validN}`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+            }
+        );
         if (!res.ok) {
             if (res.status === 400) {
                 throw new Error(`Bad request: Invalid parameter '${validN}'`);
@@ -90,6 +127,7 @@ export const updateReservationStatus = async (reservationId, status) => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
                 },
                 body: JSON.stringify({
                     reservationId,
@@ -117,7 +155,14 @@ export const fetchBookingsByDate = async (date, setRecentBookings) => {
             return;
         }
         
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/date/${date}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/date/${date}`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+            }
+        );
         if (!res.ok) {
             if (res.status === 400) {
                 throw new Error(`Bad request: Invalid date '${date}'`);
@@ -136,7 +181,14 @@ export const fetchBookingsByDate = async (date, setRecentBookings) => {
 export const fetchCurrentQuotas = async (setWdQuotaValue, setBaseQuotaValue) => {
     try {
         // Fetch WD Quota
-        const wdRes = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/wd`);
+        const wdRes = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/wd`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+            }
+        );
         if (wdRes.ok) {
             const wdData = await wdRes.json();
             setWdQuotaValue(wdData.quota || "");
@@ -144,7 +196,14 @@ export const fetchCurrentQuotas = async (setWdQuotaValue, setBaseQuotaValue) => 
         }
         
         // Fetch Default Quota
-        const defaultRes = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/default`);
+        const defaultRes = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/default`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+            }
+        );
         if (defaultRes.ok) {
             const defaultData = await defaultRes.json();
             setBaseQuotaValue(defaultData.quota || "");
@@ -162,7 +221,14 @@ export const searchUser = async (searchUserPhone, setSearchedUser, setSearchErro
     
     try {
         setSearchError("");
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/user/${searchUserPhone}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/user/${searchUserPhone}`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+            }
+        );
         if (!res.ok) {
             if (res.status === 404) {
                 setSearchError("User not found");

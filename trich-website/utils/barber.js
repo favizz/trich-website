@@ -2,7 +2,11 @@ import { API_ROUTES } from "@/constants/routes"
 
 export const getAvailableBarbers = async (dayOfWeek) => {
     try {
-        const res = await fetch(API_ROUTES.GET_BARBERS, { method: "GET" });
+        const res = await fetch(API_ROUTES.GET_BARBERS, { method: "GET",
+            headers: {
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                },
+         });
         if (!res.ok) throw new Error(`GET_BARBERS failed: ${res.status} ${res.statusText}`);
 
         const data = await res.json();
@@ -25,7 +29,8 @@ export const getBarberById = async (barberId) => {
         const response = await fetch(API_ROUTES.GET_BARBER_BY_ID(barberId), {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             }
         });
 
@@ -50,7 +55,8 @@ export const createBarber = async (barberData) => {
         const response = await fetch(API_ROUTES.CREATE_BARBER, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             },
             body: JSON.stringify(barberData)
         });
@@ -77,7 +83,8 @@ export const updateBarber = async (barberId, barberData) => {
         const response = await fetch(API_ROUTES.UPDATE_BARBER(barberId), {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             },
             body: JSON.stringify(barberData)
         });
@@ -103,7 +110,8 @@ export const deleteBarber = async (barberId) => {
         const response = await fetch(API_ROUTES.DELETE_BARBER(barberId), {
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             }
         });
 
