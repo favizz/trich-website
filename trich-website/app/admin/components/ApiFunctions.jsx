@@ -99,8 +99,10 @@ export const updateService = async (serviceId, editingService, setEditingService
         
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/services/${serviceId}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
-                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`
+                },
             body: JSON.stringify(serviceData),
         });
         if (!res.ok) throw new Error("Failed to update service");
@@ -171,8 +173,10 @@ export const updateBarber = async (barberId, editingBarber, setEditingBarber, fe
         
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/barber/${barberId}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
-                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`
+                },
             body: JSON.stringify(barberData),
         });
         if (!res.ok) throw new Error("Failed to update barber");

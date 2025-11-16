@@ -12,7 +12,6 @@ export const getUser = async (phone_number) => {
         if (!formattedPhone.startsWith("+62")) {
             formattedPhone = `+62${formattedPhone}`;
         }
-        
         const response = await fetch(API_ROUTES.GET_USER_BY_PHONE(formattedPhone), {
             method: "GET",
             headers: {
