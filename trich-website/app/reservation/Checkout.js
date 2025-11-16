@@ -40,8 +40,10 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
                 const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/operational/payment/token`;
                 const response = await fetch(endpoint, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
+                    headers: { 
+                        "Content-Type": "application/json" ,
+                        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`
+                    },
                     body: JSON.stringify(body),
                 });
 
