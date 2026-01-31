@@ -35,7 +35,7 @@ const Products = () => {
         {
             id: 1,
             name: "Fusion Clay",
-            price: "Rp100.000",
+            price: "Rp120.000",
             rating: 4.9,
             amountSold: 10,
             description:
@@ -45,7 +45,7 @@ const Products = () => {
         {
             id: 2,
             name: "Flux Powder",
-            price: "Rp80.000",
+            price: "Rp60.000",
             rating: 5,
             amountSold: 10,
             description:
