@@ -3,10 +3,10 @@ import { format, addMinutes, parse } from "date-fns";
 const BookingCard = ({ date, time, amount, status, notes, barberName, serviceNames, duration }) => {
   // Map API status string to display text and color
   const statusMap = {
-    unpaid: { text: "UNPAID", color: "bg-yellow-400" },
-    half: { text: "PARTIALLY PAID", color: "bg-orange-400" },
-    walkIn: { text: "WALK-IN", color: "bg-blue-500" },
-    paid: { text: "PAID", color: "bg-green-600" },
+    unpaid: { text: "SUCCESS", color: "bg-green-600" },
+    half: { text: "SUCCESS", color: "bg-green-600" },
+    walkIn: { text: "SUCCESS", color: "bg-green-600" },
+    paid: { text: "SUCCESS", color: "bg-green-600" },
   };
 
   const { text, color } = statusMap[status] || { text: "UNKNOWN", color: "bg-gray-400" };
