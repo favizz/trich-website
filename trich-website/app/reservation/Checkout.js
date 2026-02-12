@@ -13,59 +13,60 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
     const [paymentStatus, setPaymentStatus] = useState(0);
     console.log(pickedService, totalPrice, orderId)
     useEffect(() => {
-        async function fetchToken() {
-            setLoading(true);
+        // async function fetchToken() {
+        //     setLoading(true);
 
-            try {
-                const services = pickedService.toString().split(",");
+        //     try {
+        //         const services = pickedService.toString().split(",");
 
-                const body = {
-                    transaction_details: {
-                        order_id: orderId,
-                        gross_amount: Math.round(totalPrice / 2),
-                    },
-                    item_details: services.map((service, idx) => ({
-                        name: service.trim(),
-                        quantity: 1,
-                        price: Math.round(totalPrice / 2) / services.length,
-                        id: `TS-${idx}`,
-                    })),
-                    customer_details: {
-                        first_name,
-                        phone: phone_number,
-                    },
-                    enabled_payments: ["other_qris"],
-                };
+        //         const body = {
+        //             transaction_details: {
+        //                 order_id: orderId,
+        //                 gross_amount: Math.round(totalPrice / 2),
+        //             },
+        //             item_details: services.map((service, idx) => ({
+        //                 name: service.trim(),
+        //                 quantity: 1,
+        //                 price: Math.round(totalPrice / 2) / services.length,
+        //                 id: `TS-${idx}`,
+        //             })),
+        //             customer_details: {
+        //                 first_name,
+        //                 phone: phone_number,
+        //             },
+        //             enabled_payments: ["other_qris"],
+        //         };
 
-                const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/operational/payment/token`;
-                const response = await fetch(endpoint, {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json" ,
-                        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`
-                    },
-                    body: JSON.stringify(body),
-                });
+        //         const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/operational/payment/token`;
+        //         const response = await fetch(endpoint, {
+        //             method: "POST",
+        //             headers: { 
+        //                 "Content-Type": "application/json" ,
+        //                 "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`
+        //             },
+        //             body: JSON.stringify(body),
+        //         });
 
-                if (!response.ok) throw new Error("Failed to fetch token");
-                const data = await response.json();
+        //         if (!response.ok) throw new Error("Failed to fetch token");
+        //         const data = await response.json();
 
-                window.snap.pay(data.transactionToken, {
-                    onSuccess: () => setPaymentStatus(1),
-                    onError: () => setPaymentStatus(2),
-                    onPending: () => setPaymentStatus(3),
-                });
-            } catch (error) {
-                console.error(error);
-                logError("MIDTRANS", error);
-                setPaymentStatus(2);
-            } finally {
-                setLoading(false);
-            }
-        }
+        //         window.snap.pay(data.transactionToken, {
+        //             onSuccess: () => setPaymentStatus(1),
+        //             onError: () => setPaymentStatus(2),
+        //             onPending: () => setPaymentStatus(3),
+        //         });
+        //     } catch (error) {
+        //         console.error(error);
+        //         logError("MIDTRANS", error);
+        //         setPaymentStatus(2);
+        //     } finally {
+        //         setLoading(false);
+        //     }
+        // }
 
-        if (totalPrice > 0) fetchToken();
-        else setPaymentStatus(1);
+        // if (totalPrice > 0) fetchToken();
+        // else setPaymentStatus(1);
+        setPaymentStatus(1)
     }, [first_name, phone_number, pickedService, totalPrice, orderId]);
 
     useEffect(() => {
@@ -86,7 +87,7 @@ const Checkout = ({ first_name, phone_number, pickedService, totalPrice, orderId
             <p className="font-extrabold text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
                 {paymentStatus === 0 && "Please Wait"}
                 {paymentStatus === 1 && (
-                    <span className="text-green-400">Payment Success</span>
+                    <span className="text-green-400">Reservation Made</span>
                 )}
                 {paymentStatus === 2 && (
                     <span className="text-red-400">Payment Failed</span>
