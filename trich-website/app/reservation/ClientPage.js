@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { unhashQuery } from "@/utils/dateHash";
 
 import Header from "./Header";
@@ -36,6 +36,14 @@ const ClientPage = () => {
     const searchParams = useSearchParams();
     const encrypted = searchParams.get('q');
     const queryParam = encrypted ? unhashQuery(encrypted) : null;
+
+    const router = useRouter();
+
+    useEffect(() => {
+        router.replace("/");
+    }, [router]);
+
+
     return (
         <>
             <section className="flex flex-col bg-white rounded-lg py-8 my-32 shadow-xl tracking-wider">
