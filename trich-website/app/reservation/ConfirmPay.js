@@ -101,10 +101,10 @@ const ConfirmPay = ({
                     title={"Duration"}
                     value={`${duration} Minutes`}
                 />
-                <ReceiptList
+                {/* <ReceiptList
                     title={"Down Payment"}
                     value={`IDR ${formatPrice(totalPrice / 2)}`}
-                />                
+                />                 */}
             </div>
             <div className="w-full h-[0.5px] bg-gray-600"></div>
             <div className="px-4 lg:px-6 space-y-2 mt-4">
@@ -113,7 +113,6 @@ const ConfirmPay = ({
                     Please arrive 10 minutes before appointment
                 </p>
                 <p className="max-w-[80vw] lg:max-w-[50vw] xl:max-w-[40vw]  2xl:max-w-[30vw] text-[11px]  lg:text-xs ">
-                    Cancellations are accepted, but the down payment is non-refundable. 
                     Rescheduling is allowed up to 3 hours before your appointment. 
                     We truly appreciate your understanding and cooperation.
                 </p>
@@ -131,7 +130,7 @@ const ConfirmPay = ({
                     onClick={(e) => handleCheckout(e)}
                     className={`w-full rounded text-white font-bold ${agreePolicy ? 'bg-green2' : 'bg-gray-400'} py-2 lg:text-lg text-center`}
                 >
-                    Checkout
+                    Create Reservation
                 </div>
             </div>
 

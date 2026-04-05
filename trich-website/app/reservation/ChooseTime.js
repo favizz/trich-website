@@ -200,7 +200,7 @@ const ChooseTime = ({
                                             alt="right-arrow"
                                         />
                                     </div>
-                                    <div className="flex flex-col items-center gap-2">
+                                    {/* <div className="flex flex-col items-center gap-2">
                                         <p className="font-extrabold text-[#545454]">Select Barber</p>
                                         <select
                                             id="barber-select"
@@ -215,12 +215,12 @@ const ChooseTime = ({
                                                 </option>
                                             ))}
                                         </select>
-                                    </div>
+                                    </div> */}
                                     <button
                                         onClick={handleContinue}
                                         className="border border-1 border-orange1 text-orange1 font-bold px-12 py-2 rounded mt-4"
                                     >
-                                        Pay
+                                        Continue
                                     </button>
                                 </>
                             )

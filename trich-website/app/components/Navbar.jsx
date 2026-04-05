@@ -117,7 +117,7 @@ const Navbar = () => {
                 </ul>
 
                 {/* "Book Now" button and user icon on the right */}
-                {/* <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4">
                     <Link href="/reservation">
                         <button className="bg-orange1 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded">
                             Book
@@ -130,7 +130,7 @@ const Navbar = () => {
                             alt="user-Image"
                         />
                     </Link>
-                    <div className="relative">
+                    {/* <div className="relative">
                         <div
                             className="cursor-pointer"
                             onClick={toggleDropdown}
@@ -162,8 +162,8 @@ const Navbar = () => {
                                 </div>
                             </div>
                         )}
-                    </div>
-                </div> */}
+                    </div> */}
+                </div>
             </div>
 
             {/* Sidebar Component */}
