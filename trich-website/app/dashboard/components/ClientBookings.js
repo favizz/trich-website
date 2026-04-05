@@ -29,7 +29,7 @@ const ClientBookings = ({ phoneNumber }) => {
           paid: 3,
         };
 
-        bookings.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+        bookings.sort((a, b) => new Date(b.date) - new Date(a.date));
         setData(bookings);
       } catch (err) {
         console.error("Error fetching bookings:", err);
