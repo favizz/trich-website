@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { mockFetch as fetch } from "@/lib/mockApi";
 
 export default function HistoryPage() {
     const [date, setDate] = useState(() => {

@@ -1,8 +1,9 @@
 import { API_ROUTES } from "@/constants/routes"
+import { mockFetch } from "@/lib/mockApi";
 
 export const getAvailableBarbers = async (dayOfWeek) => {
     try {
-        const res = await fetch(API_ROUTES.GET_BARBERS, { method: "GET",
+        const res = await mockFetch(API_ROUTES.GET_BARBERS, { method: "GET",
             headers: {
                     "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
                 },

@@ -1,10 +1,11 @@
 import { API_ROUTES } from "@/constants/routes";
 import { v4 as uuidv4 } from "uuid";
 import { auth, db } from "@/config/firebase";
-import { collection, query, where, 
-         getDoc, getDocs, deleteDoc, 
+import { collection, query, where,
+         getDoc, getDocs, deleteDoc,
          addDoc, updateDoc, increment,
          arrayUnion } from "firebase/firestore";
+import { mockFetch } from "@/lib/mockApi";
 
 // Note: The following functions still require Firebase and are not used in the dashboard:
 // - handleUser: Used for handling new bookings (Firebase required)
@@ -39,14 +40,14 @@ export const getUserData = async (phoneNumber) => {
     const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/user/${phoneNumber}`;
 
     try {
-        const response = await fetch(endpoint, {
+        const response = await mockFetch(endpoint, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
             }
         })
-        
+
         const data = await response.json();
 
         return data;
@@ -83,7 +84,7 @@ export const createReservation = async (
     };
 
     try {
-        const response = await fetch(API_ROUTES.CREATE_RESERVATION, {
+        const response = await mockFetch(API_ROUTES.CREATE_RESERVATION, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -107,7 +108,7 @@ export const createReservation = async (
 export const getPendingBookings = async (phoneNumber) => {
     const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/${phoneNumber}`;
     try {
-        const response = await fetch(endpoint, {
+        const response = await mockFetch(endpoint, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -129,7 +130,7 @@ export const deleteBooking = async (reservationId) => {
     const endpoint = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/reservations/${reservationId}`;
 
     try {
-        const response = await fetch(endpoint, {
+        const response = await mockFetch(endpoint, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -161,7 +162,7 @@ export const getMembership = async (phoneNumber) => {
             formattedPhone = `+62${formattedPhone}`;
         }
         
-        const response = await fetch(API_ROUTES.GET_USER_MEMBERSHIP(formattedPhone), {
+        const response = await mockFetch(`/website/user/membership/${formattedPhone}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -177,7 +178,7 @@ export const getMembership = async (phoneNumber) => {
         }
 
         const membershipData = await response.json();
-        return { success: true, membership: true };
+        return { success: true, membership: membershipData };
     } catch (error) {
         console.error("Error fetching membership:", error);
         // If API is not available, assume no membership (this is expected when backend is not ready)
@@ -197,7 +198,7 @@ export const getUserBookings = async (phoneNumber) => {
             formattedPhone = `+62${formattedPhone}`;
         }
         
-        const response = await fetch(API_ROUTES.GET_USER_RESERVATIONS(formattedPhone), {
+        const response = await mockFetch(`/website/reservations/${formattedPhone}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

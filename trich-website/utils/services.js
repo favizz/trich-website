@@ -1,11 +1,12 @@
 import { API_ROUTES } from "@/constants/routes";
+import { mockFetch } from "@/lib/mockApi";
 
 export const getServices = async () => {
     try {
-        const response = await fetch(API_ROUTES.GET_SERVICES, {
+        const response = await mockFetch(API_ROUTES.GET_SERVICES, {
             method: "GET"
         })
-        
+
         const data = await response.json();
 
         return data;
@@ -17,7 +18,7 @@ export const getServices = async () => {
 
 export const getServicesByUser = async (phoneNumber) => {
     try {
-        const response = await fetch(API_ROUTES.GET_SERVICES_BY_USER(phoneNumber), {
+        const response = await mockFetch(API_ROUTES.GET_SERVICES_BY_USER(phoneNumber), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

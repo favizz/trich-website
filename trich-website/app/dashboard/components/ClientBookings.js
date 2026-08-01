@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import BookingCard from "./BookingCard";
+import { mockFetch as fetch } from "@/lib/mockApi";
 
 const ClientBookings = ({ phoneNumber }) => {
   const [data, setData] = useState([]);

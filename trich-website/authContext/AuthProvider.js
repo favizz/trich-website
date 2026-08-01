@@ -1,9 +1,5 @@
 "use client";
-import React, { useContext, createContext, useState, useEffect } from "react";
-import { auth } from "@/config/firebase";
-import { signOut } from "firebase/auth";
-import { onAuthStateChanged } from "firebase/auth";
-import { getUserData } from "@/utils/user";
+import React, { useContext, createContext, useState } from "react";
 import Loading from "@/app/components/Loading";
 
 const AuthContext = createContext({
@@ -19,34 +15,20 @@ export const useAuth = () => {
     return useContext(AuthContext);
 };
 
+// Demo build: session/user are held purely in local state, populated by the
+// mock phone-OTP / sign-up flows instead of a real Firebase subscription.
 export const AuthProvider = ({ children }) => {
-    const [session, setSession] = useState(auth?.currentUser);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            setSession(currentUser);
-            
-            if (currentUser) {
-                const response = await getUserData();
-                if (response.success) {
-                    setUser(response.user);
-                } else {
-                    console.error(response.error);
-                    setUser(null);
-                }
-            } else {
-                setUser(null);
-            }
-        });
-        
-        return unsubscribe;
-    }, []);
-        
+
+    const mockSignOut = async () => {
+        setUser(null);
+        return {};
+    };
+
     const value = {
-        signOut: signOut,
-        session: session ? session : null,
+        signOut: mockSignOut,
+        session: user,
         user: user,
         setUser: setUser,
     };

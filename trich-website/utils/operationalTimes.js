@@ -1,6 +1,7 @@
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { getConfigQuotas } from "./quota";
+import { mockFetch } from "@/lib/mockApi";
 
 function generateOperationalTimes(date) {
     const allOperationalTimes = [];
@@ -50,7 +51,7 @@ export async function getOperationalTimes(dateInput, pickedServices) {
 
     const url = `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota?date=${formattedDate}&${serviceQuery}`;
 
-    const res = await fetch(url,
+    const res = await mockFetch(url,
         {
             method: "GET",
             headers: {

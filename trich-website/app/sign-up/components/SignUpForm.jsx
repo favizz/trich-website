@@ -1,9 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { auth, db } from "@/config/firebase";
-import { collection, addDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { mockSignUp } from "@/lib/mockApi";
 import { checkIfEmailExists } from "@/hooks/CheckEmailExist";
 import { useRouter } from "next/navigation";
 import ToastManager from "@/app/components/toaster";
@@ -11,8 +9,6 @@ import { ToastContainer } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 
 const SignUpForm = () => {
-    const userCollectionRef = collection(db, "user");
-
     const [emailUsed, toggleEmailUsed] = useState(false);
 
     const [password, setPassword] = useState("");
@@ -54,24 +50,12 @@ const SignUpForm = () => {
         }
         try {
             e.preventDefault();
-            await createUserWithEmailAndPassword(
-                auth,
-                formData.email,
-                password
-            );
-
-            await addDoc(userCollectionRef, {
-                user_id: auth?.currentUser?.uid,
-                first_name: formData.first_name.toUpperCase(),
+            mockSignUp({
+                first_name: formData.first_name,
                 email: formData.email,
                 phone_number: formData.phone_number,
-            })
-                .then((response) => {
-                    router.push("/");
-                })
-                .catch((e) => {
-                    console.error(e);
-                });
+            });
+            router.push("/");
         } catch (error) {
             console.error(error);
         }

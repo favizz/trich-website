@@ -1,4 +1,7 @@
 import { API_ROUTES } from "@/constants/routes";
+import { mockFetch, mockUpsertNonAuthUser } from "@/lib/mockApi";
+
+export const DEMO_OTP_CODE = "123456";
 
 /**
  * Gets a user by phone number
@@ -12,7 +15,7 @@ export const getUser = async (phone_number) => {
         if (!formattedPhone.startsWith("+62")) {
             formattedPhone = `+62${formattedPhone}`;
         }
-        const response = await fetch(API_ROUTES.GET_USER_BY_PHONE(formattedPhone), {
+        const response = await mockFetch(API_ROUTES.GET_USER_BY_PHONE(formattedPhone), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -39,29 +42,11 @@ export const getUser = async (phone_number) => {
 /**
  * @param {string} first_name
  * @param {string} phone_number
- * @param {number} points
- * @returns {Promise<{ success: boolean, error: boolean }>}
+ * @returns {Promise<{ success: boolean, user?: object, error?: string }>}
  */
 export const addNonAuthUser = async (first_name, phone_number) => {
     try {
-        const usersRef = collection(db, "non_auth_user");
-
-        const user_id = auth.currentUser?.uid;
-
-        await addDoc(usersRef, {
-            first_name: first_name,
-            user_id: user_id,
-            phone_number: phone_number,
-            points: 0,
-        });
-
-        const newUser = {
-            first_name,
-            user_id,
-            phone_number,
-            points: 0,
-        };
-
+        const newUser = mockUpsertNonAuthUser(first_name, phone_number);
         return { success: true, user: newUser };
     } catch (error) {
         console.error("Error adding user:", error);
@@ -70,50 +55,28 @@ export const addNonAuthUser = async (first_name, phone_number) => {
 };
 
 /**
- * Initializes reCAPTCHA verifier
- * @param {string} containerId - DOM element ID for reCAPTCHA
- * @returns {RecaptchaVerifier}
+ * Demo build: no real reCAPTCHA is used. Kept as a no-op so callers that
+ * invoke it on mount don't need to change.
  */
 export const initRecaptchaVerifier = (containerId) => {
-    // Create a new reCAPTCHA verifier instance
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
-        size: "invisible",
-        callback: () => {
-            console.log(
-                "reCAPTCHA solved, you can now send a verification code.",
-            );
-        },
-        "expired-callback": () => {
-            console.log("reCAPTCHA expired. Resetting reCAPTCHA.");
-        },
-    });
-    return window.recaptchaVerifier;
+    return { type: "mock-recaptcha", containerId };
 };
 
 /**
  * Sends verification code
+ * Demo build: no SMS is sent. This always "succeeds" after a short delay,
+ * and the code the user must enter is the fixed demo code (shown in the UI).
  * @param {string} phoneNumber - Phone number with country code (e.g. "+1234567890")
  * @returns {Promise<{ success: boolean, confirmationResult?: any, error?: string }>}
  */
 export const sendVerificationCode = async (phoneNumber) => {
-    try {
-        const appVerifier = window.recaptchaVerifier;
-        // Send SMS with the verification code
-        const confirmationResult = await signInWithPhoneNumber(
-            auth,
-            phoneNumber,
-            appVerifier,
-        );
-        // Return confirmationResult which contains a .confirm(code) method for later use
-        return { success: true, confirmationResult };
-    } catch (error) {
-        console.error("Error sending verification code:", error);
-        return { success: false, error: error.message };
-    }
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    return { success: true, confirmationResult: { phoneNumber } };
 };
 
 /**
  * Verifies the code and signs in the user.
+ * Demo build: succeeds only when the entered code matches DEMO_OTP_CODE.
  * @param {any} confirmationResult - The confirmationResult returned from sendVerificationCode
  * @param {string} verificationCode - Code entered by the user
  * @returns {Promise<{ success: boolean, user?: object, error?: string }>}
@@ -122,25 +85,17 @@ export const verifyCodeAndSignIn = async (
     confirmationResult,
     verificationCode,
 ) => {
-    try {
-        // Complete sign-in by confirming the code
-        const result = await confirmationResult.confirm(verificationCode);
-        console.log(result);
-        return { success: true, user: result.user };
-    } catch (error) {
-        if (error.code === "auth/invalid-verification-code") {
-            return {
-                success: false,
-                error: "Invalid",
-            };
-        }
-        if (error.code === "auth/code-expired") {
-            return {
-                success: false,
-                error: "Expired",
-            };
-        }
-        // Fallback error message
-        return { success: false, error: error.message };
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    if (verificationCode !== DEMO_OTP_CODE) {
+        return { success: false, error: "Invalid" };
     }
+
+    return {
+        success: true,
+        user: {
+            uid: `demo-${confirmationResult?.phoneNumber || "user"}`,
+            phoneNumber: confirmationResult?.phoneNumber,
+        },
+    };
 };

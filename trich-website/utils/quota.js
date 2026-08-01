@@ -11,6 +11,7 @@ import {
     deleteDoc,
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
+import { mockFetch } from "@/lib/mockApi";
 
 const DOC_ID = "eN2iHGJx9UjoVklByUs1";
 
@@ -136,7 +137,7 @@ export const updateConfigQuota = async (updates) => {
  */
 export const getQuotaByType = async (type) => {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/${type}`, {
+        const response = await mockFetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/${type}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -163,7 +164,7 @@ export const getQuotaByType = async (type) => {
  */
 export const createQuotaByType = async (type, quotaData) => {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/${type}`, {
+        const response = await mockFetch(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/website/quota/${type}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

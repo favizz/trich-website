@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import { API_ROUTES } from "@/constants/routes";
 import { getAvailableBarbers } from "@/utils/barber";
+import { mockFetch } from "@/lib/mockApi";
 
 import ToastManager from "../components/toaster";
 import { ToastContainer } from "react-toastify";
@@ -92,7 +93,7 @@ const ChooseTime = ({
                     apiUrl = API_ROUTES.GET_AVAILABLE_TIMES(encodeURIComponent(iso_date), serviceIds);
                 }
 
-                const res = await fetch(apiUrl, { method: "GET",
+                const res = await mockFetch(apiUrl, { method: "GET",
                     headers: {
                     "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_BASE_KEY}`,
                 },

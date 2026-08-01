@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import ToastManager from "../../components/toaster";
+import { mockFetch as fetch } from "@/lib/mockApi";
 
 // Helper function for day mapping
 export const isDaySelected = (abbreviatedDay, availableDays) => {

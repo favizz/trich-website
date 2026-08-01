@@ -43,6 +43,9 @@ const ClientVerification = ({
                     We've sent a code to{" "}
                     <span className="font-medium">{phoneNumber}</span>
                 </p>
+                <p className="text-xs text-indigo-600 mb-4">
+                    Demo code: <span className="font-semibold">123456</span>
+                </p>
                 <div className="flex justify-center gap-2 mb-4">
                     {code.map((num, index) => (
                         <input
