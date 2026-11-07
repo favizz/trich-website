@@ -1,6 +1,6 @@
 # Trich Barberspace
 
-Trich Barberspace is a barbershop booking platform where clients can browse services, book appointments with their preferred barber, track loyalty points, and manage their membership, all in one place.
+Trich Barberspace was a barbershop booking platform: clients could browse services, book appointments with their preferred barber, track loyalty points, and manage their membership, all in one place. The company has since closed; this is the public-facing site as it was.
 
 This is a demo build of the site. It runs entirely in the browser with sample data, so every part of the experience, from booking a haircut to redeeming a reward, can be explored without needing a real account or payment method.
 
@@ -15,6 +15,10 @@ This is a demo build of the site. It runs entirely in the browser with sample da
 
 Since this is a demo, sign in uses a sample verification code (`123456`) shown on screen, and any data you create or change resets the next time the page is reloaded.
 
-## About
+## Stack
 
-Trich Barberspace is built with Next.js and Tailwind CSS, and is designed to be fast, responsive, and easy to use across desktop and mobile.
+Next.js, TypeScript, Tailwind CSS, Firebase.
+
+## Team
+
+Built by a small team; the bulk of the frontend was built by Raizan Iqbal and Adli Arindra. My own contribution was a smaller set of front-end components and fixes.
